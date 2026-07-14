@@ -1,0 +1,7 @@
+[ProxyProcessManager] Starting proxy ID: 2
+[ProxyProcessManager] Resolved 3proxy.exe path: E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\runtime\3proxy\bin64\3proxy.exe
+[ProxyProcessManager] Checking 3proxy dependencies...
+[ProxyProcessManager] Checking main executable: E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\runtime\3proxy\bin64\3proxy.exe
+[ProxyProcessManager] ERROR: 3proxy.exe not found at E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\runtime\3proxy\bin64\3proxy.exe. Please ensure 3proxy is properly installed. Expected location: E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\runtime\3proxy\bin64
+[ProxyProcessManager] Stopping proxy ID: 2
+[ProxyProcessManager] No process found to stop for proxy ID: 2

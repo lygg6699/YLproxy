@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YLproxy.Utils", "src\YLprox
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YLproxy.Infrastructure", "src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj", "{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YLproxy.Test", "tests\YLproxy.Test.csproj", "{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B61}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YLproxy.Tests", "tests\YLproxy.Tests.csproj", "{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B62}"
 EndProject
 Global
@@ -36,8 +34,6 @@ Global
 		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B5F}.Release|Any CPU = Release|Any CPU
 		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B60}.Debug|Any CPU = Debug|Any CPU
 		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B60}.Release|Any CPU = Release|Any CPU
-		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B61}.Debug|Any CPU = Debug|Any CPU
-		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B61}.Release|Any CPU = Release|Any CPU
 		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B62}.Debug|Any CPU = Debug|Any CPU
 		{8B041A7A-8E0D-4D4D-8E7D-6D5B5B5B5B62}.Release|Any CPU = Release|Any CPU
 	EndGlobalSection
