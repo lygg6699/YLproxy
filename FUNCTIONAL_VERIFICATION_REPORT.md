@@ -23,3 +23,25 @@
 ### ? 启动代理成功/失败 
 - 启动按钮可以点击 
 - 但是由于路径解析问题，3proxy.exe 未被找到 
+- 但是由于路径解析问题，3proxy.exe 未被找到 
+- 日志显示: "[ProxyProcessManager] ERROR: 3proxy.exe not found at E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\runtime\\3proxy\\bin64\\3proxy.exe" 
+### ? 停止代理成功/失败 
+- 停止按钮可以点击 
+- 但是由于没有成功启动的代理，无法验证实际停止功能 
+### ? Monitor 检测异常退出成功/失败 
+- 由于无法成功启动代理，无法验证监控功能 
+- 但是MonitorService代码已经存在并且看起来是正确的 
+### ? 配置持久化成功/失败 
+- 可以验证data/config.json文件存在并且包含代理配置 
+- 添加代理时会尝试写入配置文件（尽管后续步骤失败） 
+### ? 日志写入成功/失败 
+- 日志目录存在并且包含日志文件（ylxcx-20260713.log, ylxcz-20260714.log） 
+- 应用程序启动时会写入日志 
+- 但是由于路径问题，某些操作的日志可能不完整 
+## 根本原因分析 
+问题在于PathResolver类在确定仓库根目录时返回了错误的路径，导致它在查找3proxy时使用了错误的基础路径： 
+- 期望路径: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\3proxy.exe 
+- 实际查找路径: E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\runtime\3proxy\bin64\3proxy.exe 
+这个问题需要在PathResolver.GetRepositoryRoot()方法中修复，以确保它正确地识别仓库根目录。 
+## 建议的修复方案 
+在PathResolver.GetRepositoryRoot()方法中，应该优先检查标志性文件（如YLproxy.sln或YLproxy.slnx）来确定仓库根目录，而不是依赖于可能变化的当前目录或程序集位置。 
