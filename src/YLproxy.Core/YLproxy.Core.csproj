@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\\YLproxy.Models\\YLproxy.Models.csproj" />
+    <ProjectReference Include="..\\YLproxy.Utils\\YLproxy.Utils.csproj" />
+    <ProjectReference Include="..\\YLproxy.Proxy\\YLproxy.Proxy.csproj" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

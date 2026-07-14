@@ -1,0 +1,30 @@
+# Build outputs
+bin/
+obj/
+
+# IDE
+.vs/
+*.user
+*.userosscache
+
+# Runtime
+runtime/3proxy/bin64/
+runtime/3proxy/logs/
+
+# Application data
+data/
+logs/
+
+# Temporary
+*.tmp
+*.temp
+
+# Backup files
+*.backup
+
+# Solution user options
+*.suo
+
+# 3proxy runtime generated configs
+runtime/3proxy/cfg/
+.blackboxcli/

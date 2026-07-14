@@ -1,0 +1,54 @@
+# YLproxy.Proxy/
+
+## 目录简介
+
+与 3proxy 的集成层，负责生成 3proxy 配置文件和管理 3proxy 进程生命周期。此层将代理模型转换为实际的 3proxy 执行命令。
+
+## 主要文件/子目录说明
+
+### ConfigGenerator.cs
+生成 3proxy 配置文件：
+- 根据 ProxyItem 生成符合 3proxy 语法的配置文件内容
+- 支持有认证和无认证两种代理类型
+- 配置包括：服务模式、日志格式、访问控制、端口监听和上游代理转发
+- 生成的配置遵循 3proxy 最佳实践，包含适当的日志轮转和访问控制
+
+### ProxyProcessManager.cs
+管理 3proxy 进程：
+- 负责 3proxy 进程的启动、停止和状态检查
+- 确保所有必要的 3proxy 依赖文件存在（exe 和 DLL）
+- 管理进程句柄以防止资源泄漏
+- 提供线程安全的进程操作（使用 ConcurrentDictionary）
+- 自动创建必要的配置和日志目录
+
+## 使用说明
+
+此层由 Core 层和 GUI 层调用：
+- ProxyTester 间接依赖（通过测试上游代理可用性）
+- Core 层的 MonitorService 调用 IsRunning() 检查进程状态
+- GUI 层的 MainViewModel 调用 Start() 和 Stop() 来控制代理
+- 配置生成和进程管理完全封装在此层内
+
+## 注意事项
+
+⚠️ **关键问题 - 路径解析存在 Bug**：
+- `GetRuntime3ProxyPath()` 方法中的路径导航逻辑错误
+- 当前实现向上导航 4 级：`YLproxy.GUI\bin\Debug\net10.0-windows\` → 错误路径
+- 正确路径应该是从解决方案根目录开始：`YLproxy\runtime\3proxy\`
+- 此 Bug 导致「3proxy.exe not found」错误，是目前阻止代理启动的主要问题
+
+⚠️ **依赖文件检查**：
+- 启动时会检查必要的 DLL 依赖：FilePlugin.dll 和 StringsPlugin.dll
+- 缺少这些依赖会导致启动失败，请确保 runtime/3proxy/bin64/ 目录完整
+
+⚠️ **工作目录要求**：
+- 3proxy 必须在其自身目录中启动才能正确解析相对路径配置
+- ProxyProcessManager 正确设置了 WorkingDirectory 来满足此要求
+
+## 后续计划（可选）
+
+- 修复路径解析 Bug，使用更可靠的方法定位 runtime 目录
+- 添加更详细的版本信息和兼容性检查
+- 考虑支持 3proxy 的热重载配置功能
+- 添加更全面的依赖验证（包括所有可能需要的 DLL）
+- 实现 3proxy 进程的优雅关闭尝试（ ennen 使用 Kill）
