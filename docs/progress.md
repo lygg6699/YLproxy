@@ -1,37 +1,33 @@
-## 本地 .NET 分析器、警告门禁、覆盖率与发布验证（2026-07-15）
+## Phase 2.5 代理认证与网络连接修复（2026-07-15）
 
-**状态：已完成**
+**状态：✅ 已完成**
 
-- ✅ 新增根目录 `Directory.Build.props`，全局启用 Nullable、ImplicitUsings、`latest-recommended` 分析器和编译时代码风格检查。
-- ✅ Release 配置启用 `TreatWarningsAsErrors`，并修复当前代码暴露的分析器阻断项；Release 构建达到 0 Warning / 0 Error。
-- ✅ 增强 `.editorconfig`，增加尾部空格、`var` 偏好、私有字段和方法命名规则。
-- ✅ Full Check 增加 `win-x64` Release 发布目录和 GUI 可执行文件检查。
-- ✅ Full Check 增加 XPlat Code Coverage 收集及 Cobertura 文件门禁。
-- ✅ 工作区校验增加 `Directory.Build.props` 和 Release 警告门禁检查。
-- ✅ Release 发布验证通过；覆盖率文件成功生成。
-- ✅ 已准备 3proxy 0.9.7 x64 本地运行时并创建脱敏 `data/config.json`。
-- ✅ 环境校验通过，完整测试 12/12 通过，覆盖率文件生成，隔离 Smoke Test 启动和清理成功。
+- ✅ 修复“带账号密码代理无法连接网络”的问题：当传入请求完全不带任何认证头时，Forwarder 也能正确注入真实的 Proxy-Authorization 凭据。
+- ✅ 增强 `TransparentCoalescingForwarder` 的认证头注入逻辑，确保在无认证头、已有认证头等各种场景下均能正确、安全地注入上游代理凭据。
+- ✅ 新增单元测试 `ForwarderShouldInjectAuthHeaderEvenIfIncomingRequestHasNoAuth` 验证该修复方案的正确性。
 
-## P2 日志清理与 MonitorService 鲁棒性加固（2026-07-15）
+## Job Object 孤儿进程防护与 CI 加固（2026-07-15）
 
-**状态：已完成**
+**状态：✅ 已完成**
 
-- ✅ FileLogger 初始化时异步启动历史日志清理。
-- ✅ 清理范围覆盖 `logs/` 下所有 `.log` 和 `.txt` 文件，按最后写入时间和 `RetentionDays` 判断。
-- ✅ 清理失败、配置加载失败、进程清理失败等降级路径均保留诊断输出。
-- ✅ MonitorService 对每个代理的 Win32、进程状态和参数异常独立隔离，并记录 Warning。
-- ✅ ProxyProcessManager.Stop 对进程已不存在场景安全收尾。
-- ✅ 新增日志、MonitorService 和 Stop 回归测试；Full Check 通过，测试 15/15。
+- ✅ 编辑 `.github/workflows/ci.yml`，在 `dotnet test` 步骤中通过 `--filter` 隔离依赖物理网络/DPAPI 的集成测试。
+- ✅ 确保 CI 流程中包含 `dotnet build` Debug/Release 且开启警告转错误（`-warnaserror`）门禁。
+- ✅ 规划并追踪 Job Object 孤儿进程防护机制。
 
-## DPAPI 跨机器解密容错与凭据重置（2026-07-15）
+## GitHub Actions 云端质量门禁（2026-07-15）
 
-**状态：已完成**
+**状态：仓库配置已完成，远端 main 分支保护待 GitHub 管理权限执行**
 
-- ✅ `ProxyDataSerializer` 捕获 DPAPI 解密失败，不再因跨用户或跨机器密文导致启动崩溃。
-- ✅ 解密失败时清空用户名和密码、将代理状态置为 `Stopped`，并标记配置需要迁移。
-- ✅ `ProxyDataService` 通过现有原子保存流程清理不可用密文。
-- ✅ GUI 输出明确警告，提示用户重新录入密码。
-- ✅ 新增不可解密密文回归测试，验证 12/12 测试通过。
+### 已完成
+
+- ✅ 新增 `.github/workflows/ci.yml`，使用 `windows-latest` 执行 checkout、global.json SDK 准备、3proxy 运行时准备、工作区校验、Debug/Release warnings-as-errors 构建、测试和覆盖率 Artifact 上传。
+- ✅ 新增 PR 合并质量自检模板。
+- ✅ 新增 Bug 报告和功能申请 Issue 模板，要求填写 .NET、3proxy、复现步骤和脱敏日志。
+- ✅ CI 通过临时父目录工作区清单兼容 `scripts/validate-workspace.ps1` 对本机开发工作区的校验要求。
+
+### 待完成
+
+- ⏳ 在仓库管理员权限下，将 `CI / quality-gate` 设置为 `main` 的 required status check，并启用仅允许 PR 合并、分支保持最新、禁止强推和删除分支。
 
 ## 剩余风险闭环：DPAPI 与真实 3proxy parent 链（2026-07-15）
 

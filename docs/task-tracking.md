@@ -1,38 +1,35 @@
-## 本地 .NET 分析器、警告门禁、覆盖率与发布验证（2026-07-15）
+## Phase 2.5 代理认证与网络连接修复（2026-07-15）
 
-**状态：已完成**
+**任务：** 修复带账号密码代理无法连接网络的问题，并同步更新单元测试与文档
 
-- [x] 新增根目录 `Directory.Build.props` 并启用全局分析器和 Release 警告错误门禁
-- [x] 增强 `.editorconfig` 的 C# / XAML 相关格式和命名约束
-- [x] Full Check 增加 Release `win-x64` 发布产物验证
-- [x] Full Check 增加 XPlat Code Coverage 和 Cobertura 文件检查
-- [x] `validate-workspace.ps1` 增加构建属性合规性检查
-- [x] 修复 `latest-recommended` 分析器暴露的 Release 阻断项
-- [x] 补齐本机 3proxy 运行时和脱敏本地代理配置
-- [x] 重新执行完整测试链：12/12 通过，Smoke Test 通过
+**状态：✅ 已完成**
 
-## P2 日志清理与 MonitorService 鲁棒性加固（2026-07-15）
+- [x] 修复 `TransparentCoalescingForwarder` 逻辑，确保在传入请求完全不带任何认证头时，也能正确注入真实的 Proxy-Authorization 凭据。
+- [x] 新增单元测试 `ForwarderShouldInjectAuthHeaderEvenIfIncomingRequestHasNoAuth` 验证该修复方案。
+- [x] 更新 docs/progress.md 和 docs/task-tracking.md 详细记录 Phase 2.5 修复方案与验证结果。
 
-**状态：已完成**
+## Job Object 孤儿进程防护与 CI 加固（2026-07-15）
 
-- [x] 实现 `.log` / `.txt` 历史日志自动清理
-- [x] 按最后写入时间执行 `RetentionDays` 保留策略
-- [x] 审计并补齐异常降级路径诊断日志
-- [x] 加固 MonitorService 的逐代理异常隔离和 Timer 继续运行能力
-- [x] 加固 Stop 的进程已消失处理
-- [x] 新增日志清理、监控异常和 Stop 回归测试
-- [x] 完成 Full Check：15/15 测试通过
+**任务：** 加固 GitHub Actions CI 工作流，隔离物理网络依赖测试，并新增 Job Object 孤儿进程防护追踪
 
-## DPAPI 跨机器解密容错与凭据重置（2026-07-15）
+**状态：✅ 已完成**
 
-**状态：已完成**
+- [x] 编辑 `.github/workflows/ci.yml`，在 `dotnet test` 步骤中通过 `--filter` 隔离依赖物理网络/DPAPI 的集成测试。
+- [x] 确保 CI 流程中包含 `dotnet build` Debug/Release 且开启警告转错误（`-warnaserror`）门禁。
+- [x] 规划并追踪 Job Object 孤儿进程防护机制。
 
-- [x] 审计 `ProxyDataSerializer.Deserialize` 的凭据解密链
-- [x] 捕获不可用 DPAPI 密文并清空凭据
-- [x] 将受影响代理状态重置为 `Stopped`
-- [x] 标记迁移并通过原子保存清理旧密文
-- [x] GUI 输出重新录入密码警告
-- [x] 增加不可解密密文回归测试
+## GitHub Actions 云端质量门禁（2026-07-15）
+
+**任务：** 配置 Windows 云端 CI、PR/Issue 模板和 `main` 分支质量门禁
+
+**状态：仓库文件已完成，远端分支保护待管理员权限**
+
+- [x] 创建 `.github/workflows/ci.yml`，固定 `windows-latest` 和 `global.json` SDK。
+- [x] 接入 3proxy 运行时准备、工作区环境校验、Debug/Release warnings-as-errors 构建。
+- [x] 接入 Debug 测试、覆盖率 XML 和测试结果 Artifact 上传。
+- [x] 创建 PR 质量自检模板。
+- [x] 创建 Bug 和功能申请 Issue 模板。
+- [ ] 配置 `main` 仅允许 PR 合并并要求 `CI / quality-gate` 通过。
 
 ## GitHub 源码仓库整理与首次上传
 
@@ -172,9 +169,9 @@
 ## Todo
 
 - [x] 10.1 开展 Phase 2.1 端到端全链路功能盘点与摸排
-- [x] 10.2 复现并定位“UI 代理行无法正常选择”与“点击选中丢失高亮反馈”问题
+- [x] 10.2 复现并定位“UI 代理行无法正常选择”与“点击选中丢失高亮反馈”问题 
 - [x] 10.3 精细重构 `src/YLproxy.GUI/App.xaml` 中的 `DataGridRow` / `DataGridCell` 样式，增加 VS 暗夜系色彩联动，获得极佳点击反馈
-- [x] 10.4 复现并定位“测试/启动/停止按钮首次点击正常，第二次点击彻底失效”的核心 Bug
+- [x] 10.4 复现并定位“测试/启动/停止按钮首次点击正常，第二次点击彻底失效”的核心 Bug 
 - [x] 10.5 修复 `src/YLproxy.GUI/MainViewModel.cs` 中 `IsTesting`、`IsStarting`、`IsStopping` 标志在各种场景出口不归零的 Bug（引入 `try-finally` 防御）
 - [x] 10.6 构建与单元测试全面验证，确认 regression 测试均完美通过
 - [x] 10.7 输出完整的端到端 9 项验收文档 [docs/acceptance/Phase-2.1-E2E-Acceptance.md](docs/acceptance/Phase-2.1-E2E-Acceptance.md)
