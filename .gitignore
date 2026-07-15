@@ -1,6 +1,7 @@
 # Build outputs
 bin/
 obj/
+reports/
 
 # IDE
 .vs/
@@ -12,8 +13,11 @@ runtime/3proxy/bin64/
 runtime/3proxy/logs/
 
 # Application data
-data/
-logs/
+data/*
+!data/README.md
+!data/config.example.json
+logs/*
+!logs/README.md
 
 # Temporary
 *.tmp
@@ -30,6 +34,7 @@ logs/
 
 # 3proxy runtime generated configs
 runtime/3proxy/cfg/
+.blackbox/
 .blackboxcli/
 
 # IDE extensions

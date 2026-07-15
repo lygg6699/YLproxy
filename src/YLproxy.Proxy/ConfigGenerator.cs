@@ -14,6 +14,15 @@ public static class ConfigGenerator
         if (proxy.RemotePort <= 0) throw new ArgumentException("RemotePort is invalid");
         if (proxy.LocalPort <= 0) throw new ArgumentException("LocalPort is invalid");
 
+        var remoteHost = ValidateToken(proxy.RemoteHost, nameof(proxy.RemoteHost));
+        var hasUsername = !string.IsNullOrWhiteSpace(proxy.Username);
+        var hasPassword = !string.IsNullOrWhiteSpace(proxy.Password);
+        if (hasUsername != hasPassword)
+            throw new ArgumentException("Remote proxy username and password must be provided together.");
+
+        var username = hasUsername ? ValidateToken(proxy.Username, nameof(proxy.Username)) : string.Empty;
+        var password = hasPassword ? ValidateToken(proxy.Password, nameof(proxy.Password)) : string.Empty;
+
         var sb = new StringBuilder();
         var runtimePath = GetRuntime3ProxyPath();
 
@@ -23,18 +32,22 @@ public static class ConfigGenerator
         sb.AppendLine("auth iponly");
         sb.AppendLine("allow *");
         sb.AppendLine("internal 127.0.0.1");
+        sb.AppendLine("fakeresolve");
 
-        if (!string.IsNullOrWhiteSpace(proxy.Username) && !string.IsNullOrWhiteSpace(proxy.Password))
-        {
-            sb.AppendLine($"proxy -a -p{proxy.LocalPort} -e{proxy.RemoteHost}:{proxy.RemotePort} -u{proxy.Username} -k{proxy.Password}");
-        }
-        else
-        {
-            sb.AppendLine($"proxy -a -p{proxy.LocalPort} -e{proxy.RemoteHost}:{proxy.RemotePort}");
-        }
+        var parentCredentials = hasUsername ? $" {username} {password}" : string.Empty;
+        sb.AppendLine($"parent 1000 http {remoteHost} {proxy.RemotePort}{parentCredentials}");
+        sb.AppendLine($"proxy -a -p{proxy.LocalPort}");
 
         sb.AppendLine("flush");
         return sb.ToString();
+    }
+
+    private static string ValidateToken(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Any(char.IsWhiteSpace) || value.Any(char.IsControl) || value.Contains('"'))
+            throw new ArgumentException($"{parameterName} contains characters that cannot be represented safely in a 3proxy configuration.", parameterName);
+
+        return value;
     }
 
     private static string GetRuntime3ProxyPath()

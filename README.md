@@ -60,8 +60,8 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 | 项目     | 值                              |
 | -------- | ------------------------------- |
 | 操作系统 | Windows 10 / Windows 11（x64）  |
-| 运行时   | .NET 10.0 SDK / Runtime         |
-| 代理引擎 | 3proxy（`runtime/3proxy/bin64/`） |
+| 运行时   | .NET 10.0 SDK / Runtime（SDK 基线 10.0.301） |
+| 代理引擎 | 3proxy 0.9.7（由 `scripts/prepare-runtime.ps1` 准备） |
 | 开发工具 | Visual Studio 2022+ / VS Code    |
 | 版本     | 0.2.0（Phase 7）                |
 | 最后更新 | 2026-07-15                      |
@@ -71,9 +71,10 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 ## 部署目录树及说明
 
 YLproxy/
-├── .agent                # 唯一 AI 规则与文件放置约束
+├── .agent                # 第一必读文件，规则与文件放置约束
 ├── AppSettings.json                 # 全局运行配置（根目录唯一配置入口）
-├── YLproxy.sln / YLproxy.slnx       # 解决方案文件
+├── global.json                       # .NET SDK 版本约束（10.0.301）
+├── YLproxy.sln                       # 唯一解决方案入口
 ├── .github/                         # GitHub Copilot/Agent 配置
 ├── .vscode/                         # VS Code 调试、任务与编辑器配置
 │
@@ -99,12 +100,13 @@ YLproxy/
 │
 ├── runtime/                         # —————— 运行时依赖 ——————
 │   └── 3proxy/                      # 3proxy 代理引擎及其运行数据
-│       ├── bin64/                   #   3proxy.exe 与所有 DLL 插件
-│       ├── cfg/                     #   生成的 {Proxy.Id}.cfg 文件
-│       └── logs/                    #   3proxy 自身日志
+│       ├── bin64/                   #   本地准备的 3proxy.exe 与 DLL（不提交）
+│       ├── cfg/                     #   生成的 {Proxy.Id}.cfg 文件（不提交）
+│       └── logs/                    #   3proxy 自身日志（不提交）
 │
 ├── data/                            # —————— 用户数据目录 ——————
-│   └── config.json                  #   代理配置持久化 JSON（唯一数据文件）
+│   ├── config.example.json          #   脱敏配置模板（提交）
+│   └── config.json                  #   代理配置持久化 JSON（本地忽略）
 │
 ├── logs/                            # —————— 日志目录（运行时生成） ——————
 │
@@ -139,7 +141,7 @@ YLproxy/
 | 框架       | .NET SDK                       | ≥ 10.0        | 运行时与编译基础            |
 | UI 框架    | WPF（Windows Presentation Foundation） | .NET 10.0 | 桌面图形界面                |
 | 架构模式   | MVVM                           | —             | ViewModelBase / RelayCommand |
-| 代理引擎   | 3proxy                         | 0.9.4（捆绑） | 本地代理进程                |
+| 代理引擎   | 3proxy                         | 0.9.7（脚本下载） | 本地代理进程                |
 | IDE        | Visual Studio 2022+ / VS Code  | —             | 开发与调试                  |
 | 包管理器   | NuGet                          | —             | 依赖管理                    |
 
@@ -159,9 +161,9 @@ json
     "MinLevel": "Info"            // 最低日志级别 (Debug|Info|Warn|Error)
   },
   "Proxy": {
-    "DataDirectory": "data",      // 配置数据目录
-    "ConfigFileName": "config.json",
-    "PortRangeStart": 9001,       // 本地端口分配起始
+      {
+        "Username": "dpapi:v1:<Windows 当前用户密文>",
+        "Password": "dpapi:v1:<Windows 当前用户密文>",
     "PortRangeEnd": 9100,         // 本地端口分配结束（最大 100 个代理）
     "CheckIntervalSeconds": 5     // 后台进程监控轮询间隔
   },
@@ -187,6 +189,16 @@ json
     "LocalPort": 9001,
     "Status": "Stopped"
   }
+    ]
+}
+
+`Username` 和 `Password` 由 Windows DPAPI 以当前用户作用域加密保存。旧明文配置迁移命令为：
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\migrate-proxy-data.ps1 -Apply
+```
+
+密文不能直接复制到其他 Windows 用户或计算机；迁移前应使用脚本提供的回滚机制并重新录入凭据。
 ]
 
 
@@ -198,17 +210,23 @@ json
 
 powershell
 # 1. 克隆仓库
-git clone <repo-url>
+git clone https://github.com/lygg6699/YLproxy.git
 cd YLproxy
 
-# 2. 编译
+# 2. 准备固定版本的 3proxy Windows x64 运行时
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\prepare-runtime.ps1
+
+# 3. 编译
 dotnet build YLproxy.sln
 
-# 3. 直接启动 GUI
+# 4. 直接启动 GUI
 dotnet run --project src/YLproxy.GUI
 
 
 或双击 `src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.exe` 直接运行。
+
+首次启动会在 `data/config.json` 中创建本机配置。该文件包含代理凭据，已被 Git 忽略；仓库只提供
+`data/config.example.json`，不要把真实配置强制加入提交。
 
 ### 界面操作流程
 

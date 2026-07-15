@@ -1,3 +1,22 @@
+## [GitHub 源码仓库整理] — 2026-07-15
+
+### 新增
+
+- `data/config.example.json`：不含真实凭据的配置模板。
+- `scripts/prepare-runtime.ps1`：下载并校验固定版本 3proxy 0.9.7 x64 运行时。
+- `LICENSE`：项目 MIT 许可证。
+- `THIRD-PARTY-NOTICES.md`：3proxy 许可证、版本和 SHA-256 记录。
+
+### 修改
+
+- `.gitignore`：允许安全说明和脱敏模板进入仓库，继续排除本机数据、日志、构建产物和运行时文件。
+- README、环境配置、运行时说明和数据目录说明：同步源码仓库的首次克隆与运行步骤。
+
+### 发布边界
+
+- 真实 `data/config.json`、运行日志、报告、生成 cfg 和 3proxy 二进制不上传。
+- 完整构建、测试和推送审计完成后再确认远端 `main`。
+
 ## [XAML 编译和代码质量修复] — 2026-07-15
 
 ### 修复
@@ -86,6 +105,63 @@
 ### 保留项
 - 保留 `data/config.json` 中的本地代理数据。
 - 保留现有 `runtime/3proxy/cfg` 文件，未执行运行时 cfg 清理。
+## [剩余风险闭环：DPAPI 与真实 3proxy parent 链] — 2026-07-15
+
+### 安全修复
+
+- 将占位 Base64 改为 Windows DPAPI `CurrentUser` 加密。
+- 新增 `ProxyDataSerializer`，同时保护用户名和密码，支持旧明文自动迁移。
+- 配置文件采用临时文件加原子替换写入，降低中断导致的损坏风险。
+- 当前 `data/config.json` 已迁移，旧明文 cfg 已删除。
+
+### 代理链修复
+
+- 将错误的 `-eHOST:PORT` 改为 3proxy 标准 `parent 1000 http HOST PORT [USER PASSWORD]`。
+- 增加 `fakeresolve`，避免目标域名本地解析阻断 parent 链。
+- 3proxy cfg 在启动失败、停止和异常退出路径清理。
+
+### 测试
+
+- 新增 DPAPI 往返、旧配置迁移和无明文序列化测试。
+- 新增真实 3proxy 本地认证 parent 转发测试。
+- 完整测试：10 Passed，0 Failed；构建：0 Error，0 Warning。
+
+## [P0/P1/P2 工作区与验证链风险加固] — 2026-07-15
+
+### 修复
+
+- 修复 `scripts/full-check.ps1` 使用错误 GUI 输出路径和错误项目根目录的问题。
+- 修复 Smoke Test 固定等待、异常退出不清理和真实配置可能被触碰的风险。
+- 修复 Full Check 清理失败仍继续并报告成功的问题：现在自动重试，重试失败会终止检查。
+
+### 新增
+
+- `global.json`：固定 .NET SDK `10.0.301`，使用 `latestPatch`。
+- `scripts/validate-workspace.ps1`：验证单机工作区 JSON、工程入口、SDK 和 3proxy 运行时。
+- 父目录工作区任务：环境校验和显式隔离 Smoke Test。
+- `.gitignore` 的 `reports/` 规则，避免验证报告混入项目工作区。
+
+### 验证
+
+- 环境校验通过。
+- Full Check 通过：清理成功、构建 0 Error/0 Warning、测试 7 Passed。
+- 隔离 GUI Smoke Test 通过，进程、临时数据和临时目录均已清理。
+
+## [独立 VS Code 工作区配置] — 2026-07-15
+
+### 新增
+
+- 在父目录 `E:\GZQ\YLXCX` 新增 `YLproxy.code-workspace`，将 `YLproxy` 作为独立项目工作区。
+- 增加统一编辑器编码、终端环境、搜索排除和文件监听排除设置。
+- 增加 Restore、Build、Test、Run GUI、Full Check、Clean 任务。
+- 增加 `YLproxy.GUI` 的 .NET `coreclr` 调试配置和开发扩展推荐。
+
+### 验证
+
+- 工作区 JSON 结构校验通过。
+- `dotnet build YLproxy.sln --configuration Debug`：0 Error，0 Warning。
+- `dotnet test tests/YLproxy.Tests.csproj --configuration Debug --no-build --no-restore`：7 Passed，0 Failed。
+
 # 变更记录
 
 ## [Phase 2] — 2026-07-13
@@ -221,3 +297,21 @@
 - `src/YLproxy.GUI/App.xaml`：
   - 修复 `DataGrid` 选中项样式覆盖。由于 `DataGridCell` 将 `Background` 硬编码为 `Transparent`，导致点击 DataGrid 中对应的代理行时，选中高亮效果被其遮盖且没有任何视觉反馈（用户看起来好像点击无动作，无法选中）。
   - 新增 `DataGridRow` 样式并扩展 `DataGridCell` 的 `IsSelected` 状态样式；提供现代深色主题的 Hover（`#2D2D30`）以及 Active Selected（`#094771`）的点击渲染，极大改善了行选中和操作的点击反馈。
+
+## [部署沉积清理与 TODO 重构] — 2026-07-15
+
+### 新增
+
+- 重构根目录 `TODO.md`，加入当前部署现状、风险、清理范围、P0-P5 执行方案和验收标准。
+- 记录后续 P0 真实运行链验收、P1 DPAPI 安全加固、P2 日志与异常治理等阶段入口。
+
+### 清理
+
+- 删除构建缓存、临时路径验证输出、应用历史日志、3proxy 引擎历史日志和黑盒临时日志。
+- 删除 GUI 下重复的运行日志目录，保留根日志说明文件。
+- 保留用户代理配置、3proxy 二进制、模板和当前运行 cfg。
+
+### 验证
+
+- `dotnet build YLproxy.sln`：0 Error，0 Warning。
+- `dotnet test tests/YLproxy.Tests.csproj`：7 Passed，0 Failed。

@@ -1,56 +1,73 @@
 using System;
+using System.Runtime.Versioning;
+using System.Security.Cryptography;
 using System.Text;
 
-namespace YLproxy.Infrastructure
+namespace YLproxy.Infrastructure;
+
+[SupportedOSPlatform("windows")]
+public sealed class DpapiSecurityService : ISecurityService
 {
-    public class DpapiSecurityService : ISecurityService
+    public const string Prefix = "dpapi:v1:";
+
+    public string Encrypt(string plainText)
     {
-        // Simple placeholder implementation for Phase 1
-        // In a real implementation, this would use Windows DPAPI
-        
-        public string Encrypt(string plainText)
+        if (string.IsNullOrEmpty(plainText))
+            return plainText;
+
+        if (plainText.StartsWith(Prefix, StringComparison.Ordinal))
         {
-            if (string.IsNullOrEmpty(plainText))
+            if (IsEncrypted(plainText))
                 return plainText;
-                
-            // Simple base64 encoding as placeholder (NOT secure for production)
-            // This is just to demonstrate the interface works
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
+
+            throw new FormatException("The DPAPI credential payload has an invalid format.");
         }
 
-        public string Decrypt(string encryptedText)
-        {
-            if (string.IsNullOrEmpty(encryptedText))
-                return encryptedText;
+        var protectedBytes = ProtectedData.Protect(
+            Encoding.UTF8.GetBytes(plainText),
+            optionalEntropy: null,
+            scope: DataProtectionScope.CurrentUser);
 
-            try
-            {
-                // Simple base64 decoding as placeholder
-                byte[] bytes = Convert.FromBase64String(encryptedText);
-                return Encoding.UTF8.GetString(bytes);
-            }
-            catch
-            {
-                // If decoding fails, return as-is
-                return encryptedText;
-            }
+        return Prefix + Convert.ToBase64String(protectedBytes);
+    }
+
+    public string Decrypt(string encryptedText)
+    {
+        if (string.IsNullOrEmpty(encryptedText) || !encryptedText.StartsWith(Prefix, StringComparison.Ordinal))
+            return encryptedText;
+
+        try
+        {
+            var payload = Convert.FromBase64String(encryptedText[Prefix.Length..]);
+            var plainBytes = ProtectedData.Unprotect(
+                payload,
+                optionalEntropy: null,
+                scope: DataProtectionScope.CurrentUser);
+
+            return Encoding.UTF8.GetString(plainBytes);
         }
-
-        public bool IsEncrypted(string text)
+        catch (Exception ex) when (ex is FormatException or CryptographicException or PlatformNotSupportedException)
         {
-            if (string.IsNullOrEmpty(text))
-                return false;
-
-            // Simple heuristic: if it's a valid base64 string, treat as potentially encrypted
-            return IsBase64String(text);
+            throw new CryptographicException("The DPAPI credential payload could not be decrypted for the current Windows user.", ex);
         }
+    }
 
-        private bool IsBase64String(string base64)
+    public bool IsEncrypted(string text)
+    {
+        if (string.IsNullOrEmpty(text) || !text.StartsWith(Prefix, StringComparison.Ordinal))
+            return false;
+
+        var payload = text[Prefix.Length..];
+        if (payload.Length == 0)
+            return false;
+
+        try
         {
-            if (string.IsNullOrEmpty(base64) || base64.Length % 4 != 0)
-                return false;
-
-            return System.Text.RegularExpressions.Regex.IsMatch(base64, @"^[A-Za-z0-9\+/]*={0,3}$", System.Text.RegularExpressions.RegexOptions.None);
+            return Convert.FromBase64String(payload).Length > 0;
+        }
+        catch (FormatException)
+        {
+            return false;
         }
     }
 }

@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\YLproxy.Models\YLproxy.Models.csproj" />
     <ProjectReference Include="..\YLproxy.Utils\YLproxy.Utils.csproj" />
   </ItemGroup>

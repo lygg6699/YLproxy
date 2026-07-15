@@ -171,20 +171,27 @@ public sealed class MainViewModel : ViewModelBase
 
     private void InitFromConfig()
     {
-        var configPath = GetConfigPath();
-        var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
-        var cfg = svc.Load();
-
         Proxies.Clear();
-        foreach (var p in cfg.Proxies)
+        try
         {
-            Proxies.Add(p);
-        }
+            var configPath = GetConfigPath();
+            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
+            var cfg = svc.Load();
 
-        if (Proxies.Count == 0)
+            foreach (var p in cfg.Proxies)
+            {
+                Proxies.Add(p);
+            }
+
+            if (Proxies.Count == 0)
+            {
+                // If config exists but empty, keep UI stable with an empty list.
+                AddLog($"[{DateTime.Now:HH:mm:ss}] config.json loaded: 0 proxies.");
+            }
+        }
+        catch (Exception ex)
         {
-            // If config exists but empty, keep UI stable with an empty list.
-            AddLog($"[{DateTime.Now:HH:mm:ss}] config.json loaded: 0 proxies.");
+            AddLog($"[{DateTime.Now:HH:mm:ss}] config.json could not be loaded: {ex.Message}");
         }
     }
 

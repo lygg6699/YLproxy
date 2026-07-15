@@ -10,7 +10,7 @@
 生成 3proxy 配置文件：
 - 根据 ProxyItem 生成符合 3proxy 语法的配置文件内容
 - 支持有认证和无认证两种代理类型
-- 配置包括：服务模式、日志格式、访问控制、端口监听和上游代理转发
+- 配置包括：服务模式、日志格式、访问控制、端口监听、`parent` HTTP 上游转发和 `fakeresolve`
 - 生成的配置遵循 3proxy 最佳实践，包含适当的日志轮转和访问控制
 
 ### ProxyProcessManager.cs
@@ -20,6 +20,7 @@
 - 管理进程句柄以防止资源泄漏
 - 提供线程安全的进程操作（使用 ConcurrentDictionary）
 - 自动创建必要的配置和日志目录
+- 启动失败、正常停止或检测到进程退出后删除含凭据的运行时 cfg
 
 ## 使用说明
 
@@ -44,6 +45,11 @@
 ⚠️ **工作目录要求**：
 - 3proxy 必须在其自身目录中启动才能正确解析相对路径配置
 - ProxyProcessManager 正确设置了 WorkingDirectory 来满足此要求
+
+⚠️ **敏感配置生命周期**：
+- `data/config.json` 中的用户名和密码使用 DPAPI 加密；3proxy 运行期间 cfg 可能短暂包含明文凭据
+- cfg 只用于进程启动和运行，生命周期结束后由 ProxyProcessManager 删除
+- 不应手动保留或提交 `runtime/3proxy/cfg/` 下的生成配置
 
 ## 后续计划（可选）
 

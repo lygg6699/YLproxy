@@ -2,12 +2,14 @@
 
 ## 目录简介
 
-3proxy 运行环境，包含 3proxy 可执行文件、依赖库和配置模板。这是代理转换功能的核心组件，负责实际的网络流量转发和认证处理。
+3proxy 运行时说明和许可证文件。这是代理转换功能的核心组件，负责实际的网络流量转发和认证处理。
+
+Windows x64 可执行文件和 DLL 不提交到 Git。使用仓库根目录的 `scripts/prepare-runtime.ps1` 下载并校验固定版本 3proxy 0.9.7。
 
 ## 主要子目录说明
 
 ### bin64/
-3proxy 可执行文件和 DLL：
+本地准备的 3proxy 可执行文件和 DLL：
 - `3proxy.exe`：主可执行文件，实现代理功能
 - `3proxy_crypt.exe`：密码加密工具（当前未使用）
 - `FilePlugin.dll`：必需的插件，提供文件操作功能
@@ -26,6 +28,7 @@
 ## 使用说明
 
 3proxy 运行环境使用方式：
+- 首次克隆后运行 `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\prepare-runtime.ps1`
 - 应用程序通过 ProxyProcessManager 定位并启动此目录中的 3proxy.exe
 - 配置文件由 ConfigGenerator 动态生成并放置在 cfg/ 子目录中
 - 日志文件写入到 logs/ 子目录（相对于 3proxy 运行目录）
@@ -33,16 +36,15 @@
 
 ## 注意事项
 
-⚠️ **路径必须正确**：
-- 这是目前项目的**主要阻塞问题**
-- ProxyProcessManager.GetRuntime3ProxyPath() 方法中的路径计算错误
-- 导致应用程序无法找到 3proxy.exe 而显示「3proxy.exe not found」错误
-- 必须修复路径解析逻辑才能使代理功能正常工作
+✅ **路径和版本**：
+- ProxyProcessManager 从 `ThreeProxy.RuntimeDirectory` 解析运行时根目录
+- 3proxy 0.9.7 x64 由准备脚本下载到 `bin64/`
+- 脚本会校验官方 Release 压缩包的 SHA-256，避免使用不完整或被替换的文件
 
 ⚠️ **依赖完整性**：
 - 启动时会检查必要的 DLL 依赖：FilePlugin.dll 和 StringsPlugin.dll
 - 缺少这些依赖会导致启动失败，请确保此目录完整
-- 建议保持此目录与官方 3proxy 发行版一致
+- 建议保持此目录与官方 3proxy 发行版一致，并保留本目录中的 `copying` 许可证文件
 
 ⚠️ **工作目录要求**：
 - 3proxy 必须在其自身目录中启动才能正确解析相对路径

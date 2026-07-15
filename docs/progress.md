@@ -1,3 +1,44 @@
+## 剩余风险闭环：DPAPI 与真实 3proxy parent 链（2026-07-15）
+
+**状态：核心风险已完成，外部供应商验收待现场执行**
+
+- ✅ 使用 Windows DPAPI `CurrentUser` 保护代理用户名和密码，存储格式带 `dpapi:v1:` 前缀。
+- ✅ `ProxyDataSerializer` 加载时解密旧格式并自动迁移，保存时始终加密，配置写入采用原子替换。
+- ✅ 当前 `data/config.json` 的 2 条代理记录已完成真实迁移，用户名和密码均不再明文落盘。
+- ✅ 3proxy 配置由错误的 `-e远程地址` 改为 `parent 1000 http HOST PORT [USER PASSWORD]`，并启用 `fakeresolve`。
+- ✅ 运行 cfg 在启动失败、正常停止和监控发现进程退出时清理，降低运行时明文残留风险。
+- ✅ 新增 DPAPI 迁移测试和真实 3proxy parent 转发测试，完整测试通过 10/10。
+- ✅ 删除旧的 `1.cfg`、`2.cfg`、`999.cfg` 明文运行配置；保留无凭据测试配置和 3proxy 样例。
+
+### 尚未闭环
+
+- ⏳ 真实外部上游代理供应商的凭据、目标网站、单代理/多代理和异常退出现场验收仍需在目标网络环境执行。
+- ⏳ DPAPI 使用当前 Windows 用户作用域，跨用户或跨机器迁移必须通过重新录入凭据，不支持直接复制密文恢复。
+
+## P0/P1/P2 工作区与验证链风险加固（2026-07-15）
+
+**状态：已完成**
+
+- ✅ 修复 `scripts/full-check.ps1` 的项目根目录定位和过期 GUI 输出路径。
+- ✅ Smoke Test 使用系统临时目录中的隔离项目副本和空代理配置，不读取或覆盖真实 `data/config.json`。
+- ✅ 增加 10 秒启动轮询、异常退出检测、进程终止和临时目录清理；清理旧编译失败时自动重试一次。
+- ✅ 保留父目录 `YLproxy.code-workspace` 作为单机启动入口，新增 `scripts/validate-workspace.ps1` 校验其 JSON、任务、调试配置和关键路径。
+- ✅ 新增 `global.json` 固定 .NET SDK `10.0.301`，使用 `latestPatch` 策略。
+- ✅ 增加环境校验任务、显式 Smoke Test 任务，并将 `reports/` 加入 Git 忽略。
+- ✅ 完整验证通过：清理成功、构建 0 Error/0 Warning、测试 7 Passed、隔离 Smoke Test 启动和清理成功。
+
+## 独立 VS Code 工作区配置（2026-07-15）
+
+**状态：已完成**
+
+- ✅ 在父目录 `E:\GZQ\YLXCX` 创建 `YLproxy.code-workspace`，将 `YLproxy/` 作为唯一工作区文件夹。
+- ✅ 集中配置 UTF-8 编码、Windows .NET CLI 输出语言、搜索/文件监听排除规则和扩展推荐。
+- ✅ 添加 Restore、Debug/Release 构建、测试、GUI 运行、Full Check 和 Clean 任务。
+- ✅ 添加 WPF GUI 的 `coreclr` 调试配置，并以 `YLproxy.sln` 作为解决方案入口。
+- ✅ 工作区 JSON 结构校验通过。
+- ✅ `dotnet build YLproxy.sln --configuration Debug`：成功，0 Error，0 Warning。
+- ✅ `dotnet test tests/YLproxy.Tests.csproj --configuration Debug --no-build --no-restore`：7 Passed，0 Failed。
+
 ## XAML 编译和代码质量修复（2026-07-15）
 
 **状态：已完成**
@@ -46,6 +87,27 @@
 - 新增配置契约和规范运行时目录测试，6 Passed, 0 Failed。
 - 保留 `data/config.json` 本地数据及现有 `runtime/3proxy/cfg` 文件，未执行运行时配置清理。
 # 开发进度记录
+
+## GitHub 源码仓库整理与发布准备
+
+**状态：已完成本地整理，待远端推送确认**
+
+**完成时间：** 2026-07-15
+
+### 完成内容
+
+- ✅ 明确源码仓库边界：排除真实代理数据、日志、报告、构建产物、生成 cfg 和 3proxy 二进制
+- ✅ 新增 `data/config.example.json` 脱敏模板，保留 `data/README.md` 作为数据目录说明
+- ✅ 新增固定版本 3proxy 0.9.7 x64 运行时准备脚本和 SHA-256 校验说明
+- ✅ 补充 MIT 许可证和第三方依赖声明
+- ✅ 同步 README、环境配置和运行时目录说明
+- ⏳ 完成本地完整验证、提交并推送到 `https://github.com/lygg6699/YLproxy.git`
+
+### 发布边界
+
+- `data/config.json` 只保留在本机，禁止通过 `git add -f` 加入提交
+- `runtime/3proxy/bin64/` 由 `scripts/prepare-runtime.ps1` 生成，不进入 Git 历史
+- `runtime/3proxy/cfg/`、`runtime/3proxy/logs/`、根 `logs/` 和 `reports/` 均为本机运行产物
 
 ## Phase 2 — MVVM 静态 GUI 基础结构
 
@@ -146,3 +208,20 @@
 - ✅ 优化 DataGrid 选择和 Hover 的点击反馈，采用 VS 暗色主题风格（Hover: `#2D2D30`, Active Selected: `#094771`）
 - ✅ `dotnet build YLproxy.sln`（0 Error, 0 Warning）已验证成功
 - ✅ `dotnet test tests/YLproxy.Tests.csproj`（2 Passed, 0 Failed）已验证成功
+
+## 部署沉积清理与 TODO 重构（2026-07-15）
+
+**状态：已完成**
+
+- ✅ 重构根目录 `TODO.md`，补充当前已落实部署内容、未闭环风险、清理边界、P0-P5 后续方案和验收标准。
+- ✅ 清理根目录及各项目 `bin/`、`obj/`、`path_verif` 构建输出和 MSBuild/NuGet 缓存。
+- ✅ 清理根 `logs/` 历史应用日志、`runtime/3proxy/logs/` 引擎日志和 `.blackbox/tmp/` 临时日志。
+- ✅ 删除 `src/YLproxy.GUI/logs/` 重复运行日志目录，保留根 `logs/README.md`。
+- ✅ 保留 `AppSettings.json`、`data/config.json`、`runtime/3proxy/bin64/` 和 `runtime/3proxy/cfg/`，未触碰用户数据、第三方运行时和代理运行配置。
+- ✅ 清理后的工作区执行 `dotnet build YLproxy.sln`：成功，0 Error，0 Warning。
+- ✅ 执行 `dotnet test tests/YLproxy.Tests.csproj`：7 Passed，0 Failed。
+
+### 下一步
+
+- ⏳ P0：完成真实 3proxy 单代理/多代理、端口监听、异常退出和回滚验收。
+- ⏳ P1：使用 Windows DPAPI 加密代理凭据并完成旧配置迁移。

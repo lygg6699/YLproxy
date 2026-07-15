@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" />
     <ProjectReference Include="..\YLproxy.Models\YLproxy.Models.csproj" />
     <ProjectReference Include="..\YLproxy.Utils\YLproxy.Utils.csproj" />
     <ProjectReference Include="..\YLproxy.Proxy\YLproxy.Proxy.csproj" />

@@ -52,6 +52,23 @@
 
 #### 配置文件结构
 
+> 下方旧示例仅用于说明历史设计，不能直接用于当前实现。当前上游认证必须使用 `parent 1000 http HOST PORT [USERNAME PASSWORD]`；`-e` 仅表示本机出口地址，不是上游代理地址。
+
+当前生成配置的核心结构为：
+
+```cfg
+service
+log <repository>/runtime/3proxy/logs/3proxy-1.log D
+logformat "- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T"
+auth iponly
+allow *
+internal 127.0.0.1
+fakeresolve
+parent 1000 http proxy.example.com 8080 user01 password01
+proxy -a -p9001
+flush
+```
+
 ```cfg
 # runtime/3proxy/cfg/1.cfg
 # 这是代理ID为1的配置文件
