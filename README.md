@@ -152,44 +152,50 @@ YLproxy/
 
 ### AppSettings.json（应用全局配置）
 
-json
+`AppSettings.json` 位于项目根目录，是应用全局配置的唯一入口：
+
+```json
 {
   "Logging": {
-    "LogDirectory": "logs",       // 日志输出目录（相对路径）
-    "RetentionDays": 30,          // 日志保留天数
-    "MinLevel": "Info"            // 最低日志级别 (Debug|Info|Warn|Error)
+    "LogDirectory": "logs",
+    "RetentionDays": 30,
+    "MinLevel": "Info"
   },
   "Proxy": {
-      {
-        "Username": "dpapi:v1:<Windows 当前用户密文>",
-        "Password": "dpapi:v1:<Windows 当前用户密文>",
-    "PortRangeEnd": 9100,         // 本地端口分配结束（最大 100 个代理）
-    "CheckIntervalSeconds": 5     // 后台进程监控轮询间隔
+    "DataDirectory": "data",
+    "ConfigFileName": "config.json",
+    "PortRangeStart": 9001,
+    "PortRangeEnd": 9100,
+    "CheckIntervalSeconds": 5
   },
   "ThreeProxy": {
-    "RuntimeDirectory": "runtime/3proxy",  // 3proxy 运行目录
+    "RuntimeDirectory": "runtime/3proxy",
     "RequiredDlls": ["FilePlugin.dll", "StringsPlugin.dll"]
   }
 }
-
+```
 
 ### data/config.json（代理数据持久化）
 
-json
-[
-  {
-    "Id": "proxy-001",
-    "Name": "我的代理",
-    "RemoteHost": "proxy.example.com",
-    "RemotePort": 8080,
-    "Username": "user01",
-    "Password": "pass01",
-    "LocalHost": "127.0.0.1",
-    "LocalPort": 9001,
-    "Status": "Stopped"
-  }
-    ]
+代理数据以对象形式保存，仓库只提供不含凭据的 `data/config.example.json` 模板：
+
+```json
+{
+  "Proxies": [
+    {
+      "Id": 1,
+      "Name": "示例代理",
+      "RemoteHost": "proxy.example.com",
+      "RemotePort": 8080,
+      "Username": "dpapi:v1:<Windows 当前用户密文>",
+      "Password": "dpapi:v1:<Windows 当前用户密文>",
+      "LocalHost": "127.0.0.1",
+      "LocalPort": 9001,
+      "Status": "Stopped"
+    }
+  ]
 }
+```
 
 `Username` 和 `Password` 由 Windows DPAPI 以当前用户作用域加密保存。旧明文配置迁移命令为：
 
@@ -198,8 +204,6 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\migrate-proxy-data.ps1 -
 ```
 
 密文不能直接复制到其他 Windows 用户或计算机；迁移前应使用脚本提供的回滚机制并重新录入凭据。
-]
-
 
 ---
 
