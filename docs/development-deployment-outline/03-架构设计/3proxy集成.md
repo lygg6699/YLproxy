@@ -343,8 +343,7 @@ private bool IsPortListening(int port)
 |---|---|---|
 | **3proxy 标准输出** | 捕获 | 启动/关闭信息 |
 | **3proxy 标准错误** | 捕获 | 错误信息 |
-| **YLproxy 应用日志** | logs/log_yyyyMMdd.txt | 按日期保存应用操作记录 |
-| **3proxy 引擎日志** | runtime/3proxy/logs/3proxy-{id}.log | 按代理 ID 保存引擎日志 |
+| **YLproxy 应用日志** | logs/ylproxy.log | 所有操作记录 |
 
 ### 日志示例
 
@@ -366,13 +365,13 @@ private bool IsPortListening(int port)
 
 ```powershell
 # 查看最近 50 行日志
-Get-Content "logs/log_$(Get-Date -Format yyyyMMdd).txt" -Tail 50
+Get-Content "logs/ylproxy.log" -Tail 50
 
 # 查看错误日志
-Select-String "ERROR" "logs/log_$(Get-Date -Format yyyyMMdd).txt"
+Select-String "ERROR" "logs/ylproxy.log"
 
 # 查看特定代理的日志
-Select-String "ERROR" "runtime/3proxy/logs/3proxy-1.log"
+Select-String "\[3proxy-1\]" "logs/ylproxy.log"
 ```
 
 ---

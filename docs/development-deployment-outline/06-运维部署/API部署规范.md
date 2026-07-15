@@ -331,7 +331,7 @@ POST /api/proxies
 POST /api/proxies/{id}/test
 请求体：
 {
-  "testUrl": "http://www.baidu.com",
+  "testUrl": "http://httpbin.org/ip",
   "timeout": 5000
 }
 响应：

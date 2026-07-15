@@ -1,8 +1,11 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Net;
+using System.Net.Sockets;
 using YLproxy.Core;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
+using YLproxy.Proxy;
 
 namespace YLproxy.Tests;
 
@@ -89,9 +92,16 @@ public sealed class LoggingAndMonitorTests
             LocalPort = 9502,
         };
 
+        using var upstream = new TcpListener(IPAddress.Loopback, 0);
+        upstream.Start();
+        var upstreamPort = ((IPEndPoint)upstream.LocalEndpoint).Port;
+        var forwarder = new TransparentCoalescingForwarder("127.0.0.1", upstreamPort, null, null);
+        ProxyProcessManager.AddForwarderForTesting(proxy.Id, forwarder);
+
         var exception = Record.Exception(() => YLproxy.Proxy.ProxyProcessManager.Stop(proxy));
 
         Assert.Null(exception);
+        Assert.False(ProxyProcessManager.HasActiveForwarderForTesting(proxy.Id));
     }
 
     private sealed class TestLogger : ILogger

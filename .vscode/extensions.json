@@ -1,5 +1,10 @@
 {
     "recommendations": [
-        "ms-ceintl.vscode-language-pack-zh-hans"
+        "ms-ceintl.vscode-language-pack-zh-hans",
+        "github.vscode-github-actions",
+        "github.codespaces",
+        "github.vscode-pull-request-github",
+        "davidanson.vscode-markdownlint",
+        "ms-vscode.powershell"
     ]
 }

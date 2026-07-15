@@ -12,7 +12,7 @@ namespace YLproxy.Tests;
 public sealed class ProxyIntegrationTests
 {
     [Fact]
-    public async Task ProxyProcessShouldForwardThroughAuthenticatedHttpParentAndCleanConfig()
+    public async Task ProxyProcess_ShouldForwardThroughAuthenticatedHttpParentAndCleanConfig()
     {
         using var upstream = new TcpListener(IPAddress.Loopback, 0);
         upstream.Start();

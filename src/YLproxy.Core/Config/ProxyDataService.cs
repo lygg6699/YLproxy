@@ -11,12 +11,9 @@ namespace YLproxy.Core.Config;
 
 public sealed class ProxyDataService
 {
-    public const string CredentialResetWarning = "Warning: Local credentials could not be decrypted on this machine. Please re-enter the password.";
-
     private readonly ProxyDataSerializer _serializer;
 
     public string ConfigPath { get; }
-    public bool CredentialsResetDuringLoad { get; private set; }
 
     public ProxyDataService(string configPath, ISecurityService? securityService = null)
     {
@@ -34,7 +31,6 @@ public sealed class ProxyDataService
 
     public AppConfig Load()
     {
-        CredentialsResetDuringLoad = false;
         if (!File.Exists(ConfigPath))
         {
             var empty = new AppConfig();
@@ -43,8 +39,7 @@ public sealed class ProxyDataService
         }
 
         var json = File.ReadAllText(ConfigPath);
-        var cfg = _serializer.Deserialize(json, out var requiresMigration, out var credentialsReset);
-        CredentialsResetDuringLoad = credentialsReset;
+        var cfg = _serializer.Deserialize(json, out var requiresMigration);
         if (requiresMigration)
             Save(cfg);
 
@@ -58,7 +53,6 @@ public sealed class ProxyDataService
 
     public async Task<AppConfig> LoadAsync(CancellationToken cancellationToken = default)
     {
-        CredentialsResetDuringLoad = false;
         if (!File.Exists(ConfigPath))
         {
             var empty = new AppConfig();
@@ -67,8 +61,7 @@ public sealed class ProxyDataService
         }
 
         var json = await File.ReadAllTextAsync(ConfigPath, cancellationToken).ConfigureAwait(false);
-        var cfg = _serializer.Deserialize(json, out var requiresMigration, out var credentialsReset);
-        CredentialsResetDuringLoad = credentialsReset;
+        var cfg = _serializer.Deserialize(json, out var requiresMigration);
         if (requiresMigration)
             await SaveAsync(cfg, cancellationToken).ConfigureAwait(false);
 
@@ -122,9 +115,8 @@ public sealed class ProxyDataService
             if (File.Exists(path))
                 File.Delete(path);
         }
-        catch (Exception ex)
+        catch
         {
-            Console.Error.WriteLine($"[ProxyDataService] Unable to delete temporary config file '{path}': {ex.Message}");
         }
     }
 }

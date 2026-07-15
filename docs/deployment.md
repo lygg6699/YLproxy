@@ -1,60 +1,27 @@
-## 本地 .NET 分析器、警告门禁、覆盖率与发布验证（2026-07-15）
+## GitHub Actions 云端质量门禁（2026-07-15）
 
-**部署状态：** 已完成
+**状态：仓库工作流和管理模板已部署；远端分支保护等待仓库管理员权限**
 
-### 变更内容
+### CI 工作流
 
-- 新增根目录 `Directory.Build.props`，统一配置 Nullable、ImplicitUsings、Roslyn 推荐分析级别和编译时代码风格检查。
-- Release 构建启用 `TreatWarningsAsErrors=true`。
-- Full Check 增加 `win-x64` framework-dependent 发布验证。
-- Full Check 测试阶段增加 `XPlat Code Coverage`，覆盖率输出到 `reports/coverage`。
-- 工作区校验脚本增加构建属性和 Release 警告门禁检查。
-- 为满足新的 Release 门禁，补齐了日志文化设置、资源释放、参数校验、配置生成和测试命名问题。
+- 工作流文件：`.github/workflows/ci.yml`
+- 运行环境：`windows-latest`
+- SDK 来源：`global.json`（当前 `10.0.301`，`latestPatch`）
+- 运行时准备：`scripts/prepare-runtime.ps1` 下载并校验 3proxy 0.9.7 Windows x64 依赖
+- 环境校验：`scripts/validate-workspace.ps1`
+- 构建门禁：Debug 和 Release 均使用 warnings-as-errors
+- 测试门禁：`tests/YLproxy.Tests.csproj` Debug 测试，生成覆盖率 XML 和 TRX Artifact
 
-### 验证结果
+### `main` 分支保护目标配置
 
-- Release 构建：通过，0 Warning / 0 Error。
-- Release 发布：通过，发布目录和 `YLproxy.GUI.exe` 存在。
-- 覆盖率收集：覆盖率文件成功生成。
-- 完整测试：通过，12/12。
-- Smoke Test：通过，隔离 GUI 启动、日志检查、进程关闭和临时目录清理全部完成。
+仓库管理员应在 GitHub Branch protection rules 中配置：
 
-## P2 日志清理与 MonitorService 鲁棒性加固（2026-07-15）
+1. 仅允许通过 Pull Request 合并到 `main`。
+2. Required status checks 选择 `CI / quality-gate`，并要求分支在合并前保持最新。
+3. 禁止强制推送和删除 `main`。
+4. 建议启用管理员也必须遵守规则，避免绕过 CI 质量门禁。
 
-**部署状态：** 已完成
-
-### 变更内容
-
-- FileLogger 初始化时异步清理 `logs/` 下超过 `RetentionDays` 的 `.log` 和 `.txt` 文件。
-- 日志清理依据 `LastWriteTimeUtc`，避免文件复制或创建时间变化造成误删。
-- MonitorService 对单代理进程检测异常执行隔离处理并记录 Warning，Timer 不因单次检测失败停止。
-- Stop 对进程已被系统移除的情况执行正常清理，不重复抛出异常。
-- 配置、日志、启动和进程清理降级路径补充诊断输出。
-
-### 验证结果
-
-- Release 构建：0 Warning / 0 Error。
-- 日志清理回归测试：通过。
-- MonitorService 异常连续运行测试：通过。
-- Stop 缺失进程测试：通过。
-- Full Check：15/15 测试通过，Smoke Test 通过。
-
-## DPAPI 跨机器解密容错与凭据重置（2026-07-15）
-
-**部署状态：** 已完成
-
-### 行为变更
-
-- DPAPI 密文属于其他 Windows 用户或机器时，配置加载不再导致应用启动崩溃。
-- 受影响代理的用户名和密码会被清空，状态重置为 `Stopped`。
-- 配置通过 `ProxyDataService` 的原子保存流程写回，避免继续保留不可用密文。
-- GUI 日志输出：`Warning: Local credentials could not be decrypted on this machine. Please re-enter the password.`
-
-### 验证结果
-
-- 不可解密密文回归测试：通过。
-- 完整测试：12/12 通过。
-- Release 构建：0 Warning / 0 Error。
+当前 Codespace 的 `gh` CLI 未登录，因此本次只能完成仓库内配置，不能代替管理员写入 GitHub 远端规则。
 
 ## GitHub 源码仓库整理与首次上传（2026-07-15）
 

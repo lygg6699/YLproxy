@@ -16,7 +16,7 @@ using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
 
 namespace YLproxy.GUI;
 
-public sealed class MainViewModel : ViewModelBase, IDisposable
+public sealed class MainViewModel : ViewModelBase
 {
     private readonly Timer _timer;
     private readonly MonitorService _monitorService;
@@ -131,8 +131,7 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
             refreshAction: RefreshDataGrid,
-            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)),
-            logger: _logger);
+            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)));
 
         _timer = new Timer(_ => Tick(), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
@@ -142,18 +141,8 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
     /// </summary>
     private void RefreshDataGrid()
     {
-        Application.Current?.Dispatcher.BeginInvoke(() =>
-        {
-            if (Proxies.Count == 0) return;
-
-            // Re-create the collection to force full UI refresh
-            var snapshot = Proxies.ToList();
-            Proxies.Clear();
-            foreach (var p in snapshot)
-            {
-                Proxies.Add(p);
-            }
-        });
+        // ProxyItem now implements INotifyPropertyChanged, so we don't need to recreate the collection.
+        // WPF DataGrid will automatically update when ProxyItem.Status changes.
     }
 
     private void Tick()
@@ -183,9 +172,6 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
             {
                 Proxies.Add(p);
             }
-
-            if (svc.CredentialsResetDuringLoad)
-                AddLog($"[{DateTime.Now:HH:mm:ss}] {YLproxy.Core.Config.ProxyDataService.CredentialResetWarning}");
 
             if (Proxies.Count == 0)
             {
@@ -294,21 +280,7 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
                 }
                 finally
                 {
-                    // ProxyItem 没有实现 INotifyPropertyChanged，这里强制刷新 DataGrid
-                    Application.Current?.Dispatcher.BeginInvoke(() =>
-                    {
-                        var idx = Proxies.IndexOf(p);
-                        if (idx >= 0)
-                        {
-                            Proxies.RemoveAt(idx);
-                            Proxies.Insert(idx, p);
-                        }
-                        else
-                        {
-                            InitFromConfig();
-                        }
-                        IsStarting = false;
-                    });
+                    IsStarting = false;
                 }
             });
         }
@@ -348,20 +320,7 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
                 }
                 finally
                 {
-                    Application.Current?.Dispatcher.BeginInvoke(() =>
-                    {
-                        var idx = Proxies.IndexOf(p);
-                        if (idx >= 0)
-                        {
-                            Proxies.RemoveAt(idx);
-                            Proxies.Insert(idx, p);
-                        }
-                        else
-                        {
-                            InitFromConfig();
-                        }
-                        IsStopping = false;
-                    });
+                    IsStopping = false;
                 }
             });
         }
@@ -424,9 +383,9 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
             {
                 YLproxy.Proxy.ProxyProcessManager.Stop(SelectedProxy);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.Warn($"Unable to stop proxy {SelectedProxy.Id} before removal.", ex);
+                // ignore
             }
 
             // 先更新 UI 列表（更直观）
@@ -463,9 +422,9 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
         {
             _logger.Info(message);
         }
-        catch (Exception ex)
+        catch
         {
-            Console.Error.WriteLine($"[MainViewModel] Unable to write application log: {ex.Message}");
+            // 文件写入失败不影响 GUI 显示
         }
     }
 
@@ -487,9 +446,8 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
         {
             return NetworkInterface.GetIsNetworkAvailable() ? "Connected" : "Disconnected";
         }
-        catch (Exception ex)
+        catch
         {
-            Console.Error.WriteLine($"[MainViewModel] Unable to read network status: {ex.Message}");
             return "Unknown";
         }
     }
@@ -504,9 +462,9 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
                     return ip.ToString();
             }
         }
-        catch (Exception ex)
+        catch
         {
-            Console.Error.WriteLine($"[MainViewModel] Unable to resolve local IP address: {ex.Message}");
+            // ignore
         }
 
         return null;
@@ -518,14 +476,6 @@ public sealed class MainViewModel : ViewModelBase, IDisposable
         RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
         StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
         FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
-    }
-
-    public void Dispose()
-    {
-        _timer.Dispose();
-        _monitorService.Dispose();
-        _settingsService.Dispose();
-        GC.SuppressFinalize(this);
     }
 }
 

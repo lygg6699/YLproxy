@@ -8,9 +8,8 @@ using YLproxy.Utils;
 
 namespace YLproxy.Infrastructure
 {
-    public class AppSettingsService : IDisposable
+    public class AppSettingsService
     {
-        private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
         private readonly string _configFilePath;
         private AppSettingsConfig _config = new AppSettingsConfig();
         private readonly FileSystemWatcher _watcher;
@@ -79,9 +78,8 @@ namespace YLproxy.Infrastructure
                     SaveConfig();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine($"[AppSettingsService] Unable to load settings: {ex.Message}");
                 _config = new AppSettingsConfig();
             }
         }
@@ -90,12 +88,11 @@ namespace YLproxy.Infrastructure
         {
             try
             {
-                string json = JsonSerializer.Serialize(_config, JsonOptions);
+                string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(_configFilePath, json);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine($"[AppSettingsService] Unable to save default settings: {ex.Message}");
             }
         }
 
@@ -107,12 +104,6 @@ namespace YLproxy.Infrastructure
         private void OnConfigRenamed(object sender, RenamedEventArgs e)
         {
             LoadConfig();
-        }
-
-        public void Dispose()
-        {
-            _watcher.Dispose();
-            GC.SuppressFinalize(this);
         }
 
         private static void Validate(AppSettingsConfig config)

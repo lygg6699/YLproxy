@@ -1,63 +1,16 @@
-## [本地 .NET 分析器、警告门禁、覆盖率与发布验证] — 2026-07-15
+## [GitHub Actions 云端质量门禁] — 2026-07-15
 
 ### 新增
 
-- 新增根目录 `Directory.Build.props`，统一启用 Nullable、ImplicitUsings、`latest-recommended` 分析器和编译时代码风格检查。
-- Release 配置启用 `TreatWarningsAsErrors=true`。
-- Full Check 增加 `win-x64` Release 发布产物验证和 XPlat Code Coverage 收集。
-- `validate-workspace.ps1` 增加根构建属性和 Release 警告门禁检查。
+- `.github/workflows/ci.yml`：在 Windows 云端执行 SDK、3proxy 运行时、工作区、Debug/Release 构建、测试和覆盖率 Artifact 门禁。
+- `.github/PULL_REQUEST_TEMPLATE.md`：增加 Full Check、warnings-as-errors、Nullable、`.guard/review-rules.md` 和文档同步自检项。
+- `.github/ISSUE_TEMPLATE/bug_report.md`：规范 Bug 环境、复现步骤和脱敏日志。
+- `.github/ISSUE_TEMPLATE/feature_request.md`：规范功能背景、验收标准、影响范围和环境上下文。
 
-### 修复
+### 说明
 
-- 修复分析器发现的日志区域设置、JSON 选项缓存、资源释放、参数校验和测试命名问题。
-- 主窗口关闭时释放 MainViewModel 的 Timer、监控服务和配置监听器。
-
-### 验证
-
-- Release 构建通过：0 Warning / 0 Error。
-- Release 发布通过，GUI 发布可执行文件存在。
-- 覆盖率文件成功生成；完整测试待补齐本机 3proxy 运行时和代理数据后复验。
-
-## [3proxy 依赖闭环与 DPAPI 解密容错] — 2026-07-15
-
-### 新增
-
-- 准备并校验本地 3proxy 0.9.7 x64 运行时。
-- 创建脱敏本地 `data/config.json`，完成路径契约测试依赖闭环。
-- 增加 DPAPI 跨机器/跨用户密文解密失败回归测试。
-
-### 修复
-
-- 不可解密的 DPAPI 凭据不再导致配置加载崩溃。
-- 受影响代理凭据清空、状态重置为 `Stopped`，并通过原子保存流程清理旧密文。
-- GUI 增加重新录入密码的明确警告。
-
-### 验证
-
-- 环境校验：通过。
-- 完整测试：12/12 通过。
-- Release 发布：通过。
-- 覆盖率收集：通过。
-- 隔离 Smoke Test：通过。
-
-## [P2 日志清理与 MonitorService 鲁棒性加固] — 2026-07-15
-
-### 新增
-
-- FileLogger 自动清理超过保留期限的 `.log` 和 `.txt` 文件。
-- 新增日志清理、MonitorService 连续异常和 Stop 缺失进程回归测试。
-
-### 修复
-
-- MonitorService 对单代理进程检查异常进行 Warning 记录并继续监控循环。
-- ProxyProcessManager.Stop 处理进程已不存在的情况。
-- 补齐配置保存、临时文件、日志写入和进程清理降级路径的诊断输出。
-
-### 验证
-
-- Release 构建：0 Warning / 0 Error。
-- Full Check：15/15 测试通过。
-- 覆盖率文件和隔离 Smoke Test：通过。
+- CI 使用临时父目录工作区清单兼容现有 `validate-workspace.ps1`，不把本机开发工作区文件或运行时产物提交到仓库。
+- `main` 分支保护仍需仓库管理员在 GitHub 设置中将 `CI / quality-gate` 配置为 required status check。
 
 ## [GitHub 源码仓库整理] — 2026-07-15
 
