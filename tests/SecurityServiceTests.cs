@@ -3,6 +3,7 @@ using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using YLproxy.Core.Config;
 using YLproxy.Infrastructure;
+using YLproxy.Models;
 
 namespace YLproxy.Tests;
 
@@ -10,7 +11,7 @@ namespace YLproxy.Tests;
 public sealed class SecurityServiceTests
 {
     [Fact]
-    public void DpapiSecurityService_ShouldRoundTripWithoutStoringPlaintext()
+    public void DpapiSecurityServiceShouldRoundTripWithoutStoringPlaintext()
     {
         Assert.True(OperatingSystem.IsWindows());
 
@@ -26,7 +27,7 @@ public sealed class SecurityServiceTests
     }
 
     [Fact]
-    public void ProxyDataSerializer_ShouldMigrateLegacyCredentials()
+    public void ProxyDataSerializerShouldMigrateLegacyCredentials()
     {
         Assert.True(OperatingSystem.IsWindows());
 
@@ -76,7 +77,7 @@ public sealed class SecurityServiceTests
     }
 
       [Fact]
-      public void DpapiSecurityService_ShouldRejectMalformedProtectedPayload()
+      public void DpapiSecurityServiceShouldRejectMalformedProtectedPayload()
       {
         Assert.True(OperatingSystem.IsWindows());
 
@@ -85,4 +86,51 @@ public sealed class SecurityServiceTests
         Assert.Throws<FormatException>(() => service.Encrypt($"{DpapiSecurityService.Prefix}not-base64"));
         Assert.Throws<CryptographicException>(() => service.Decrypt($"{DpapiSecurityService.Prefix}not-base64"));
       }
+
+    [Fact]
+    public void ProxyDataSerializerShouldResetCredentialsWhenDecryptionFails()
+    {
+        var serializer = new ProxyDataSerializer(new FailingSecurityService());
+        const string protectedJson = """
+        {
+          "Proxies": [
+            {
+              "Id": 88,
+              "Name": "Foreign machine",
+              "RemoteHost": "127.0.0.1",
+              "RemotePort": 8080,
+              "Username": "dpapi:v1:foreign-user",
+              "Password": "dpapi:v1:foreign-password",
+              "LocalHost": "127.0.0.1",
+              "LocalPort": 9088,
+              "Status": 1,
+              "CreateTime": "2026-07-15T00:00:00Z"
+            }
+          ]
+        }
+        """;
+
+        var config = serializer.Deserialize(protectedJson, out var requiresMigration, out var credentialsReset);
+
+        Assert.True(requiresMigration);
+        Assert.True(credentialsReset);
+        Assert.Empty(config.Proxies[0].Username);
+        Assert.Empty(config.Proxies[0].Password);
+        Assert.Equal(ProxyStatus.Stopped, config.Proxies[0].Status);
+    }
+
+    private sealed class FailingSecurityService : ISecurityService
+    {
+        public string Encrypt(string plainText) => plainText;
+
+        public string Decrypt(string encryptedText)
+        {
+            if (encryptedText.StartsWith(DpapiSecurityService.Prefix, StringComparison.Ordinal))
+                throw new CryptographicException("The payload belongs to another Windows user.");
+
+            return encryptedText;
+        }
+
+        public bool IsEncrypted(string text) => text.StartsWith(DpapiSecurityService.Prefix, StringComparison.Ordinal);
+    }
 }

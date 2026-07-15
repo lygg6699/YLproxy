@@ -1,7 +1,9 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using YLproxy.Utils;
 
 namespace YLproxy.Infrastructure
@@ -20,21 +22,20 @@ namespace YLproxy.Infrastructure
                 ? Path.GetFullPath(logDirectory)
                 : PathResolver.ResolvePath(logDirectory);
             _retentionDays = retentionDays;
-            _minLevel = minLevel.ToUpper();
-            
+            _minLevel = minLevel.ToUpperInvariant();
+
             // Ensure log directory exists
             if (!Directory.Exists(_logDirectory))
             {
                 Directory.CreateDirectory(_logDirectory);
             }
-            
-            // Clean up old logs
-            CleanupOldLogs();
+
+            _ = Task.Run(CleanupOldLogs);
         }
 
         private string GetLogFilePath()
         {
-            string datePart = DateTime.Now.ToString("yyyyMMdd");
+            string datePart = DateTime.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
             return Path.Combine(_logDirectory, $"log_{datePart}.txt");
         }
 
@@ -42,8 +43,8 @@ namespace YLproxy.Infrastructure
         {
             var levels = new[] { "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
             int minLevelIndex = Array.IndexOf(levels, _minLevel);
-            int levelIndex = Array.IndexOf(levels, level.ToUpper());
-            
+            int levelIndex = Array.IndexOf(levels, level.ToUpperInvariant());
+
             return levelIndex >= minLevelIndex;
         }
 
@@ -52,9 +53,9 @@ namespace YLproxy.Infrastructure
             if (!IsLogLevelEnabled(level))
                 return;
 
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             string logLine = $"{timestamp} [{level}] {message}";
-            
+
             if (exception != null)
             {
                 logLine += Environment.NewLine + $"Exception: {exception.Message}";
@@ -119,35 +120,37 @@ namespace YLproxy.Infrastructure
             WriteLog("FATAL", message, exception);
         }
 
-        private void CleanupOldLogs()
+        public void CleanupOldLogs()
         {
             try
             {
                 if (!Directory.Exists(_logDirectory))
                     return;
 
-                var files = Directory.GetFiles(_logDirectory, "log_*.txt");
-                var cutoffDate = DateTime.Now.AddDays(-_retentionDays);
+                var files = Directory.EnumerateFiles(_logDirectory, "*", SearchOption.TopDirectoryOnly)
+                    .Where(path => string.Equals(Path.GetExtension(path), ".log", StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(Path.GetExtension(path), ".txt", StringComparison.OrdinalIgnoreCase));
+                var cutoffDate = DateTime.UtcNow.AddDays(-_retentionDays);
 
                 foreach (var file in files)
                 {
                     try
                     {
                         var fileInfo = new FileInfo(file);
-                        if (fileInfo.CreationTime < cutoffDate)
+                        if (fileInfo.LastWriteTimeUtc < cutoffDate)
                         {
                             File.Delete(file);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Ignore errors during cleanup
+                        Console.Error.WriteLine($"[FileLogger] Unable to delete old log '{file}': {ex.Message}");
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore errors during cleanup
+                Console.Error.WriteLine($"[FileLogger] Unable to scan log directory '{_logDirectory}': {ex.Message}");
             }
         }
     }

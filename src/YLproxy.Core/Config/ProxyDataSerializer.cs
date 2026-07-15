@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.Json;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
@@ -26,11 +27,17 @@ public sealed class ProxyDataSerializer
 
     public AppConfig Deserialize(string json, out bool requiresMigration)
     {
+        return Deserialize(json, out requiresMigration, out _);
+    }
+
+    public AppConfig Deserialize(string json, out bool requiresMigration, out bool credentialsReset)
+    {
         ArgumentNullException.ThrowIfNull(json);
 
         var storedConfig = JsonSerializer.Deserialize<StoredAppConfig>(json, _jsonOptions) ?? new StoredAppConfig();
         var config = new AppConfig();
         requiresMigration = false;
+        credentialsReset = false;
 
         foreach (var storedProxy in storedConfig.Proxies ?? Enumerable.Empty<StoredProxyItem>())
         {
@@ -43,17 +50,34 @@ public sealed class ProxyDataSerializer
                 requiresMigration = true;
             }
 
+            string decryptedUsername;
+            string decryptedPassword;
+            var status = storedProxy.Status;
+            try
+            {
+                decryptedUsername = _securityService.Decrypt(username);
+                decryptedPassword = _securityService.Decrypt(password);
+            }
+            catch (CryptographicException)
+            {
+                decryptedUsername = string.Empty;
+                decryptedPassword = string.Empty;
+                status = ProxyStatus.Stopped;
+                credentialsReset = true;
+                requiresMigration = true;
+            }
+
             config.Proxies.Add(new ProxyItem
             {
                 Id = storedProxy.Id,
                 Name = storedProxy.Name ?? string.Empty,
                 RemoteHost = storedProxy.RemoteHost ?? string.Empty,
                 RemotePort = storedProxy.RemotePort,
-                Username = _securityService.Decrypt(username),
-                Password = _securityService.Decrypt(password),
+                Username = decryptedUsername,
+                Password = decryptedPassword,
                 LocalHost = storedProxy.LocalHost ?? string.Empty,
                 LocalPort = storedProxy.LocalPort,
-                Status = storedProxy.Status,
+                Status = status,
                 CreateTime = storedProxy.CreateTime,
             });
         }

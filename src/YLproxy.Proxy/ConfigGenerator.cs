@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text;
 using YLproxy.Models;
 using YLproxy.Utils;
@@ -9,7 +10,7 @@ public static class ConfigGenerator
 {
     public static string Generate(ProxyItem proxy)
     {
-        if (proxy is null) throw new ArgumentNullException(nameof(proxy));
+        ArgumentNullException.ThrowIfNull(proxy);
         if (string.IsNullOrWhiteSpace(proxy.RemoteHost)) throw new ArgumentException("RemoteHost is empty");
         if (proxy.RemotePort <= 0) throw new ArgumentException("RemotePort is invalid");
         if (proxy.LocalPort <= 0) throw new ArgumentException("LocalPort is invalid");
@@ -27,7 +28,7 @@ public static class ConfigGenerator
         var runtimePath = GetRuntime3ProxyPath();
 
         sb.AppendLine("service");
-        sb.AppendLine($"log {runtimePath}\\logs\\3proxy-{proxy.Id}.log D");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"log {runtimePath}\\logs\\3proxy-{proxy.Id}.log D");
         sb.AppendLine("logformat \"- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T\"");
         sb.AppendLine("auth iponly");
         sb.AppendLine("allow *");
@@ -35,8 +36,8 @@ public static class ConfigGenerator
         sb.AppendLine("fakeresolve");
 
         var parentCredentials = hasUsername ? $" {username} {password}" : string.Empty;
-        sb.AppendLine($"parent 1000 http {remoteHost} {proxy.RemotePort}{parentCredentials}");
-        sb.AppendLine($"proxy -a -p{proxy.LocalPort}");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"parent 1000 http {remoteHost} {proxy.RemotePort}{parentCredentials}");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"proxy -a -p{proxy.LocalPort}");
 
         sb.AppendLine("flush");
         return sb.ToString();

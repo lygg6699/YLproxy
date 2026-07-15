@@ -16,7 +16,7 @@ using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
 
 namespace YLproxy.GUI;
 
-public sealed class MainViewModel : ViewModelBase
+public sealed class MainViewModel : ViewModelBase, IDisposable
 {
     private readonly Timer _timer;
     private readonly MonitorService _monitorService;
@@ -131,7 +131,8 @@ public sealed class MainViewModel : ViewModelBase
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
             refreshAction: RefreshDataGrid,
-            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)));
+            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)),
+            logger: _logger);
 
         _timer = new Timer(_ => Tick(), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
@@ -182,6 +183,9 @@ public sealed class MainViewModel : ViewModelBase
             {
                 Proxies.Add(p);
             }
+
+            if (svc.CredentialsResetDuringLoad)
+                AddLog($"[{DateTime.Now:HH:mm:ss}] {YLproxy.Core.Config.ProxyDataService.CredentialResetWarning}");
 
             if (Proxies.Count == 0)
             {
@@ -420,9 +424,9 @@ public sealed class MainViewModel : ViewModelBase
             {
                 YLproxy.Proxy.ProxyProcessManager.Stop(SelectedProxy);
             }
-            catch
+            catch (Exception ex)
             {
-                // ignore
+                _logger.Warn($"Unable to stop proxy {SelectedProxy.Id} before removal.", ex);
             }
 
             // 先更新 UI 列表（更直观）
@@ -459,9 +463,9 @@ public sealed class MainViewModel : ViewModelBase
         {
             _logger.Info(message);
         }
-        catch
+        catch (Exception ex)
         {
-            // 文件写入失败不影响 GUI 显示
+            Console.Error.WriteLine($"[MainViewModel] Unable to write application log: {ex.Message}");
         }
     }
 
@@ -483,8 +487,9 @@ public sealed class MainViewModel : ViewModelBase
         {
             return NetworkInterface.GetIsNetworkAvailable() ? "Connected" : "Disconnected";
         }
-        catch
+        catch (Exception ex)
         {
+            Console.Error.WriteLine($"[MainViewModel] Unable to read network status: {ex.Message}");
             return "Unknown";
         }
     }
@@ -499,9 +504,9 @@ public sealed class MainViewModel : ViewModelBase
                     return ip.ToString();
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // ignore
+            Console.Error.WriteLine($"[MainViewModel] Unable to resolve local IP address: {ex.Message}");
         }
 
         return null;
@@ -513,6 +518,14 @@ public sealed class MainViewModel : ViewModelBase
         RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
         StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
         FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+        _monitorService.Dispose();
+        _settingsService.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 

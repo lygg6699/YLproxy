@@ -51,6 +51,7 @@ function Assert-Directory {
 
 Assert-File -Path $WorkspaceFile -Description 'VS Code workspace file'
 Assert-File -Path (Join-Path $projectRoot 'global.json') -Description 'global.json'
+Assert-File -Path (Join-Path $projectRoot 'Directory.Build.props') -Description 'Directory.Build.props'
 Assert-File -Path (Join-Path $projectRoot 'YLproxy.sln') -Description 'solution file'
 Assert-File -Path (Join-Path $projectRoot 'AppSettings.json') -Description 'global settings file'
 Assert-File -Path (Join-Path $projectRoot 'scripts\full-check.ps1') -Description 'Full Check script'
@@ -100,6 +101,20 @@ $globalSettings = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'global.
 $expectedSdk = [string]$globalSettings.sdk.version
 Assert-Condition (-not [string]::IsNullOrWhiteSpace($expectedSdk)) 'global.json does not define an SDK version.'
 Assert-Condition ([string]$globalSettings.sdk.rollForward -eq 'latestPatch') 'global.json must use latestPatch roll-forward policy.'
+
+$buildProps = [xml](Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'Directory.Build.props'))
+$propertyGroups = @($buildProps.Project.PropertyGroup)
+$globalPropertyGroup = $propertyGroups | Where-Object { $_.PSObject.Properties.Name -notcontains 'Condition' } | Select-Object -First 1
+Assert-Condition ([string]$globalPropertyGroup.Nullable -eq 'enable') 'Directory.Build.props must enable Nullable.'
+Assert-Condition ([string]$globalPropertyGroup.ImplicitUsings -eq 'enable') 'Directory.Build.props must enable ImplicitUsings.'
+Assert-Condition ([string]$globalPropertyGroup.AnalysisLevel -eq 'latest-recommended') 'Directory.Build.props must use latest-recommended analysis level.'
+Assert-Condition ([string]$globalPropertyGroup.EnforceCodeStyleInBuild -eq 'true') 'Directory.Build.props must enforce code style during build.'
+$releasePropertyGroup = $propertyGroups | Where-Object {
+    $_.PSObject.Properties.Name -contains 'Condition' -and
+    [string]$_.Condition -match "Configuration.*Release"
+} | Select-Object -First 1
+Assert-Condition ($null -ne $releasePropertyGroup) 'Directory.Build.props must define a Release property group.'
+Assert-Condition ([string]$releasePropertyGroup.TreatWarningsAsErrors -eq 'true') 'Release builds must treat warnings as errors.'
 
 $settings = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'AppSettings.json') | ConvertFrom-Json
 $runtimeDirectory = ([string]$settings.ThreeProxy.RuntimeDirectory).Replace('/', '\')

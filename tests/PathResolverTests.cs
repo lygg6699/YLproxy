@@ -7,7 +7,7 @@ namespace YLproxy.Tests;
 public class PathResolverTests
 {
     [Fact]
-    public void ResolvePath_ShouldReturnExistingRepositoryPaths()
+    public void ResolvePathShouldReturnExistingRepositoryPaths()
     {
         var runtimePath = PathResolver.ResolvePath("runtime", "3proxy");
         Assert.True(Directory.Exists(runtimePath), $"Expected runtime path to exist: {runtimePath}");
@@ -27,7 +27,7 @@ public class PathResolverTests
     }
 
     [Fact]
-    public void AppSettings_ShouldBeValidJsonAtRepositoryRoot()
+    public void AppSettingsShouldBeValidJsonAtRepositoryRoot()
     {
         var settingsPath = PathResolver.ResolvePath("AppSettings.json");
         using var document = JsonDocument.Parse(File.ReadAllText(settingsPath));

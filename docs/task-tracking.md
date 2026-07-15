@@ -1,3 +1,39 @@
+## 本地 .NET 分析器、警告门禁、覆盖率与发布验证（2026-07-15）
+
+**状态：已完成**
+
+- [x] 新增根目录 `Directory.Build.props` 并启用全局分析器和 Release 警告错误门禁
+- [x] 增强 `.editorconfig` 的 C# / XAML 相关格式和命名约束
+- [x] Full Check 增加 Release `win-x64` 发布产物验证
+- [x] Full Check 增加 XPlat Code Coverage 和 Cobertura 文件检查
+- [x] `validate-workspace.ps1` 增加构建属性合规性检查
+- [x] 修复 `latest-recommended` 分析器暴露的 Release 阻断项
+- [x] 补齐本机 3proxy 运行时和脱敏本地代理配置
+- [x] 重新执行完整测试链：12/12 通过，Smoke Test 通过
+
+## P2 日志清理与 MonitorService 鲁棒性加固（2026-07-15）
+
+**状态：已完成**
+
+- [x] 实现 `.log` / `.txt` 历史日志自动清理
+- [x] 按最后写入时间执行 `RetentionDays` 保留策略
+- [x] 审计并补齐异常降级路径诊断日志
+- [x] 加固 MonitorService 的逐代理异常隔离和 Timer 继续运行能力
+- [x] 加固 Stop 的进程已消失处理
+- [x] 新增日志清理、监控异常和 Stop 回归测试
+- [x] 完成 Full Check：15/15 测试通过
+
+## DPAPI 跨机器解密容错与凭据重置（2026-07-15）
+
+**状态：已完成**
+
+- [x] 审计 `ProxyDataSerializer.Deserialize` 的凭据解密链
+- [x] 捕获不可用 DPAPI 密文并清空凭据
+- [x] 将受影响代理状态重置为 `Stopped`
+- [x] 标记迁移并通过原子保存清理旧密文
+- [x] GUI 输出重新录入密码警告
+- [x] 增加不可解密密文回归测试
+
 ## GitHub 源码仓库整理与首次上传
 
 **任务：** 整理公开仓库边界并上传到 `lygg6699/YLproxy`
@@ -136,9 +172,9 @@
 ## Todo
 
 - [x] 10.1 开展 Phase 2.1 端到端全链路功能盘点与摸排
-- [x] 10.2 复现并定位“UI 代理行无法正常选择”与“点击选中丢失高亮反馈”问题 
+- [x] 10.2 复现并定位“UI 代理行无法正常选择”与“点击选中丢失高亮反馈”问题
 - [x] 10.3 精细重构 `src/YLproxy.GUI/App.xaml` 中的 `DataGridRow` / `DataGridCell` 样式，增加 VS 暗夜系色彩联动，获得极佳点击反馈
-- [x] 10.4 复现并定位“测试/启动/停止按钮首次点击正常，第二次点击彻底失效”的核心 Bug 
+- [x] 10.4 复现并定位“测试/启动/停止按钮首次点击正常，第二次点击彻底失效”的核心 Bug
 - [x] 10.5 修复 `src/YLproxy.GUI/MainViewModel.cs` 中 `IsTesting`、`IsStarting`、`IsStopping` 标志在各种场景出口不归零的 Bug（引入 `try-finally` 防御）
 - [x] 10.6 构建与单元测试全面验证，确认 regression 测试均完美通过
 - [x] 10.7 输出完整的端到端 9 项验收文档 [docs/acceptance/Phase-2.1-E2E-Acceptance.md](docs/acceptance/Phase-2.1-E2E-Acceptance.md)
