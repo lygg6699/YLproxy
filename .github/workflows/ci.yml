@@ -87,6 +87,12 @@ jobs:
         shell: pwsh
         run: dotnet restore YLproxy.sln
 
+      - name: Seed isolated test data
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path data -Force | Out-Null
+          Copy-Item data/config.example.json data/config.json -Force
+
       - name: Build Debug with warnings as errors
         shell: pwsh
         run: dotnet build YLproxy.sln -c Debug --no-restore -warnaserror
