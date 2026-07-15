@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_CLI_UI_LANGUAGE: en-US
+  DOTNET_NOLOGO: "true"
+
+jobs:
+  quality-gate:
+    name: quality-gate
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK from global.json
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Prepare CI workspace manifest
+        shell: pwsh
+        run: |
+          $projectRoot = (Get-Location).Path
+          $workspaceRoot = Split-Path -Parent $projectRoot
+          $workspaceFile = Join-Path $workspaceRoot 'YLproxy.code-workspace'
+
+          $tasks = @(
+              @{ label = 'YLproxy: Validate Environment'; args = @() }
+              @{ label = 'YLproxy: Restore'; args = @() }
+              @{ label = 'YLproxy: Build'; args = @() }
+              @{ label = 'YLproxy: Build Release'; args = @() }
+              @{ label = 'YLproxy: Test'; args = @() }
+              @{ label = 'YLproxy: Run GUI'; args = @() }
+              @{ label = 'YLproxy: Full Check'; args = @('-SkipSmokeTest') }
+              @{ label = 'YLproxy: Full Check with Smoke Test'; args = @() }
+              @{ label = 'YLproxy: Clean'; args = @() }
+          )
+
+          $workspace = @{
+              folders = @(
+                  @{ path = 'YLproxy' }
+              )
+              tasks = @{
+                  tasks = $tasks
+              }
+              launch = @{
+                  configurations = @(
+                      @{
+                          name = 'YLproxy GUI (Debug)'
+                          type = 'coreclr'
+                          request = 'launch'
+                          program = '${workspaceFolder}/src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.dll'
+                      }
+                  )
+              }
+          }
+
+          $workspace | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $workspaceFile -Encoding utf8NoBOM
+          "YLPROXY_WORKSPACE_FILE=$workspaceFile" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Prepare 3proxy runtime
+        shell: pwsh
+        run: ./scripts/prepare-runtime.ps1
+
+      - name: Validate workspace and runtime
+        shell: pwsh
+        run: ./scripts/validate-workspace.ps1 -WorkspaceFile $env:YLPROXY_WORKSPACE_FILE
+
+      - name: Restore dependencies
+        shell: pwsh
+        run: dotnet restore YLproxy.sln
+
+      - name: Build Debug with warnings as errors
+        shell: pwsh
+        run: dotnet build YLproxy.sln -c Debug --no-restore -warnaserror
+
+      - name: Build Release with warnings as errors
+        shell: pwsh
+        run: dotnet build YLproxy.sln -c Release --no-restore -warnaserror
+
+      - name: Run tests with coverage
+        shell: pwsh
+        run: >-
+          dotnet test tests/YLproxy.Tests.csproj -c Debug --no-build --no-restore
+          --collect:"XPlat Code Coverage"
+          --results-directory TestResults
+          --logger "trx;LogFileName=tests.trx"
+
+      - name: Upload coverage and test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-and-test-reports
+          path: |
+            TestResults/**/coverage.cobertura.xml
+            TestResults/**/*.trx
+          if-no-files-found: warn
+          retention-days: 14
