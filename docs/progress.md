@@ -1,3 +1,12 @@
+## XAML 编译和代码质量修复（2026-07-15）
+
+**状态：已完成**
+
+- ✅ 解决 WPF XAML 编译问题：执行 `dotnet clean` → `dotnet restore` → `dotnet build`，重新生成 MainWindow.g.cs、App.g.cs 等 5 个缺失的 XAML 编译文件
+- ✅ 修复 null reference 警告：ExceptionHandler.cs TryCatch<T> 方法返回类型改为 `T?` 以正确处理可能为 null 的默认值
+- ✅ 构建零警告（0 warnings）
+- ✅ 单元测试全部通过（7/7 tests passed）
+
 ## 项目根目录清理和配置优化（2026-07-15）
 
 **状态：已完成**

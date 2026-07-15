@@ -16,7 +16,7 @@ namespace YLproxy.Infrastructure
             // }
         }
 
-        public static T TryCatch<T>(Func<T> func, ILogger logger, string context = "", T defaultValue = default)
+        public static T? TryCatch<T>(Func<T> func, ILogger logger, string context = "", T? defaultValue = default)
         {
             try
             {

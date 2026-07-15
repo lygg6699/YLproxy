@@ -1,3 +1,22 @@
+## [XAML 编译和代码质量修复] — 2026-07-15
+
+### 修复
+- **WPF XAML 编译错误**
+  - 问题：5 个 XAML 编译文件缺失（MainWindow.g.cs、App.g.cs、MainView.g.cs、AddProxyWindow.g.cs、GeneratedInternalTypeHelper.g.cs）
+  - 原因：构建输出缓存不同步
+  - 解决方案：执行 `dotnet clean` → `dotnet restore` → `dotnet build`
+  - 结果：所有文件正确生成
+
+- **代码警告**
+  - 文件：ExceptionHandler.cs
+  - 警告：CS8601 - Possible null reference assignment
+  - 原因：TryCatch<T> 返回 default(T) 可能为 null，但返回类型为 non-nullable T
+  - 修复：将返回类型改为 `T?`，参数改为 `T? defaultValue = default`
+
+### 验证
+- ✅ 构建结果：0 errors, 0 warnings
+- ✅ 单元测试：7/7 tests passed
+
 ## [项目根目录清理和配置优化] — 2026-07-15
 
 ### 删除
