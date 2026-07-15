@@ -6,7 +6,7 @@
 
 ## 主要文件/子目录说明
 
-### ConfigService.cs
+### Config/ProxyDataService.cs
 JSON 配置读写服务：
 - 负责读取和写入 `data/config.json` 文件
 - 提供同步和异步的 Load/Save 方法
@@ -14,8 +14,8 @@ JSON 配置读写服务：
 - 包含错误处理机制，避免配置问题导致应用崩溃
 
 ### MonitorService.cs
-5 秒定时监控代理进程：
-- 使用 System.Threading.Timer 每 5 秒执行一次检查
+按全局配置定时监控代理进程：
+- 使用 System.Threading.Timer 按 `AppSettings.json` 的 `Proxy.CheckIntervalSeconds` 执行检查（默认 5 秒）
 - 仅监控状态为 Running 的代理
 - 调用 ProxyProcessManager.IsRunning() 检查进程状态
 - 当检测到进程异常退出时，将状态更新为 Failed
@@ -34,10 +34,10 @@ JSON 配置读写服务：
 ## 使用说明
 
 GUI 与后端交互的主要逻辑依赖此层：
-- MainViewModel 通过 ConfigService 加载和保存代理配置
+- MainViewModel 通过 ProxyDataService 加载和保存代理配置
 - MainViewModel 使用 ProxyTester 异步测试代理连通性
 - MainViewModel 通过 MonitorService 实现后台状态监控
-- 所有服务通过依赖注入方式传递给 MainViewModel 构造函数
+- MainViewModel 创建并协调这些服务，配置路径由 `PathResolver` 统一解析
 
 ## 注意事项
 
@@ -61,7 +61,7 @@ GUI 与后端交互的主要逻辑依赖此层：
 
 ## 后续计划（可选）
 
-- 扩展 ConfigService 支持多种存储后端（JSON、SQLite、内存等）
+- 扩展 ProxyDataService 支持多种存储后端（JSON、SQLite、内存等）
 - 增强 MonitorService 包含更全面的健康检查（端口监听、实际代理测试等）
 - 为 ProxyTester 添加可配置的测试目标和超时时间
 - 添加性能监控和指标收集功能

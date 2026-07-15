@@ -6,20 +6,37 @@ public static class PathResolver
 {
     public static string GetRepositoryRoot()
     {
+        // New: Based on known assembly location for precise location (highest priority)
+        var assemblyPath = typeof(PathResolver).Assembly.Location;
+        if (!string.IsNullOrEmpty(assemblyPath))
+        {
+            var directory = Path.GetDirectoryName(assemblyPath);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                // Traverse upward to find repository root markers
+                foreach (var ancestor in EnumerateAncestors(directory))
+                {
+                    if (IsRepositoryRoot(ancestor))
+                    {
+                        return ancestor;
+                    }
+                }
+            }
+        }
+
+        // Preserve all existing search strategies as fallback
         foreach (var start in GetSearchRoots())
         {
             foreach (var directory in EnumerateAncestors(start))
             {
-                if (Directory.Exists(Path.Combine(directory, "runtime", "3proxy")) ||
-                    File.Exists(Path.Combine(directory, "YLproxy.slnx")) ||
-                    Directory.Exists(Path.Combine(directory, "data")))
+                if (IsRepositoryRoot(directory))
                 {
                     return directory;
                 }
             }
         }
 
-        return Directory.GetCurrentDirectory();
+        return Path.GetFullPath(AppContext.BaseDirectory);
     }
 
     public static string ResolvePath(params string[] relativeSegments)
@@ -76,5 +93,10 @@ public static class PathResolver
 
             current = parent.FullName;
         }
+    }
+
+    private static bool IsRepositoryRoot(string directory)
+    {
+        return File.Exists(Path.Combine(directory, "YLproxy.sln"));
     }
 }

@@ -10,6 +10,8 @@ public sealed class AddProxyViewModel : ViewModelBase
 {
     private readonly IList<ProxyItem> _existingProxies;
     private readonly string _configPath;
+    private readonly int _portRangeStart;
+    private readonly int _portRangeEnd;
     private int _nextId;
 
     private string _name = string.Empty;
@@ -73,10 +75,21 @@ public sealed class AddProxyViewModel : ViewModelBase
 
     public Action? CloseAction { get; set; }
 
-    public AddProxyViewModel(IList<ProxyItem> existingProxies, string configPath)
+    public AddProxyViewModel(
+        IList<ProxyItem> existingProxies,
+        string configPath,
+        int portRangeStart = 9001,
+        int portRangeEnd = 9100)
     {
+        if (portRangeStart < 1 || portRangeStart > 65535)
+            throw new ArgumentOutOfRangeException(nameof(portRangeStart));
+        if (portRangeEnd < portRangeStart || portRangeEnd > 65535)
+            throw new ArgumentOutOfRangeException(nameof(portRangeEnd));
+
         _existingProxies = existingProxies;
         _configPath = configPath;
+        _portRangeStart = portRangeStart;
+        _portRangeEnd = portRangeEnd;
         _nextId = existingProxies.Count == 0 ? 1 : existingProxies.Max(p => p.Id) + 1;
 
         // sensible defaults
@@ -132,16 +145,13 @@ public sealed class AddProxyViewModel : ViewModelBase
         
         if (IsAutoPort)
         {
-            const int startPort = 9001;
-            const int maxPort = 9100;
-
-            localPort = startPort;
+            localPort = _portRangeStart;
             while (usedPorts.Contains(localPort))
             {
                 localPort++;
-                if (localPort > maxPort)
+                if (localPort > _portRangeEnd)
                 {
-                    ValidationMessage = "端口已耗尽（9001~9100 已全部占用）";
+                    ValidationMessage = $"端口已耗尽（{_portRangeStart}~{_portRangeEnd} 已全部占用）";
                     return;
                 }
             }
@@ -174,7 +184,7 @@ public sealed class AddProxyViewModel : ViewModelBase
 
         try
         {
-            var svc = new ConfigService(_configPath);
+            var svc = new ProxyDataService(_configPath);
             var cfg = svc.Load();
 
             if (!cfg.Proxies.Any(p => p.Id == item.Id || p.LocalPort == item.LocalPort))

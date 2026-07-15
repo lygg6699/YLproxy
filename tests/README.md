@@ -32,7 +32,7 @@
 1. **测试覆盖率需提升**：
    - 目前仅包含进程崩溃检测测试
    - 建议添加单元测试覆盖：
-     - ConfigService 的 JSON 序列化/反序列化
+   - ProxyDataService 的 JSON 序列化/反序列化
      - ProxyTester 的各种成功和失败场景
      - ConfigGenerator 的配置生成逻辑
      - ProxyProcessManager 的路径解析和依赖检查

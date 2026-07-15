@@ -4,10 +4,11 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using YLproxy.Models;
+using YLproxy.Utils;
 
 namespace YLproxy.Core.Config;
 
-public sealed class ConfigService
+public sealed class ProxyDataService
 {
     private readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.General)
     {
@@ -16,9 +17,16 @@ public sealed class ConfigService
 
     public string ConfigPath { get; }
 
-    public ConfigService(string configPath)
+    public ProxyDataService(string configPath)
     {
-        ConfigPath = configPath;
+        ArgumentException.ThrowIfNullOrWhiteSpace(configPath);
+        ConfigPath = Path.IsPathFullyQualified(configPath)
+            ? Path.GetFullPath(configPath)
+            : PathResolver.ResolvePath(configPath);
+
+        var canonicalPath = PathResolver.ResolvePath("data", "config.json");
+        if (!string.Equals(ConfigPath, canonicalPath, StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("Proxy data must be stored in the repository data/config.json file.", nameof(configPath));
     }
 
     public AppConfig Load()
@@ -39,7 +47,6 @@ public sealed class ConfigService
         }
         catch
         {
-            // fallback to default rather than crashing GUI
             return new AppConfig();
         }
     }
@@ -79,4 +86,3 @@ public sealed class ConfigService
         return File.WriteAllTextAsync(ConfigPath, JsonSerializer.Serialize(config ?? new AppConfig(), _jsonOptions), cancellationToken);
     }
 }
-

@@ -39,7 +39,7 @@ public static class ConfigGenerator
 
     private static string GetRuntime3ProxyPath()
     {
-        return PathResolver.ResolvePath("runtime", "3proxy");
+        return ProxyRuntimeConfiguration.GetRuntimeDirectory();
     }
 }
 

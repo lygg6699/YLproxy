@@ -3,17 +3,11 @@
 ## 目录简介
 
 存放数据模型，定义项目的核心数据结构。所有业务逻辑和 GUI 都依赖这些模型来表示代理配置和状态。
-
-## 主要文件/子目录说明
-
-### ProxyItem.cs
 代理配置对象，包含以下属性：
 - `Id`：唯一标识符
 - `Name`：代理名称（用户自定义）
 - `RemoteHost`：上游代理服务器 IP 地址
-- `RemotePort`：上游代理服务器端口
-- `Username`：上游代理认证用户名
-- `Password`：上游代理认证密码
+ ProxyDataService 的 JSON 序列化/反序列化逻辑
 - `LocalHost`：本地绑定 IP 地址（通常为 127.0.0.1）
 - `LocalPort`：本地代理端口（自动分配 9001-9100）
 - `Status`：代理当前状态（ProxyStatus 枚举）
@@ -33,7 +27,7 @@
 
 所有业务逻辑和 GUI 层都依赖这些模型：
 - GUI 通过数据绑定显示 ProxyItem 属性
-- ConfigService 将 AppConfig 序列化/反序列化到 data/config.json
+- ProxyDataService 将 AppConfig 序列化/反序列化到 data/config.json
 - ProxyProcessManager 使用 ProxyItem 生成 3proxy 配置并管理进程
 - MonitorService 检查 ProxyItem.Status 来判断是否需要监控
 

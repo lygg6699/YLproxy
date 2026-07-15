@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
+using YLproxy.Utils;
 
 namespace YLproxy.Infrastructure
 {
@@ -14,7 +15,10 @@ namespace YLproxy.Infrastructure
 
         public FileLogger(string logDirectory, int retentionDays, string minLevel)
         {
-            _logDirectory = logDirectory;
+            ArgumentException.ThrowIfNullOrWhiteSpace(logDirectory);
+            _logDirectory = Path.IsPathFullyQualified(logDirectory)
+                ? Path.GetFullPath(logDirectory)
+                : PathResolver.ResolvePath(logDirectory);
             _retentionDays = retentionDays;
             _minLevel = minLevel.ToUpper();
             
@@ -43,7 +47,7 @@ namespace YLproxy.Infrastructure
             return levelIndex >= minLevelIndex;
         }
 
-        private void WriteLog(string level, string message, Exception exception = null)
+        private void WriteLog(string level, string message, Exception? exception = null)
         {
             if (!IsLogLevelEnabled(level))
                 return;

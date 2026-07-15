@@ -6,8 +6,12 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows;
 using YLproxy.Core;
+using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Utils;
+using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
+using GlobalProxyConfig = YLproxy.Infrastructure.ProxyConfig;
+using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
 
 
 namespace YLproxy.GUI;
@@ -16,6 +20,10 @@ public sealed class MainViewModel : ViewModelBase
 {
     private readonly Timer _timer;
     private readonly MonitorService _monitorService;
+    private readonly GlobalConfigService _settingsService;
+    private readonly ILogger _logger;
+    private readonly GlobalProxyConfig _proxyConfig;
+    private readonly GlobalThreeProxyConfig _threeProxyConfig;
 
     private string _computerName = string.Empty;
     private string _ipAddress = "";
@@ -101,6 +109,12 @@ public sealed class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
+        _settingsService = new GlobalConfigService();
+        _logger = LoggerFactory.CreateLogger();
+        _proxyConfig = _settingsService.GetSection<GlobalProxyConfig>("Proxy");
+        _threeProxyConfig = _settingsService.GetSection<GlobalThreeProxyConfig>("ThreeProxy");
+        YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig);
+
         InitFromConfig();
         LoadHostInfo();
         AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (Phase 7 with MonitorService) ");
@@ -116,7 +130,8 @@ public sealed class MainViewModel : ViewModelBase
         _monitorService = new MonitorService(
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
-            refreshAction: RefreshDataGrid);
+            refreshAction: RefreshDataGrid,
+            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)));
 
         _timer = new Timer(_ => Tick(), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
@@ -157,7 +172,7 @@ public sealed class MainViewModel : ViewModelBase
     private void InitFromConfig()
     {
         var configPath = GetConfigPath();
-        var svc = new YLproxy.Core.Config.ConfigService(configPath);
+        var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
         var cfg = svc.Load();
 
         Proxies.Clear();
@@ -173,9 +188,9 @@ public sealed class MainViewModel : ViewModelBase
         }
     }
 
-    private static string GetConfigPath()
+    private string GetConfigPath()
     {
-        return PathResolver.ResolvePath("data", "config.json");
+        return PathResolver.ResolvePath(_proxyConfig.DataDirectory, _proxyConfig.ConfigFileName);
     }
 
 
@@ -231,6 +246,10 @@ public sealed class MainViewModel : ViewModelBase
         {
             AddLog($"[{DateTime.Now:HH:mm:ss}] Test failed: {ex.Message}");
         }
+        finally
+        {
+            IsTesting = false;
+        }
     }
 
     private void StartSelectedProxy()
@@ -242,13 +261,14 @@ public sealed class MainViewModel : ViewModelBase
             if (SelectedProxy is null)
             {
                 AddLog($"[{DateTime.Now:HH:mm:ss}] Start failed: no proxy selected");
+                IsStarting = false;
                 return;
             }
 
             var p = SelectedProxy;
 
             // Prevent UI blocking: start in background thread.
-                _ = System.Threading.Tasks.Task.Run(() =>
+            _ = System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {
@@ -276,6 +296,7 @@ public sealed class MainViewModel : ViewModelBase
                         {
                             InitFromConfig();
                         }
+                        IsStarting = false;
                     });
                 }
             });
@@ -283,6 +304,7 @@ public sealed class MainViewModel : ViewModelBase
         catch (Exception ex)
         {
             AddLog($"[{DateTime.Now:HH:mm:ss}] Start failed: {ex.Message}");
+            IsStarting = false;
         }
     }
 
@@ -295,6 +317,7 @@ public sealed class MainViewModel : ViewModelBase
             if (SelectedProxy is null)
             {
                 AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: no proxy selected");
+                IsStopping = false;
                 return;
             }
 
@@ -312,11 +335,29 @@ public sealed class MainViewModel : ViewModelBase
                     p.Status = ProxyStatus.Failed;
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: {ex.Message}");
                 }
+                finally
+                {
+                    Application.Current?.Dispatcher.BeginInvoke(() =>
+                    {
+                        var idx = Proxies.IndexOf(p);
+                        if (idx >= 0)
+                        {
+                            Proxies.RemoveAt(idx);
+                            Proxies.Insert(idx, p);
+                        }
+                        else
+                        {
+                            InitFromConfig();
+                        }
+                        IsStopping = false;
+                    });
+                }
             });
         }
         catch (Exception ex)
         {
             AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: {ex.Message}");
+            IsStopping = false;
         }
     }
 
@@ -327,7 +368,11 @@ public sealed class MainViewModel : ViewModelBase
         try
         {
             var configPath = GetConfigPath();
-            var vm = new YLproxy.GUI.ViewModels.AddProxyViewModel(Proxies.ToList(), configPath);
+            var vm = new YLproxy.GUI.ViewModels.AddProxyViewModel(
+                Proxies.ToList(),
+                configPath,
+                _proxyConfig.PortRangeStart,
+                _proxyConfig.PortRangeEnd);
             vm.CloseAction = () => { /* window will close from code-behind */ };
 
             var win = new YLproxy.GUI.Views.AddProxyWindow
@@ -377,7 +422,7 @@ public sealed class MainViewModel : ViewModelBase
             Proxies.Remove(SelectedProxy);
 
             var configPath = GetConfigPath();
-            var svc = new YLproxy.Core.Config.ConfigService(configPath);
+            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
             var cfg = svc.Load();
 
             var before = cfg.Proxies.Count;
@@ -401,16 +446,11 @@ public sealed class MainViewModel : ViewModelBase
 
     private void AddLog(string message)
     {
-        // GUI 输出（现有）
         Application.Current?.Dispatcher.BeginInvoke(() => _logs.Add(message));
-        
-        // 文件输出（新增）
+
         try
         {
-            var logDir = PathResolver.ResolvePath("logs");
-            System.IO.Directory.CreateDirectory(logDir);
-            var logFile = System.IO.Path.Combine(logDir, $"ylxcx-{DateTime.Now:yyyyMMdd}.log");
-            System.IO.File.AppendAllText(logFile, message + Environment.NewLine);
+            _logger.Info(message);
         }
         catch
         {

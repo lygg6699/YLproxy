@@ -21,6 +21,9 @@ logs/
 
 # Backup files
 *.backup
+*.bak
+*.orig
+*.rej
 
 # Solution user options
 *.suo
@@ -28,3 +31,10 @@ logs/
 # 3proxy runtime generated configs
 runtime/3proxy/cfg/
 .blackboxcli/
+
+# IDE extensions
+*.vsix
+
+# OS files
+.DS_Store
+Thumbs.db

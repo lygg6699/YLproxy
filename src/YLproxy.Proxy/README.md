@@ -31,15 +31,15 @@
 
 ## 注意事项
 
-⚠️ **关键问题 - 路径解析存在 Bug**：
-- `GetRuntime3ProxyPath()` 方法中的路径导航逻辑错误
-- 当前实现向上导航 4 级：`YLproxy.GUI\bin\Debug\net10.0-windows\` → 错误路径
-- 正确路径应该是从解决方案根目录开始：`YLproxy\runtime\3proxy\`
-- 此 Bug 导致「3proxy.exe not found」错误，是目前阻止代理启动的主要问题
+✅ **运行时路径约定**：
+- `PathResolver` 以有效的 `YLproxy.sln` 所在目录为开发运行根目录
+- 发布目录没有解决方案文件时，以应用程序基目录为根目录
+- `ThreeProxy.RuntimeDirectory` 默认指向 `runtime/3proxy`
+- 3proxy 主程序和 DLL 必须位于 `runtime/3proxy/bin64/`
 
 ⚠️ **依赖文件检查**：
 - 启动时会检查必要的 DLL 依赖：FilePlugin.dll 和 StringsPlugin.dll
-- 缺少这些依赖会导致启动失败，请确保 runtime/3proxy/bin64/ 目录完整
+- 缺少这些依赖会导致启动失败，请确保 `runtime/3proxy/bin64/` 目录完整
 
 ⚠️ **工作目录要求**：
 - 3proxy 必须在其自身目录中启动才能正确解析相对路径配置
@@ -47,7 +47,6 @@
 
 ## 后续计划（可选）
 
-- 修复路径解析 Bug，使用更可靠的方法定位 runtime 目录
 - 添加更详细的版本信息和兼容性检查
 - 考虑支持 3proxy 的热重载配置功能
 - 添加更全面的依赖验证（包括所有可能需要的 DLL）

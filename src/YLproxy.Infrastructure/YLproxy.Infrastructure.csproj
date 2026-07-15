@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\YLproxy.Models\YLproxy.Models.csproj" />
+    <ProjectReference Include="..\YLproxy.Utils\YLproxy.Utils.csproj" />
   </ItemGroup>
 </Project>

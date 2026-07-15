@@ -1,0 +1,8 @@
+{
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
+  "terminal.integrated.env.windows": {
+    "DOTNET_CLI_UI_LANGUAGE": "en-US"
+  },
+  "markdown.validate.enabled": true
+}

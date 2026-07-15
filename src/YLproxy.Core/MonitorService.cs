@@ -17,12 +17,17 @@ public sealed class MonitorService : IDisposable
     public MonitorService(
         Func<IReadOnlyList<ProxyItem>> getProxies,
         Action<string> logAction,
-        Action refreshAction)
+        Action refreshAction,
+        TimeSpan? checkInterval = null)
     {
         _getProxies = getProxies ?? throw new ArgumentNullException(nameof(getProxies));
         _logAction = logAction ?? throw new ArgumentNullException(nameof(logAction));
         _refreshAction = refreshAction ?? throw new ArgumentNullException(nameof(refreshAction));
-        _timer = new Timer(MonitorTick, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+        var interval = checkInterval ?? TimeSpan.FromSeconds(5);
+        if (interval <= TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(checkInterval));
+
+        _timer = new Timer(MonitorTick, null, interval, interval);
     }
 
     private void MonitorTick(object? state)

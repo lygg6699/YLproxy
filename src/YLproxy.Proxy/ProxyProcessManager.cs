@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Utils;
 
@@ -13,10 +14,15 @@ public sealed class ProxyProcessManager
     // key: Proxy.Id
     private static readonly ConcurrentDictionary<int, Process> Processes = new();
 
+    public static void Configure(ThreeProxyConfig settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        ProxyRuntimeConfiguration.Configure(settings.RuntimeDirectory, settings.RequiredDlls);
+    }
+
     private static string GetRuntime3ProxyPath()
     {
-        // 使用PathResolver统一解析路径，避免硬编码和路径计算错误
-        return PathResolver.ResolvePath("runtime", "3proxy");
+        return ProxyRuntimeConfiguration.GetRuntimeDirectory();
     }
 
     private static string Runtime3ProxyPath
@@ -46,12 +52,12 @@ public sealed class ProxyProcessManager
         Console.WriteLine($"[ProxyProcessManager] Main executable found: {exePath}");
 
         // 检查必要的DLL依赖
-        var requiredDlls = new[] { "FilePlugin.dll", "StringsPlugin.dll" };
-        var dllDirectory = Path.GetDirectoryName(exePath);
+        var dllDirectory = Path.GetDirectoryName(exePath)
+            ?? throw new InvalidOperationException($"Unable to determine DLL directory for {exePath}");
         
         Console.WriteLine($"[ProxyProcessManager] Checking DLL dependencies in: {dllDirectory}");
 
-        foreach (var dll in requiredDlls)
+        foreach (var dll in ProxyRuntimeConfiguration.GetRequiredDlls())
         {
             var dllPath = Path.Combine(dllDirectory, dll);
             Console.WriteLine($"[ProxyProcessManager] Checking dependency: {dllPath}");
