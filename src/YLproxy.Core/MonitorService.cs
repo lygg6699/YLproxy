@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.ComponentModel;
+using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Proxy;
 
@@ -12,17 +14,23 @@ public sealed class MonitorService : IDisposable
     private readonly Func<IReadOnlyList<ProxyItem>> _getProxies;
     private readonly Action<string> _logAction;
     private readonly Action _refreshAction;
+    private readonly ILogger _logger;
+    private readonly Func<ProxyItem, bool> _isRunning;
     private bool _disposed;
 
     public MonitorService(
         Func<IReadOnlyList<ProxyItem>> getProxies,
         Action<string> logAction,
         Action refreshAction,
-        TimeSpan? checkInterval = null)
+        TimeSpan? checkInterval = null,
+        ILogger? logger = null,
+        Func<ProxyItem, bool>? isRunning = null)
     {
         _getProxies = getProxies ?? throw new ArgumentNullException(nameof(getProxies));
         _logAction = logAction ?? throw new ArgumentNullException(nameof(logAction));
         _refreshAction = refreshAction ?? throw new ArgumentNullException(nameof(refreshAction));
+        _logger = logger ?? LoggerFactory.CreateLogger();
+        _isRunning = isRunning ?? ProxyProcessManager.IsRunning;
         var interval = checkInterval ?? TimeSpan.FromSeconds(5);
         if (interval <= TimeSpan.Zero)
             throw new ArgumentOutOfRangeException(nameof(checkInterval));
@@ -40,8 +48,9 @@ public sealed class MonitorService : IDisposable
             {
                 proxies = _getProxies();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.Warn("Monitor could not read the proxy list.", ex);
                 return;
             }
 
@@ -59,11 +68,22 @@ public sealed class MonitorService : IDisposable
                 var isAlive = false;
                 try
                 {
-                    isAlive = ProxyProcessManager.IsRunning(proxy);
+                    isAlive = _isRunning(proxy);
                 }
-                catch
+                catch (Win32Exception ex)
                 {
-                    // Process tracking issue - treat as dead
+                    _logger.Warn($"Monitor could not inspect proxy {proxy.Id}; continuing the monitoring cycle.", ex);
+                    continue;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    _logger.Warn($"Monitor could not inspect proxy {proxy.Id}; continuing the monitoring cycle.", ex);
+                    continue;
+                }
+                catch (ArgumentException ex)
+                {
+                    _logger.Warn($"Monitor could not inspect proxy {proxy.Id}; continuing the monitoring cycle.", ex);
+                    continue;
                 }
 
                 if (!isAlive)
@@ -79,9 +99,9 @@ public sealed class MonitorService : IDisposable
                 _refreshAction();
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Silently handle monitor exceptions to avoid crashing the timer
+            _logger.Error("Monitor timer callback failed; the timer will continue.", ex);
         }
     }
 

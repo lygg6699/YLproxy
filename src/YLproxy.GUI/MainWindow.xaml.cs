@@ -12,4 +12,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new MainViewModel();
     }
+
+    private void OnClosed(object? sender, System.EventArgs e)
+    {
+        if (DataContext is IDisposable disposable)
+            disposable.Dispose();
+    }
 }

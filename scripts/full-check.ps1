@@ -33,7 +33,7 @@ function Write-Log {
     $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
     $logMessage = "[$timestamp] [$Level] $Message"
     Add-Content -Path $logFile -Value $logMessage
-    
+
     switch ($Level) {
         'SUCCESS' { Write-Host "✅ $Message" @success }
         'ERROR' { Write-Host "❌ $Message" @errorStyle }
@@ -135,18 +135,56 @@ if ($buildExitCode -eq 0) {
     exit 1
 }
 
+# 第 2.1 步：Release 发布验证
+Write-Host ""
+Write-Host "第 2.1 步：Release 发布验证..." -ForegroundColor Cyan
+Write-Log "开始 Release 发布验证" "INFO"
+
+$publishOutputDirectory = Join-Path $repositoryRoot 'src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\publish'
+dotnet publish src/YLproxy.GUI/YLproxy.GUI.csproj --configuration Release --runtime win-x64 --self-contained false --nologo 2>&1 | Tee-Object -FilePath $logFile -Append
+$publishExitCode = $LASTEXITCODE
+
+if ($publishExitCode -ne 0 -or -not (Test-Path -LiteralPath $publishOutputDirectory -PathType Container)) {
+    Write-Log "Release 发布验证失败 (Exit Code: $publishExitCode)" "ERROR"
+    Write-Host "❌ Release 发布验证失败，停止执行" -ForegroundColor Red
+    exit 1
+}
+
+$publishedGui = Join-Path $publishOutputDirectory 'YLproxy.GUI.exe'
+if (-not (Test-Path -LiteralPath $publishedGui -PathType Leaf)) {
+    Write-Log "Release 发布目录缺少 GUI 可执行文件: $publishedGui" "ERROR"
+    Write-Host "❌ Release 发布产物不完整，停止执行" -ForegroundColor Red
+    exit 1
+}
+
+Write-Log "Release 发布验证成功: $publishOutputDirectory" "SUCCESS"
+
 # 第 3 步：单元测试
+$coverageStatus = 'SKIPPED'
 if (-not $SkipTests) {
+    $coverageStatus = 'PASS'
     Write-Host ""
     Write-Host "第 3 步：运行单元测试..." -ForegroundColor Cyan
     Write-Log "开始单元测试" "INFO"
-    
-    dotnet test --no-build --verbosity normal 2>&1 | Tee-Object -FilePath $logFile -Append
+
+    $coverageDirectory = Join-Path $reportDirectory 'coverage'
+    if (-not (Test-Path -LiteralPath $coverageDirectory -PathType Container)) {
+        New-Item -ItemType Directory -Path $coverageDirectory -Force | Out-Null
+    }
+
+    dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./reports/coverage 2>&1 | Tee-Object -FilePath $logFile -Append
     $testExitCode = $LASTEXITCODE
-    
+
     if ($testExitCode -eq 0) {
-        Write-Log "所有测试通过" "SUCCESS"
+        if (-not (Get-ChildItem -LiteralPath $coverageDirectory -Filter 'coverage.cobertura.xml' -File -Recurse -ErrorAction SilentlyContinue)) {
+            $coverageStatus = 'FAIL'
+            Write-Log "测试通过但未生成覆盖率文件" "ERROR"
+            exit 1
+        }
+
+        Write-Log "所有测试通过，覆盖率文件已生成" "SUCCESS"
     } else {
+        $coverageStatus = 'FAIL'
         Write-Log "测试失败 (Exit Code: $testExitCode)" "ERROR"
         Write-Host ""
         Write-Host "❌ 测试失败，停止执行" -ForegroundColor Red
@@ -249,7 +287,9 @@ $report = @"
 | 项目 | 状态 |
 |---|---|
 | 编译 | ✅ PASS |
+| Release 发布 | ✅ PASS |
 | 单元测试 | $(if ($SkipTests) { '⏭️  SKIPPED' } else { '✅ PASS' }) |
+| 覆盖率收集 | $(if ($coverageStatus -eq 'SKIPPED') { '⏭️  SKIPPED' } elseif ($coverageStatus -eq 'PASS') { '✅ PASS' } else { '❌ FAIL' }) |
 | Smoke Test | $(if ($smokeTestStatus -eq 'SKIPPED') { '⏭️  SKIPPED' } elseif ($smokeTestStatus -eq 'PASS') { '✅ PASS' } else { '❌ FAIL' }) |
 
 ## 修改统计

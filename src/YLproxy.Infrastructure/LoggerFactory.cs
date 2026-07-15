@@ -22,15 +22,16 @@ namespace YLproxy.Infrastructure
                                 settings.RetentionDays,
                                 settings.MinLevel);
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             // Fallback to default logger if configuration fails
+                            Console.Error.WriteLine($"[LoggerFactory] Falling back to default logging configuration: {ex.Message}");
                             _logger = new FileLogger("logs", 30, "Info");
                         }
                     }
                 }
             }
-            
+
             return _logger!;
         }
     }

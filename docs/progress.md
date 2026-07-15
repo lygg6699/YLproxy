@@ -1,3 +1,38 @@
+## 本地 .NET 分析器、警告门禁、覆盖率与发布验证（2026-07-15）
+
+**状态：已完成**
+
+- ✅ 新增根目录 `Directory.Build.props`，全局启用 Nullable、ImplicitUsings、`latest-recommended` 分析器和编译时代码风格检查。
+- ✅ Release 配置启用 `TreatWarningsAsErrors`，并修复当前代码暴露的分析器阻断项；Release 构建达到 0 Warning / 0 Error。
+- ✅ 增强 `.editorconfig`，增加尾部空格、`var` 偏好、私有字段和方法命名规则。
+- ✅ Full Check 增加 `win-x64` Release 发布目录和 GUI 可执行文件检查。
+- ✅ Full Check 增加 XPlat Code Coverage 收集及 Cobertura 文件门禁。
+- ✅ 工作区校验增加 `Directory.Build.props` 和 Release 警告门禁检查。
+- ✅ Release 发布验证通过；覆盖率文件成功生成。
+- ✅ 已准备 3proxy 0.9.7 x64 本地运行时并创建脱敏 `data/config.json`。
+- ✅ 环境校验通过，完整测试 12/12 通过，覆盖率文件生成，隔离 Smoke Test 启动和清理成功。
+
+## P2 日志清理与 MonitorService 鲁棒性加固（2026-07-15）
+
+**状态：已完成**
+
+- ✅ FileLogger 初始化时异步启动历史日志清理。
+- ✅ 清理范围覆盖 `logs/` 下所有 `.log` 和 `.txt` 文件，按最后写入时间和 `RetentionDays` 判断。
+- ✅ 清理失败、配置加载失败、进程清理失败等降级路径均保留诊断输出。
+- ✅ MonitorService 对每个代理的 Win32、进程状态和参数异常独立隔离，并记录 Warning。
+- ✅ ProxyProcessManager.Stop 对进程已不存在场景安全收尾。
+- ✅ 新增日志、MonitorService 和 Stop 回归测试；Full Check 通过，测试 15/15。
+
+## DPAPI 跨机器解密容错与凭据重置（2026-07-15）
+
+**状态：已完成**
+
+- ✅ `ProxyDataSerializer` 捕获 DPAPI 解密失败，不再因跨用户或跨机器密文导致启动崩溃。
+- ✅ 解密失败时清空用户名和密码、将代理状态置为 `Stopped`，并标记配置需要迁移。
+- ✅ `ProxyDataService` 通过现有原子保存流程清理不可用密文。
+- ✅ GUI 输出明确警告，提示用户重新录入密码。
+- ✅ 新增不可解密密文回归测试，验证 12/12 测试通过。
+
 ## 剩余风险闭环：DPAPI 与真实 3proxy parent 链（2026-07-15）
 
 **状态：核心风险已完成，外部供应商验收待现场执行**

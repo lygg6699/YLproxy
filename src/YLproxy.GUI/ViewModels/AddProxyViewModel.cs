@@ -142,7 +142,7 @@ public sealed class AddProxyViewModel : ViewModelBase
 
         var usedPorts = new HashSet<int>(_existingProxies.Select(p => p.LocalPort));
         int localPort;
-        
+
         if (IsAutoPort)
         {
             localPort = _portRangeStart;
@@ -214,9 +214,9 @@ public sealed class AddProxyViewModel : ViewModelBase
                     return ip.ToString();
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // ignore
+            System.Diagnostics.Debug.WriteLine($"[AddProxyViewModel] Unable to resolve local IP address: {ex.Message}");
         }
 
         return null;

@@ -8,7 +8,7 @@ namespace YLproxy.Tests;
 public class ConfigurationContractTests
 {
     [Fact]
-    public void AppSettings_ShouldUseTheCanonicalDirectoriesAndValues()
+    public void AppSettingsShouldUseTheCanonicalDirectoriesAndValues()
     {
         var settingsPath = PathResolver.ResolvePath("AppSettings.json");
         using var document = JsonDocument.Parse(File.ReadAllText(settingsPath));
@@ -36,7 +36,7 @@ public class ConfigurationContractTests
     }
 
     [Fact]
-    public void RuntimePaths_ShouldResolveToCanonicalDirectories()
+    public void RuntimePathsShouldResolveToCanonicalDirectories()
     {
         var root = PathResolver.GetRepositoryRoot();
 
@@ -49,13 +49,13 @@ public class ConfigurationContractTests
     }
 
     [Fact]
-    public void ProxyDataService_ShouldRejectNonCanonicalDataPaths()
+    public void ProxyDataServiceShouldRejectNonCanonicalDataPaths()
     {
         Assert.Throws<ArgumentException>(() => new ProxyDataService("src/YLproxy.GUI/data/config.json"));
     }
 
     [Fact]
-    public void GlobalConfigService_ShouldRejectNonCanonicalSettingsPaths()
+    public void GlobalConfigServiceShouldRejectNonCanonicalSettingsPaths()
     {
         Assert.Throws<ArgumentException>(() => new AppSettingsService("src/YLproxy.GUI/AppSettings.json"));
     }
