@@ -46,6 +46,7 @@ public enum LogLevel { Info, Warn, Error }
 public sealed class MainViewModel : ViewModelBase
 {
     private readonly Timer _timer;
+    private Timer? _statusClearTimer;
     private readonly MonitorService _monitorService;
     private readonly GlobalConfigService _settingsService;
     private readonly ILogger _logger;
@@ -88,6 +89,41 @@ public sealed class MainViewModel : ViewModelBase
 
     private bool _isStopping;
     public bool IsStopping { get => _isStopping; set => SetProperty(ref _isStopping, value); }
+
+    private bool _isExporting;
+    public bool IsExporting { get => _isExporting; set => SetProperty(ref _isExporting, value); }
+
+    private bool _isImporting;
+    public bool IsImporting { get => _isImporting; set => SetProperty(ref _isImporting, value); }
+
+    private string _statusMessage = string.Empty;
+    public string StatusMessage
+    {
+        get => _statusMessage;
+        set
+        {
+            SetProperty(ref _statusMessage, value);
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                _statusClearTimer?.Dispose();
+                _statusClearTimer = new Timer(_ => Application.Current?.Dispatcher.BeginInvoke(() => SetProperty(ref _statusMessage, string.Empty)),
+                    null, TimeSpan.FromSeconds(6), Timeout.InfiniteTimeSpan);
+            }
+        }
+    }
+
+    private string _selectedGroup = "全部";
+    public string SelectedGroup
+    {
+        get => _selectedGroup;
+        set
+        {
+            SetProperty(ref _selectedGroup, value ?? "全部");
+            ApplySearchFilter();
+        }
+    }
+
+    public ObservableCollection<string> GroupOptions { get; } = new() { "全部" };
 
     private int _totalCount;
     public int TotalCount { get => _totalCount; set => SetProperty(ref _totalCount, value); }
@@ -314,16 +350,22 @@ public sealed class MainViewModel : ViewModelBase
         if (targets is null || targets.Count == 0) { AddLog($"[{DateTime.Now:HH:mm:ss}] [WARN] Batch start: no selection"); return; }
 
         IsStarting = true;
-        AddLog($"[{DateTime.Now:HH:mm:ss}] Batch starting {targets.Count} proxy(s)...");
+        var total = targets.Count;
+        AddLog($"[{DateTime.Now:HH:mm:ss}] Batch starting {total} proxy(s)...");
+        StatusMessage = $"批量启动 0/{total}…";
         _ = System.Threading.Tasks.Task.Run(() =>
         {
+            int done = 0;
             foreach (var p in targets)
             {
                 try { p.Status = ProxyStatus.Running; YLproxy.Proxy.ProxyProcessManager.Start(p); AddLog($"[{DateTime.Now:HH:mm:ss}] Started: {p.LocalHost}:{p.LocalPort}"); }
                 catch (Exception ex) { p.Status = ProxyStatus.Failed; AddLog($"[{DateTime.Now:HH:mm:ss}] [ERROR] Start ({p.Name}): {ex.Message}"); }
+                done++;
+                var progress = done; var t = total;
+                Application.Current?.Dispatcher.BeginInvoke(() => StatusMessage = $"批量启动 {progress}/{t}…");
             }
             IsStarting = false;
-            Application.Current?.Dispatcher.BeginInvoke(RefreshStats);
+            Application.Current?.Dispatcher.BeginInvoke(() => { RefreshStats(); StatusMessage = $"批量启动完成：{done}/{total}"; });
         });
     }
 
@@ -336,43 +378,87 @@ public sealed class MainViewModel : ViewModelBase
         if (targets is null || targets.Count == 0) { AddLog($"[{DateTime.Now:HH:mm:ss}] [WARN] Batch stop: no selection"); return; }
 
         IsStopping = true;
-        AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stopping {targets.Count} proxy(s)...");
+        var total = targets.Count;
+        AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stopping {total} proxy(s)...");
+        StatusMessage = $"批量停止 0/{total}…";
         _ = System.Threading.Tasks.Task.Run(() =>
         {
+            int done = 0;
             foreach (var p in targets)
             {
                 try { YLproxy.Proxy.ProxyProcessManager.Stop(p); p.Status = ProxyStatus.Stopped; AddLog($"[{DateTime.Now:HH:mm:ss}] Stopped: {p.LocalHost}:{p.LocalPort}"); }
                 catch (Exception ex) { p.Status = ProxyStatus.Failed; AddLog($"[{DateTime.Now:HH:mm:ss}] [ERROR] Stop ({p.Name}): {ex.Message}"); }
+                done++;
+                var progress = done; var t = total;
+                Application.Current?.Dispatcher.BeginInvoke(() => StatusMessage = $"批量停止 {progress}/{t}…");
             }
             IsStopping = false;
-            Application.Current?.Dispatcher.BeginInvoke(RefreshStats);
+            Application.Current?.Dispatcher.BeginInvoke(() => { RefreshStats(); StatusMessage = $"批量停止完成：{done}/{total}"; });
         });
     }
 
     private void ExportProxies()
     {
+        if (IsExporting) return;
+        IsExporting = true;
+        StatusMessage = "导出中…";
         try
         {
             var dlg = new SaveFileDialog { Title = "导出代理列表", Filter = "JSON (*.json)|*.json", DefaultExt = ".json", FileName = $"ylproxy_export_{DateTime.Now:yyyyMMdd_HHmmss}.json" };
-            if (dlg.ShowDialog() != true) return;
+            if (dlg.ShowDialog() != true) { StatusMessage = string.Empty; return; }
             var svc = new YLproxy.Core.Config.ProxyDataService(GetConfigPath());
             var cfg = svc.Load();
-            var json = System.Text.Json.JsonSerializer.Serialize(cfg, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(dlg.FileName, json);
+
+            var sanitize = System.Windows.MessageBox.Show("是否导出密码？\n\n点击「是」：导出完整数据（含密码）。\n点击「否」：密码将替换为 ****。",
+                "YLproxy - 导出选项", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Question);
+            if (sanitize == System.Windows.MessageBoxResult.Cancel) { StatusMessage = string.Empty; return; }
+
+            if (sanitize == System.Windows.MessageBoxResult.No)
+            {
+                var sanitizedCfg = new YLproxy.Models.AppConfig
+                {
+                    Proxies = cfg.Proxies.Select(p => new ProxyItem
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Group = p.Group,
+                        RemoteHost = p.RemoteHost,
+                        RemotePort = p.RemotePort,
+                        Username = p.Username,
+                        Password = string.IsNullOrWhiteSpace(p.Password) ? string.Empty : "****",
+                        LocalHost = p.LocalHost,
+                        LocalPort = p.LocalPort,
+                        Status = p.Status,
+                        CreateTime = p.CreateTime
+                    }).ToList()
+                };
+                var safeJson = System.Text.Json.JsonSerializer.Serialize(sanitizedCfg, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(dlg.FileName, safeJson);
+            }
+            else
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(cfg, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(dlg.FileName, json);
+            }
             AddLog($"[{DateTime.Now:HH:mm:ss}] Exported {cfg.Proxies.Count} proxies → {dlg.FileName}");
+            StatusMessage = $"已导出 {cfg.Proxies.Count} 个代理";
         }
-        catch (Exception ex) { AddLog($"[{DateTime.Now:HH:mm:ss}] [ERROR] Export: {ex.Message}"); }
+        catch (Exception ex) { AddLog($"[{DateTime.Now:HH:mm:ss}] [ERROR] Export: {ex.Message}"); StatusMessage = string.Empty; }
+        finally { IsExporting = false; }
     }
 
     private void ImportProxies()
     {
+        if (IsImporting) return;
+        IsImporting = true;
+        StatusMessage = "导入中…";
         try
         {
             var dlg = new OpenFileDialog { Title = "导入代理列表", Filter = "JSON (*.json)|*.json" };
-            if (dlg.ShowDialog() != true) return;
+            if (dlg.ShowDialog() != true) { StatusMessage = string.Empty; return; }
             var json = File.ReadAllText(dlg.FileName);
             var importCfg = System.Text.Json.JsonSerializer.Deserialize<YLproxy.Models.AppConfig>(json);
-            if (importCfg?.Proxies is null || importCfg.Proxies.Count == 0) { AddLog($"[{DateTime.Now:HH:mm:ss}] [WARN] Import: empty file"); return; }
+            if (importCfg?.Proxies is null || importCfg.Proxies.Count == 0) { AddLog($"[{DateTime.Now:HH:mm:ss}] [WARN] Import: empty file"); StatusMessage = string.Empty; return; }
 
             var svc = new YLproxy.Core.Config.ProxyDataService(GetConfigPath());
             var currentCfg = svc.Load();
@@ -388,8 +474,10 @@ public sealed class MainViewModel : ViewModelBase
             svc.Save(currentCfg);
             InitFromConfig();
             AddLog($"[{DateTime.Now:HH:mm:ss}] Import: {added} added, {skipped} skipped (duplicates)");
+            StatusMessage = $"导入完成：{added} 新增，{skipped} 跳过";
         }
-        catch (Exception ex) { AddLog($"[{DateTime.Now:HH:mm:ss}] [ERROR] Import: {ex.Message}"); }
+        catch (Exception ex) { AddLog($"[{DateTime.Now:HH:mm:ss}] [ERROR] Import: {ex.Message}"); StatusMessage = string.Empty; }
+        finally { IsImporting = false; }
     }
 
     private void ShowAddWindow()
@@ -413,7 +501,14 @@ public sealed class MainViewModel : ViewModelBase
         {
             if (SelectedProxy is null) { AddLog($"[{DateTime.Now:HH:mm:ss}] [WARN] Remove: no proxy selected"); return; }
             var id = SelectedProxy.Id;
-            try { YLproxy.Proxy.ProxyProcessManager.Stop(SelectedProxy); } catch { }
+            var name = SelectedProxy.Name;
+
+            var confirm = System.Windows.MessageBox.Show(
+                $"确定要删除代理 \"{name}\" (ID: {id}) 吗？\n\n此操作不可撤销。",
+                "YLproxy - 删除确认", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            if (confirm != System.Windows.MessageBoxResult.Yes) return;
+
+            try { YLproxy.Proxy.ProxyProcessManager.Stop(SelectedProxy); } catch (Exception ex) { AddLog($"[{DateTime.Now:HH:mm:ss}] [WARN] Stop before remove: {ex.Message}"); }
             Proxies.Remove(SelectedProxy);
 
             var configPath = GetConfigPath();
@@ -435,7 +530,7 @@ public sealed class MainViewModel : ViewModelBase
             _allLogs.Add(item);
             ApplyLogFilter();
         });
-        try { _logger.Info(message); } catch { }
+        try { _logger.Info(message); } catch (Exception logEx) { System.Diagnostics.Trace.WriteLine($"[YLproxy] Logger failure: {logEx.Message}"); }
     }
 
     private void ApplySearchFilter()
@@ -444,17 +539,35 @@ public sealed class MainViewModel : ViewModelBase
         {
             _filteredProxies.Clear();
             var query = (_searchText ?? string.Empty).Trim().ToUpperInvariant();
+            RefreshGroupOptions();
             foreach (var p in Proxies)
             {
+                var matchesGroup = _selectedGroup == "全部" || (p.Group ?? string.Empty) == _selectedGroup;
+                if (!matchesGroup) continue;
+
                 if (string.IsNullOrEmpty(query)
-                    || (p.Name ?? string.Empty).ToUpperInvariant().Contains(query)
-                    || (p.RemoteHost ?? string.Empty).ToUpperInvariant().Contains(query)
-                    || (p.Username ?? string.Empty).ToUpperInvariant().Contains(query))
+                    || (p.Name ?? string.Empty).Contains(query, StringComparison.OrdinalIgnoreCase)
+                    || (p.RemoteHost ?? string.Empty).Contains(query, StringComparison.OrdinalIgnoreCase)
+                    || (p.Username ?? string.Empty).Contains(query, StringComparison.OrdinalIgnoreCase)
+                    || (p.Group ?? string.Empty).Contains(query, StringComparison.OrdinalIgnoreCase))
                 {
                     _filteredProxies.Add(p);
                 }
             }
         });
+    }
+
+    private void RefreshGroupOptions()
+    {
+        var groups = Proxies.Select(p => p.Group ?? string.Empty)
+                            .Where(g => !string.IsNullOrWhiteSpace(g))
+                            .Distinct()
+                            .OrderBy(g => g)
+                            .ToList();
+        GroupOptions.Clear();
+        GroupOptions.Add("全部");
+        foreach (var g in groups)
+            GroupOptions.Add(g);
     }
 
     private void ApplyLogFilter()
@@ -481,7 +594,7 @@ public sealed class MainViewModel : ViewModelBase
     private static string GetNetworkStatus()
     {
         try { return NetworkInterface.GetIsNetworkAvailable() ? "Connected" : "Disconnected"; }
-        catch { return "Unknown"; }
+        catch (Exception ex) { System.Diagnostics.Trace.WriteLine($"[YLproxy] Failed to check network status: {ex.Message}"); return "Unknown"; }
     }
 
     private static string? GetBestLocalIp()
@@ -492,7 +605,7 @@ public sealed class MainViewModel : ViewModelBase
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip))
                     return ip.ToString();
         }
-        catch { }
+        catch (Exception ex) { System.Diagnostics.Trace.WriteLine($"[YLproxy] Failed to get local IP: {ex.Message}"); }
         return null;
     }
 
@@ -520,6 +633,6 @@ public sealed class MainViewModel : ViewModelBase
     public async Task ShutdownAsync()
     {
         _timer?.Dispose();
-        try { await _apiServer.StopAsync(); } catch { }
+        try { await _apiServer.StopAsync(); } catch (Exception ex) { System.Diagnostics.Trace.WriteLine($"[YLproxy] API stop error: {ex.Message}"); }
     }
 }

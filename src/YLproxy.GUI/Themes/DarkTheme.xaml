@@ -21,10 +21,17 @@
     <SolidColorBrush x:Key="BorderInputBrush" Color="{StaticResource BorderInputColor}"/>
     <SolidColorBrush x:Key="FgPrimaryBrush" Color="{StaticResource FgPrimaryColor}"/>
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#1A8AE8"/>
     <SolidColorBrush x:Key="SelectedBrush" Color="{StaticResource SelectedColor}"/>
     <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
     <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
     <SolidColorBrush x:Key="WarnBrush" Color="{StaticResource WarnColor}"/>
+
+    <SolidColorBrush x:Key="FgDimBrush" Color="#888888"/>
+    <SolidColorBrush x:Key="FgMutedBrush" Color="#666666"/>
+    <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#2D2D30"/>
+    <SolidColorBrush x:Key="DisabledButtonBackgroundBrush" Color="#555555"/>
+    <SolidColorBrush x:Key="DisabledButtonForegroundBrush" Color="#888888"/>
 
     <!-- Window -->
     <Style TargetType="Window">
@@ -59,13 +66,13 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="#555555"/>
-                            <Setter Property="BorderBrush" Value="#555555"/>
-                            <Setter Property="Foreground" Value="#888888"/>
+                            <Setter Property="Background" Value="{StaticResource DisabledButtonBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource DisabledButtonBackgroundBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource DisabledButtonForegroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#1A8AE8"/>
-                            <Setter Property="BorderBrush" Value="#1A8AE8"/>
+                            <Setter Property="Background" Value="{StaticResource AccentHoverBrush}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentHoverBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -114,13 +121,13 @@
         <Setter Property="Foreground" Value="{StaticResource FgPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="RowBackground" Value="{StaticResource BgPanelBrush}"/>
-        <Setter Property="AlternatingRowBackground" Value="#2D2D30"/>
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource HeaderBackgroundBrush}"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
     </Style>
 
     <Style TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="#2D2D30"/>
+        <Setter Property="Background" Value="{StaticResource HeaderBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource FgPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="Padding" Value="8,4"/>
@@ -139,8 +146,8 @@
                     <Condition Property="IsMouseOver" Value="True"/>
                     <Condition Property="IsSelected" Value="False"/>
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="#2D2D30"/>
-                <Setter Property="Foreground" Value="#FFFFFF"/>
+                <Setter Property="Background" Value="{StaticResource HeaderBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
             </MultiTrigger>
         </Style.Triggers>
     </Style>

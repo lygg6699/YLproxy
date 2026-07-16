@@ -300,8 +300,7 @@ public class SqliteProxyRepository : IDisposable
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(SqliteProxyRepository));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public void Dispose()

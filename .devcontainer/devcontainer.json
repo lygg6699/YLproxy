@@ -1,0 +1,31 @@
+{
+  "name": "YLproxy (.NET) devcontainer",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet-sdk:2": {
+      "version": "10.0.301"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.env.windows": {
+          "DOTNET_CLI_UI_LANGUAGE": "en-US"
+        },
+        "terminal.integrated.env.linux": {
+          "DOTNET_CLI_UI_LANGUAGE": "en-US"
+        }
+      }
+    }
+  },
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "dotnet restore ./YLproxy.sln",
+  "postStartCommand": "dotnet --info",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ],
+  "remoteUser": "vscode",
+  "forwardPorts": [],
+  "shutdownAction": "stopContainer"
+}
+

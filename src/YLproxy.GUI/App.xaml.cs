@@ -20,6 +20,18 @@ public partial class App : Application
 
         _logger = LoggerFactory.CreateLogger();
 
+        ExceptionHandler.OnUserNotification = (context, message) =>
+        {
+            Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show(
+                    $"{context}:\n\n{message}",
+                    "YLproxy - Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            });
+        };
+
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;

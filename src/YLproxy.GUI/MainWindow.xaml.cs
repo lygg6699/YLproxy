@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
+using System.Windows.Input;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -16,6 +17,38 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new MainViewModel();
         InitializeTrayIcon();
+        InitializeKeyboardShortcuts();
+    }
+
+    private void InitializeKeyboardShortcuts()
+    {
+        KeyDown += (_, e) =>
+        {
+            if (DataContext is not MainViewModel vm) return;
+
+            switch (e.Key)
+            {
+                case Key.T when Keyboard.Modifiers == ModifierKeys.Control:
+                    if (vm.TestCommand.CanExecute(null))
+                        vm.TestCommand.Execute(null);
+                    break;
+                case Key.S when Keyboard.Modifiers == ModifierKeys.Control:
+                    if (vm.StartCommand.CanExecute(null))
+                        vm.StartCommand.Execute(null);
+                    break;
+                case Key.W when Keyboard.Modifiers == ModifierKeys.Control:
+                    if (vm.StopCommand.CanExecute(null))
+                        vm.StopCommand.Execute(null);
+                    break;
+                case Key.F when Keyboard.Modifiers == ModifierKeys.Control:
+                    // Focus search box — handled in code-behind via SearchBox
+                    break;
+                case Key.Delete:
+                    if (vm.RemoveCommand.CanExecute(null))
+                        vm.RemoveCommand.Execute(null);
+                    break;
+            }
+        };
     }
 
     private void InitializeTrayIcon()

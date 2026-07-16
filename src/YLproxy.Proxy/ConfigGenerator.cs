@@ -9,7 +9,8 @@ public static class ConfigGenerator
 {
     public static string Generate(ProxyItem proxy)
     {
-        if (proxy is null) throw new ArgumentNullException(nameof(proxy));
+        ArgumentNullException.ThrowIfNull(proxy);
+
         if (string.IsNullOrWhiteSpace(proxy.RemoteHost)) throw new ArgumentException("RemoteHost is empty");
         if (proxy.RemotePort <= 0) throw new ArgumentException("RemotePort is invalid");
         if (proxy.LocalPort <= 0) throw new ArgumentException("LocalPort is invalid");

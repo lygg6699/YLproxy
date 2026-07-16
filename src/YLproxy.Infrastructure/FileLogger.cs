@@ -127,7 +127,7 @@ namespace YLproxy.Infrastructure
                     return;
 
                 var files = Directory.GetFiles(_logDirectory, "log_*.txt");
-                var cutoffDate = DateTime.Now.AddDays(-_retentionDays);
+                var cutoffDate = DateTime.Now.Date.AddDays(-_retentionDays);
 
                 foreach (var file in files)
                 {
@@ -139,15 +139,15 @@ namespace YLproxy.Infrastructure
                             File.Delete(file);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Ignore errors during cleanup
+                        System.Diagnostics.Trace.WriteLine($"[YLproxy] Failed to clean up old log file '{file}': {ex.Message}");
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore errors during cleanup
+                System.Diagnostics.Trace.WriteLine($"[YLproxy] Log cleanup directory scan failed: {ex.Message}");
             }
         }
     }

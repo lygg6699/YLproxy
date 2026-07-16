@@ -11,6 +11,7 @@ namespace YLproxy.Infrastructure
 {
     public class AppSettingsService
     {
+        private static readonly SemaphoreSlim _ioLock = new(1, 1);
         private readonly string _configFilePath;
         private AppSettingsConfig _config = new AppSettingsConfig();
         private readonly FileSystemWatcher _watcher;
@@ -54,7 +55,7 @@ namespace YLproxy.Infrastructure
                 if (_logger is null)
                 {
                     try { _logger = LoggerFactory.CreateLogger(); }
-                    catch { /* LoggerFactory failed — defer to stderr fallback */ }
+                    catch (Exception ex) { System.Diagnostics.Trace.WriteLine($"[YLproxy] LoggerFactory failed: {ex.Message}"); }
                     _logger ??= new FileLogger("logs", 30, "Info");
                 }
                 return _logger;
@@ -72,6 +73,8 @@ namespace YLproxy.Infrastructure
             };
         }
 
+        public AppSettingsConfig GetConfig() => _config;
+
         public void Reload()
         {
             LoadConfig();
@@ -79,6 +82,7 @@ namespace YLproxy.Infrastructure
 
         private void LoadConfig()
         {
+            _ioLock.Wait();
             try
             {
                 if (File.Exists(_configFilePath))
@@ -92,31 +96,53 @@ namespace YLproxy.Infrastructure
                 {
                     _config = new AppSettingsConfig();
                     Validate(_config);
-                    SaveConfig();
+                    SaveConfigInternal();
                 }
             }
             catch (Exception ex)
             {
                 try { Logger.Warn($"Failed to load AppSettings, using defaults: {ex.Message}"); }
-                catch { /* final fallback */ }
+                catch (Exception logEx) { System.Diagnostics.Trace.WriteLine($"[YLproxy] AppSettings load log failed: {logEx.Message}"); }
                 _config = new AppSettingsConfig();
+            }
+            finally
+            {
+                _ioLock.Release();
             }
         }
 
         private void SaveConfig()
+        {
+            _ioLock.Wait();
+            try
+            {
+                SaveConfigInternal();
+            }
+            finally
+            {
+                _ioLock.Release();
+            }
+        }
+
+        private void SaveConfigInternal()
         {
             var tempPath = $"{_configFilePath}.{Guid.NewGuid():N}.tmp";
             try
             {
                 string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
                 Directory.CreateDirectory(Path.GetDirectoryName(_configFilePath) ?? "");
-                File.WriteAllText(tempPath, json, Encoding.UTF8);
+                // Write temp file with exclusive write, allowing concurrent readers
+                using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    writer.Write(json);
+                }
                 File.Move(tempPath, _configFilePath, true);
             }
             catch (Exception ex)
             {
                 try { Logger.Error($"Failed to save AppSettings: {ex.Message}", ex); }
-                catch { /* final fallback */ }
+                catch (Exception logEx) { System.Diagnostics.Trace.WriteLine($"[YLproxy] AppSettings save log failed: {logEx.Message}"); }
             }
             finally
             {
@@ -125,8 +151,9 @@ namespace YLproxy.Infrastructure
                     if (File.Exists(tempPath))
                         File.Delete(tempPath);
                 }
-                catch
+                catch (Exception delEx)
                 {
+                    System.Diagnostics.Trace.WriteLine($"[YLproxy] Failed to delete temp settings file '{tempPath}': {delEx.Message}");
                 }
             }
         }

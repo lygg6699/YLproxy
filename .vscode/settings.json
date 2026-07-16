@@ -4,5 +4,14 @@
   "terminal.integrated.env.windows": {
     "DOTNET_CLI_UI_LANGUAGE": "en-US"
   },
-  "markdown.validate.enabled": true
+
+  "markdown.validate.enabled": true,
+
+  "dotnet.defaultSolution": "YLproxy.sln",
+  "omnisharp.useModernNet": true,
+  "omnisharp.enableEditorConfigSupport": true,
+  "omnisharp.useCustomNetFormat": false,
+
+  "csharp.format.enable": false
 }
+

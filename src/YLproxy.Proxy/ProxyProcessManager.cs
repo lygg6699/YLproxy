@@ -56,13 +56,22 @@ public sealed class ProxyProcessManager
                             $"Expected location: {Path.GetDirectoryName(exePath)}";
             _logger.Error(errorMsg);
             throw new FileNotFoundException(errorMsg);
+
         }
+
+
+
 
         _logger.Debug($"Main executable found: {exePath}");
 
         // 检查必要的DLL依赖
-        var dllDirectory = Path.GetDirectoryName(exePath)
-            ?? throw new InvalidOperationException($"Unable to determine DLL directory for {exePath}");
+        var dllDirectory = Path.GetDirectoryName(exePath);
+        ArgumentNullException.ThrowIfNull(dllDirectory);
+
+
+
+
+
 
         _logger.Debug($"Checking DLL dependencies in: {dllDirectory}");
 
@@ -100,28 +109,26 @@ public sealed class ProxyProcessManager
     /// </summary>
     private static string Get3ProxyExePath()
     {
-        string? runtimePath = Get3ProxyDirectory();
-        if (runtimePath == null)
-        {
-            throw new InvalidOperationException("Unable to determine 3proxy runtime directory");
-        }
+        var runtimePath = Get3ProxyDirectory();
+        ArgumentNullException.ThrowIfNull(runtimePath);
 
-        string exePath = Path.Combine(runtimePath, "bin64", "3proxy.exe");
+        var exePath = Path.Combine(runtimePath, "bin64", "3proxy.exe");
         _logger.Debug($"Resolved 3proxy.exe path: {exePath}");
         return exePath;
     }
+
 
     /// <summary>
     /// 获取3proxy目录的完整路径
     /// </summary>
     private static string Get3ProxyDirectory()
     {
-        string? path = GetRuntime3ProxyPath();
-        if (path == null)
-        {
-            throw new InvalidOperationException("Unable to determine 3proxy runtime directory");
-        }
-        return path;
+        var runtimePath = GetRuntime3ProxyPath();
+        ArgumentNullException.ThrowIfNull(runtimePath);
+        return runtimePath;
+
+
+
     }
 
     /// <summary>
@@ -129,12 +136,10 @@ public sealed class ProxyProcessManager
     /// </summary>
     private static string Get3ProxyConfigDirectory()
     {
-        string? proxyDir = Get3ProxyDirectory();
-        if (proxyDir == null)
-        {
-            throw new InvalidOperationException("Unable to determine 3proxy directory");
-        }
+        var proxyDir = Get3ProxyDirectory();
         return Path.Combine(proxyDir, "cfg");
+
+
     }
 
     /// <summary>
@@ -142,17 +147,16 @@ public sealed class ProxyProcessManager
     /// </summary>
     private static string Get3ProxyLogDirectory()
     {
-        string? proxyDir = Get3ProxyDirectory();
-        if (proxyDir == null)
-        {
-            throw new InvalidOperationException("Unable to determine 3proxy directory");
-        }
+        var proxyDir = Get3ProxyDirectory();
         return Path.Combine(proxyDir, "logs");
+
     }
+
+
 
     public static void Start(ProxyItem proxy)
     {
-        if (proxy is null) throw new ArgumentNullException(nameof(proxy));
+        ArgumentNullException.ThrowIfNull(proxy);
 
         _logger.Debug($"Starting proxy ID: {proxy.Id}");
 
@@ -222,6 +226,7 @@ public sealed class ProxyProcessManager
                 if (process is not null && !process.HasExited)
                     process.Kill(true);
             }
+
             catch (Exception killEx)
             {
                 _logger.Warn($"Failed to kill process during cleanup: {killEx.Message}");
@@ -275,7 +280,7 @@ public sealed class ProxyProcessManager
 
     public static void Stop(ProxyItem proxy)
     {
-        if (proxy is null) throw new ArgumentNullException(nameof(proxy));
+        ArgumentNullException.ThrowIfNull(proxy);
 
         _logger.Debug($"Stopping proxy ID: {proxy.Id}");
 

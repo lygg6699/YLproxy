@@ -156,6 +156,139 @@ public sealed class LoggingAndMonitorTests
         Assert.Equal(3, ex.InnerExceptions.Count);
     }
 
+    [Fact]
+    public void CleanupOldLogs_ShouldHandleLockedFile_Gracefully()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directory);
+
+        try
+        {
+            // Create a file that is 60 days old, then create the logger with retention=30
+            // so the file is a cleanup candidate.
+            var expiredFile = Path.Combine(directory, $"log_{DateTime.Now.AddDays(-60):yyyyMMdd}.txt");
+            File.WriteAllText(expiredFile, "locked content");
+            File.SetLastWriteTime(expiredFile, DateTime.Now.AddDays(-60));
+
+            // Open a lock on the expired file before creating the logger,
+            // so the constructor's cleanup attempt hits a locked file.
+            using (var fs = new FileStream(expiredFile, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                var ex = Record.Exception(() => new FileLogger(directory, retentionDays: 30, minLevel: "Info"));
+                // Should not throw — locked files are skipped gracefully.
+                Assert.Null(ex);
+            }
+
+            // After releasing the lock, recreate logger to clean up.
+            var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Info");
+            logger.CleanupOldLogs();
+            Assert.False(File.Exists(expiredFile));
+        }
+        finally
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void FileLogger_ShouldFilterByMinLevel()
+    {
+        using var logDir = new TempDirectory();
+        var directory = logDir.Path;
+
+        var debugLogger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug");
+        var warnLogger = new FileLogger(directory, retentionDays: 30, minLevel: "Warn");
+
+        debugLogger.Debug("debug message");
+        debugLogger.Info("info message");
+        debugLogger.Warn("warn message");
+
+        Thread.Sleep(50); // ensure flush
+
+        var currentLogPath = Path.Combine(directory, $"log_{DateTime.UtcNow:yyyyMMdd}.txt");
+        Assert.True(File.Exists(currentLogPath));
+        var allContent = File.ReadAllText(currentLogPath);
+
+        Assert.Contains("DEBUG", allContent);
+        Assert.Contains("INFO", allContent);
+        Assert.Contains("WARN", allContent);
+
+        // Clean up and test Warn-level logger
+        File.Delete(currentLogPath);
+
+        warnLogger.Debug("debug message");
+        warnLogger.Info("info message");
+        warnLogger.Warn("warn message");
+
+        Thread.Sleep(50);
+
+        if (File.Exists(currentLogPath))
+        {
+            var warnContent = File.ReadAllText(currentLogPath);
+            Assert.DoesNotContain("DEBUG", warnContent);
+            Assert.DoesNotContain("INFO", warnContent);
+            Assert.Contains("WARN", warnContent);
+        }
+    }
+
+    [Fact]
+    public void FileLogger_ShouldIncludeException_StackTrace()
+    {
+        using var logDir = new TempDirectory();
+        var directory = logDir.Path;
+        var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug");
+
+        try
+        {
+            throw new InvalidOperationException("test exception detail");
+        }
+        catch (Exception ex)
+        {
+            logger.Error("Something went wrong", ex);
+        }
+
+        Thread.Sleep(50);
+
+        var currentLogPath = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
+        Assert.True(File.Exists(currentLogPath));
+        var content = File.ReadAllText(currentLogPath);
+
+        Assert.Contains("ERROR", content);
+        Assert.Contains("Something went wrong", content);
+        Assert.Contains("test exception detail", content);
+        Assert.Contains("StackTrace", content);
+    }
+
+    [Fact]
+    public void FileLogger_RetentionZero_ShouldNotDeleteCurrentDay()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directory);
+
+        try
+        {
+            var todayLog = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
+            var yesterdayLog = Path.Combine(directory, $"log_{DateTime.Now.AddDays(-1):yyyyMMdd}.txt");
+            File.WriteAllText(todayLog, "today");
+            File.WriteAllText(yesterdayLog, "yesterday");
+            File.SetLastWriteTime(todayLog, DateTime.Now);
+            File.SetLastWriteTime(yesterdayLog, DateTime.Now.AddDays(-1));
+
+            var logger = new FileLogger(directory, retentionDays: 0, minLevel: "Info");
+            logger.CleanupOldLogs();
+
+            // RetentionDays=0: files older than 0 days are deleted → today survives.
+            Assert.True(File.Exists(todayLog));
+            Assert.False(File.Exists(yesterdayLog));
+        }
+        finally
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
+        }
+    }
+
     private sealed class TestLogger : ILogger
     {
         public ConcurrentBag<string> Warnings { get; } = new();

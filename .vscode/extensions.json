@@ -1,10 +1,14 @@
 {
-    "recommendations": [
-        "ms-ceintl.vscode-language-pack-zh-hans",
-        "github.vscode-github-actions",
-        "github.codespaces",
-        "github.vscode-pull-request-github",
-        "davidanson.vscode-markdownlint",
-        "ms-vscode.powershell"
-    ]
+  "recommendations": [
+    "ms-ceintl.vscode-language-pack-zh-hans",
+    "github.vscode-github-actions",
+    "github.codespaces",
+    "github.vscode-pull-request-github",
+    "davidanson.vscode-markdownlint",
+    "ms-vscode.powershell",
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "ms-vscode.test-adapter-converter"
+  ]
 }
+

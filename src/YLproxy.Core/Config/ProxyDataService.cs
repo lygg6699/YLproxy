@@ -9,6 +9,7 @@ namespace YLproxy.Core.Config;
 
 public sealed class ProxyDataService
 {
+    private static readonly SemaphoreSlim _ioLock = new(1, 1);
     private readonly ProxyDataSerializer _serializer;
     private readonly SqliteProxyRepository? _sqliteRepository;
     private DataMigrationService? _migrationService;
@@ -110,22 +111,43 @@ public sealed class ProxyDataService
 
     private AppConfig LoadFromJson()
     {
-        if (!File.Exists(ConfigPath))
+        _ioLock.Wait();
+        try
         {
-            var empty = new AppConfig();
-            Save(empty);
-            return empty;
+            if (!File.Exists(ConfigPath))
+            {
+                var empty = new AppConfig();
+                SaveInternal(empty);
+                return empty;
+            }
+
+            var json = File.ReadAllText(ConfigPath);
+            var cfg = _serializer.Deserialize(json, out var requiresMigration);
+            if (requiresMigration)
+                SaveInternal(cfg);
+
+            return cfg;
         }
-
-        var json = File.ReadAllText(ConfigPath);
-        var cfg = _serializer.Deserialize(json, out var requiresMigration);
-        if (requiresMigration)
-            Save(cfg);
-
-        return cfg;
+        finally
+        {
+            _ioLock.Release();
+        }
     }
 
     public void Save(AppConfig config)
+    {
+        _ioLock.Wait();
+        try
+        {
+            SaveInternal(config);
+        }
+        finally
+        {
+            _ioLock.Release();
+        }
+    }
+
+    private void SaveInternal(AppConfig config)
     {
         ArgumentNullException.ThrowIfNull(config);
 
@@ -188,19 +210,28 @@ public sealed class ProxyDataService
                 .ConfigureAwait(false);
         }
 
-        if (!File.Exists(ConfigPath))
+        // Use async lock variant
+        await _ioLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
         {
-            var empty = new AppConfig();
-            await SaveAsync(empty, cancellationToken).ConfigureAwait(false);
-            return empty;
+            if (!File.Exists(ConfigPath))
+            {
+                var empty = new AppConfig();
+                SaveInternal(empty);
+                return empty;
+            }
+
+            var json = await File.ReadAllTextAsync(ConfigPath, cancellationToken).ConfigureAwait(false);
+            var cfg = _serializer.Deserialize(json, out var requiresMigration);
+            if (requiresMigration)
+                SaveInternal(cfg);
+
+            return cfg;
         }
-
-        var json = await File.ReadAllTextAsync(ConfigPath, cancellationToken).ConfigureAwait(false);
-        var cfg = _serializer.Deserialize(json, out var requiresMigration);
-        if (requiresMigration)
-            await SaveAsync(cfg, cancellationToken).ConfigureAwait(false);
-
-        return cfg;
+        finally
+        {
+            _ioLock.Release();
+        }
     }
 
     public Task SaveAsync(AppConfig config, CancellationToken cancellationToken = default)
@@ -214,7 +245,12 @@ public sealed class ProxyDataService
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(ConfigPath) ?? "");
-            File.WriteAllText(tempPath, json, Encoding.UTF8);
+            // Write temp file with exclusive write, allowing concurrent readers
+            using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.Read))
+            using (var writer = new StreamWriter(fs, Encoding.UTF8))
+            {
+                writer.Write(json);
+            }
             File.Move(tempPath, ConfigPath, true);
         }
         finally
@@ -235,8 +271,9 @@ public sealed class ProxyDataService
             if (File.Exists(path))
                 File.Delete(path);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.Warn($"Failed to delete temporary file '{path}': {ex.Message}");
         }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.Win32;
 
 namespace YLproxy.Core.PreFlight;
 
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public static class AutoStartService
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";

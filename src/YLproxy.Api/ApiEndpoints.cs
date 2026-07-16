@@ -108,7 +108,7 @@ public static class ApiEndpoints
                 if (removed == 0)
                     return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
 
-                try { ProxyProcessManager.Stop(new ProxyItem { Id = id }); } catch { }
+                try { ProxyProcessManager.Stop(new ProxyItem { Id = id }); } catch (Exception ex) { _logger.Warn($"Failed to stop proxy {id} during delete: {ex.Message}"); }
 
                 svc.Save(cfg);
                 _logger.Info($"API: deleted proxy {id}");
