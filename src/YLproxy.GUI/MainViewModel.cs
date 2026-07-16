@@ -18,7 +18,7 @@ namespace YLproxy.GUI;
 
 public sealed class MainViewModel : ViewModelBase
 {
-    private readonly Timer _timer;
+    private readonly System.Threading.Timer _timer;
     private readonly MonitorService _monitorService;
     private readonly GlobalConfigService _settingsService;
     private readonly ILogger _logger;

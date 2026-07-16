@@ -116,9 +116,19 @@ public sealed class TransparentCoalescingForwarderTests
     {
         using var upstreamClient = await listener.AcceptTcpClientAsync(cancellationToken);
         await using var upstreamStream = upstreamClient.GetStream();
+        upstreamStream.ReadTimeout = 500;
         var buffer = new byte[16 * 1024];
-        var read = await upstreamStream.ReadAsync(buffer, cancellationToken);
-        return buffer[..read];
+        var total = 0;
+        while (total < buffer.Length)
+        {
+            var read = await upstreamStream.ReadAsync(buffer.AsMemory(total, buffer.Length - total), cancellationToken);
+            if (read <= 0) break;
+            total += read;
+            // 短延迟后若无更多数据则退出，处理 TCP 分片
+            await Task.Delay(80, cancellationToken);
+            if (!upstreamStream.DataAvailable) break;
+        }
+        return buffer[..total];
     }
 
     private static async Task WaitForPortAsync(int port, TimeSpan timeout)

@@ -160,7 +160,7 @@ namespace YLproxy.Infrastructure
                     return;
 
                 var files = Directory.GetFiles(_logDirectory, "log_*.txt");
-                var cutoffDate = DateTime.Now.AddDays(-_retentionDays);
+                var cutoffDate = DateTime.Now.Date.AddDays(-_retentionDays);
 
                 foreach (var file in files)
                 {

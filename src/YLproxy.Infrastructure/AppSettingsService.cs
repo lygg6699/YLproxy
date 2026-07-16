@@ -65,6 +65,11 @@ namespace YLproxy.Infrastructure
             LoadConfig();
         }
 
+        public AppSettingsConfig GetConfig()
+        {
+            return _config;
+        }
+
         private void LoadConfig()
         {
             try
