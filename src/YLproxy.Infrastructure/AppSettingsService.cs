@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using YLproxy.Models;
 using YLproxy.Utils;
@@ -11,10 +10,14 @@ namespace YLproxy.Infrastructure
 {
     public class AppSettingsService
     {
-        private static readonly SemaphoreSlim _ioLock = new(1, 1);
         private readonly string _configFilePath;
         private AppSettingsConfig _config = new AppSettingsConfig();
         private readonly FileSystemWatcher _watcher;
+        private readonly List<string> _loadErrors = new();
+        private readonly List<string> _saveErrors = new();
+
+        public IReadOnlyList<string> LoadErrors => _loadErrors.AsReadOnly();
+        public IReadOnlyList<string> SaveErrors => _saveErrors.AsReadOnly();
 
         public AppSettingsService(string configFilePath = "AppSettings.json")
         {
@@ -46,22 +49,6 @@ namespace YLproxy.Infrastructure
             _watcher.EnableRaisingEvents = true;
         }
 
-        private ILogger? _logger;
-
-        private ILogger Logger
-        {
-            get
-            {
-                if (_logger is null)
-                {
-                    try { _logger = LoggerFactory.CreateLogger(); }
-                    catch (Exception ex) { System.Diagnostics.Trace.WriteLine($"[YLproxy] LoggerFactory failed: {ex.Message}"); }
-                    _logger ??= new FileLogger("logs", 30, "Info");
-                }
-                return _logger;
-            }
-        }
-
         public T GetSection<T>(string sectionName) where T : class, new()
         {
             return sectionName switch
@@ -73,8 +60,6 @@ namespace YLproxy.Infrastructure
             };
         }
 
-        public AppSettingsConfig GetConfig() => _config;
-
         public void Reload()
         {
             LoadConfig();
@@ -82,7 +67,6 @@ namespace YLproxy.Infrastructure
 
         private void LoadConfig()
         {
-            _ioLock.Wait();
             try
             {
                 if (File.Exists(_configFilePath))
@@ -96,65 +80,26 @@ namespace YLproxy.Infrastructure
                 {
                     _config = new AppSettingsConfig();
                     Validate(_config);
-                    SaveConfigInternal();
+                    SaveConfig();
                 }
             }
             catch (Exception ex)
             {
-                try { Logger.Warn($"Failed to load AppSettings, using defaults: {ex.Message}"); }
-                catch (Exception logEx) { System.Diagnostics.Trace.WriteLine($"[YLproxy] AppSettings load log failed: {logEx.Message}"); }
+                _loadErrors.Add($"Failed to load config: {ex.Message}");
                 _config = new AppSettingsConfig();
-            }
-            finally
-            {
-                _ioLock.Release();
             }
         }
 
         private void SaveConfig()
         {
-            _ioLock.Wait();
-            try
-            {
-                SaveConfigInternal();
-            }
-            finally
-            {
-                _ioLock.Release();
-            }
-        }
-
-        private void SaveConfigInternal()
-        {
-            var tempPath = $"{_configFilePath}.{Guid.NewGuid():N}.tmp";
             try
             {
                 string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
-                Directory.CreateDirectory(Path.GetDirectoryName(_configFilePath) ?? "");
-                // Write temp file with exclusive write, allowing concurrent readers
-                using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.Read))
-                using (var writer = new StreamWriter(fs, Encoding.UTF8))
-                {
-                    writer.Write(json);
-                }
-                File.Move(tempPath, _configFilePath, true);
+                File.WriteAllText(_configFilePath, json);
             }
             catch (Exception ex)
             {
-                try { Logger.Error($"Failed to save AppSettings: {ex.Message}", ex); }
-                catch (Exception logEx) { System.Diagnostics.Trace.WriteLine($"[YLproxy] AppSettings save log failed: {logEx.Message}"); }
-            }
-            finally
-            {
-                try
-                {
-                    if (File.Exists(tempPath))
-                        File.Delete(tempPath);
-                }
-                catch (Exception delEx)
-                {
-                    System.Diagnostics.Trace.WriteLine($"[YLproxy] Failed to delete temp settings file '{tempPath}': {delEx.Message}");
-                }
+                _saveErrors.Add($"Failed to save config: {ex.Message}");
             }
         }
 
@@ -179,9 +124,9 @@ namespace YLproxy.Infrastructure
             if (config.Logging.RetentionDays < 0)
                 throw new InvalidDataException("Logging.RetentionDays must be zero or greater.");
 
-            if (!new[] { "Debug", "Info", "Warn", "Error", "Fatal" }
+            if (!new[] { "Debug", "Info", "Warn", "Error" }
                     .Contains(config.Logging.MinLevel, StringComparer.OrdinalIgnoreCase))
-                throw new InvalidDataException("Logging.MinLevel must be Debug, Info, Warn, Error, or Fatal.");
+                throw new InvalidDataException("Logging.MinLevel must be Debug, Info, Warn, or Error.");
 
             if (config.Proxy is null || config.Proxy.PortRangeStart < 1 ||
                 config.Proxy.PortRangeEnd < config.Proxy.PortRangeStart || config.Proxy.PortRangeEnd > 65535 ||
@@ -208,8 +153,6 @@ namespace YLproxy.Infrastructure
         public LoggingConfig Logging { get; set; } = new LoggingConfig();
         public ProxyConfig Proxy { get; set; } = new ProxyConfig();
         public ThreeProxyConfig ThreeProxy { get; set; } = new ThreeProxyConfig();
-        public ApiConfig Api { get; set; } = new ApiConfig();
-        public StartupConfig Startup { get; set; } = new StartupConfig();
     }
 
     public class LoggingConfig
@@ -232,16 +175,5 @@ namespace YLproxy.Infrastructure
     {
         public string RuntimeDirectory { get; set; } = "runtime/3proxy";
         public List<string> RequiredDlls { get; set; } = new List<string> { "FilePlugin.dll", "StringsPlugin.dll" };
-    }
-
-    public class ApiConfig
-    {
-        public int Port { get; set; } = 9100;
-        public string AccessToken { get; set; } = "ylproxy-api-token-change-me-in-production";
-    }
-
-    public class StartupConfig
-    {
-        public bool AutoStart { get; set; } = false;
     }
 }

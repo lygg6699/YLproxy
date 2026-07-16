@@ -13,6 +13,9 @@ namespace YLproxy.Infrastructure
         private readonly int _retentionDays;
         private readonly string _minLevel;
         private static readonly object _lock = new object();
+        private readonly List<string> _cleanupErrors = new();
+
+        public IReadOnlyList<string> CleanupErrors => _cleanupErrors.AsReadOnly();
 
         /// <summary>
         /// Matches DPAPI-encrypted credential blobs that may leak into log output.
@@ -157,7 +160,7 @@ namespace YLproxy.Infrastructure
                     return;
 
                 var files = Directory.GetFiles(_logDirectory, "log_*.txt");
-                var cutoffDate = DateTime.Now.Date.AddDays(-_retentionDays);
+                var cutoffDate = DateTime.Now.AddDays(-_retentionDays);
 
                 foreach (var file in files)
                 {
@@ -171,13 +174,13 @@ namespace YLproxy.Infrastructure
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Trace.WriteLine($"[YLproxy] Failed to clean up old log file '{file}': {ex.Message}");
+                        _cleanupErrors.Add($"Failed to clean up log file '{file}': {ex.Message}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine($"[YLproxy] Log cleanup directory scan failed: {ex.Message}");
+                _cleanupErrors.Add($"Log cleanup directory enumeration failed: {ex.Message}");
             }
         }
     }

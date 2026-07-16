@@ -1,31 +1,27 @@
-## 变更说明
+### 变更摘要
+（简要描述本次 PR 做了什么）
 
-<!-- 简要说明本 PR 的目标、实现方式和影响范围。 -->
+### 关联 Issue
+（关联的 Issue 编号，如 Fixes #123）
 
-## 质量门禁自检
+### 变更类型
+- [ ] Bug 修复
+- [ ] 新功能
+- [ ] 重构（不改变功能）
+- [ ] 文档更新
+- [ ] 测试
+- [ ] CI/CD 变更
 
-- [ ] 已执行 `.\scripts\full-check.ps1`，结果通过；如跳过 Smoke Test，已在下方说明原因。
-- [ ] Debug 构建通过，且无编译错误或警告。
-- [ ] Release 构建通过，且 warnings-as-errors 校验通过。
-- [ ] 可空引用类型（Nullable）标注与行为一致，没有新增可空性警告。
-- [ ] 单元、集成和回归测试通过；必要时已检查覆盖率报告。
-- [ ] 已按 `.guard/review-rules.md` 完成全部适用的自检项。
-- [ ] 已同步相关 `docs/` 追踪文档。
-- [ ] 未提交真实代理凭据、用户数据、日志、构建产物或 3proxy 运行时二进制。
+### 检查清单
+- [ ] 代码通过 `dotnet build YLproxy.sln --configuration Release -warnaserror`
+- [ ] 代码通过 `dotnet test tests/YLproxy.Tests.csproj`
+- [ ] 代码通过 `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-workspace.ps1`
+- [ ] 新增功能有对应的测试用例
+- [ ] 文档已同步更新（如适用）
+- [ ] CHANGELOG 已更新（如适用）
 
-## 验证记录
+### 测试说明
+（描述如何验证本次变更）
 
-<!-- 填写执行过的命令及关键结果。 -->
-
-```text
-命令：
-结果：
-```
-
-## 风险与回滚
-
-<!-- 说明已知风险、兼容性影响和回滚方式；无风险请填写“无”。 -->
-
-## 补充说明
-
-<!-- 可附加截图、日志片段或其他上下文。日志中请先删除凭据和敏感信息。 -->
+### 截图/日志
+（如适用，附上 UI 截图或日志输出）

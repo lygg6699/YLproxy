@@ -1,3 +1,28 @@
+## P2 SQLite 数据层部署（2026-07-16）
+
+**部署状态：** 执行中
+
+### 变更内容
+
+- 新增 `YLproxy.Core.Data.SqliteProxyRepository` — SQLite CRUD 操作
+- 新增 `YLproxy.Core.Data.DataMigrationService` — JSON → SQLite 迁移
+- 改造 `ProxyDataService` — 双写过渡期支持
+- 新增 `Microsoft.Data.Sqlite` NuGet 依赖
+- 新增 SQLite 迁移单元测试
+- 新增 Windows 服务安装脚本 `scripts/install-service.ps1`
+- 新增发布打包脚本 `build/publish.ps1`
+
+### 数据库文件
+
+- 路径：`data/ylproxy.db`
+- 日志模式：WAL
+- 凭据存储：字段级 DPAPI 加密（与 JSON 一致）
+- 迁移标记：`data/.migration_completed`
+
+### 验证结果
+
+（执行师 1 完成后填入）
+
 ## GitHub Actions 云端质量门禁（2026-07-15）
 
 **状态：仓库工作流和管理模板已部署；远端分支保护等待仓库管理员权限**

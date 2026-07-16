@@ -143,6 +143,25 @@
 - [ ] P0：完成 3proxy 真实环境端到端验收，并形成可复现记录。
 - [ ] P1：完成 DPAPI 凭据加密、旧明文配置迁移和安全回归测试。
 - [ ] P2：补齐日志清理回归测试、ILogger 调用点审计和异常处理治理。
+
+## P2 日志、异常与数据可靠性（2026-07-16）
+
+**任务：** 统一 ILogger 输出、治理异常处理、SQLite 数据层实现
+
+**状态：执行中**
+
+- [ ] 1. ProxyProcessManager 接入 ILogger（33 处 Console 清理）
+- [ ] 2. AppSettingsService 接入 ILogger（5 处）
+- [ ] 3. TransparentCoalescingForwarder + ProxyDataService 接入 ILogger（2 处）
+- [ ] 4. FileLogger 自清理路径修复
+- [ ] 5. 空 catch 块治理
+- [ ] 6. 日志生命周期文档更新 + 3proxy 引擎日志清理
+- [ ] 7. 测试补齐（预期 ≥7 个新测试）
+- [ ] 8. SQLite 数据层实现
+- [ ] 9. SQLite 迁移单元测试
+- [ ] 10. ProxyDataService 改造
+- [ ] 11. 安装脚本与部署工具（install-service.ps1 等）
+- [ ] 12. docs/progress.md / docs/task-tracking.md / docs/deployment.md / docs/changelog.md 同步
 ## 独立 VS Code 工作区配置（2026-07-15）
 
 **任务：** 为 `YLproxy` 创建父目录级独立工作区配置

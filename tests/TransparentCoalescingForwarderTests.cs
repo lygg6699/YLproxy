@@ -5,6 +5,7 @@ using YLproxy.Proxy;
 
 namespace YLproxy.Tests;
 
+[Trait("Category", "Integration")]
 public sealed class TransparentCoalescingForwarderTests
 {
     [Fact]

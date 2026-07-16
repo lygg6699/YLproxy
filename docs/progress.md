@@ -256,3 +256,19 @@
 
 - ⏳ P0：完成真实 3proxy 单代理/多代理、端口监听、异常退出和回滚验收。
 - ⏳ P1：使用 Windows DPAPI 加密代理凭据并完成旧配置迁移。
+
+## P2：日志、异常与数据可靠性（2026-07-16）
+
+**状态：执行中**
+
+- [ ] 所有生产模块统一通过 ILogger 输出，移除不必要的 Console.WriteLine
+- [ ] FileLogger 自清理错误路径修复
+- [ ] 空 catch 块治理完成
+- [ ] 日志生命周期策略文档化（四种日志分类与保留策略）
+- [ ] 3proxy 引擎日志清理逻辑实现
+- [ ] 日志清理自动化测试补齐
+- [ ] SQLite 数据层实现（SqliteProxyRepository + DataMigrationService）
+- [ ] SQLite 迁移单元测试补齐
+- [ ] ProxyDataService 改造（双写过渡期）
+- [ ] Release 构建 0 Error/0 Warning
+- [ ] 全部测试通过（预期 ≥24 Passed）

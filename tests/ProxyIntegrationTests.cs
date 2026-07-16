@@ -9,11 +9,16 @@ using YLproxy.Utils;
 
 namespace YLproxy.Tests;
 
+[Trait("Category", "Integration")]
 public sealed class ProxyIntegrationTests
 {
     [Fact]
     public async Task ProxyProcess_ShouldForwardThroughAuthenticatedHttpParentAndCleanConfig()
     {
+        var exePath = PathResolver.ResolvePath("runtime", "3proxy", "bin64", "3proxy.exe");
+        if (!File.Exists(exePath))
+            return; // 3proxy runtime not available
+
         using var upstream = new TcpListener(IPAddress.Loopback, 0);
         upstream.Start();
         var upstreamPort = ((IPEndPoint)upstream.LocalEndpoint).Port;

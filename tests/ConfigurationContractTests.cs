@@ -5,6 +5,7 @@ using YLproxy.Utils;
 
 namespace YLproxy.Tests;
 
+[Trait("Category", "Unit")]
 public class ConfigurationContractTests
 {
     [Fact]

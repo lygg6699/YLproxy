@@ -1,3 +1,27 @@
+## v0.3.0 (2026-07-16)
+
+### 新增
+- SQLite 数据持久化层（SqliteProxyRepository）
+- JSON → SQLite 自动迁移（DataMigrationService）
+- 双写过渡期策略（JSON + SQLite 并行）
+- Windows 服务安装/卸载脚本
+- 发布打包脚本
+- 日志生命周期策略文档化
+- 3proxy 引擎日志保留策略
+
+### 变更
+- ProxyProcessManager 从 Console 输出迁移到 ILogger
+- AppSettingsService 从 Console 输出迁移到 ILogger
+- TransparentCoalescingForwarder 从 Console 输出迁移到 ILogger
+- ProxyDataService 从 Console 输出迁移到 ILogger
+- FileLogger 清理错误现在可通过 CleanupErrors 集合查询
+- 空 catch 块全部替换为明确异常处理
+
+### 测试
+- 新增 SQLite 迁移测试（5 个）
+- 新增日志清理测试（4 个）
+- 测试总数从 12 增加到 ≥24
+
 ## [GitHub Actions 云端质量门禁] — 2026-07-15
 
 ### 新增

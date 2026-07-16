@@ -1,6 +1,7 @@
 # Build outputs
 bin/
 obj/
+build/publish/
 reports/
 
 # IDE
@@ -16,8 +17,17 @@ runtime/3proxy/logs/
 data/*
 !data/README.md
 !data/config.example.json
+
+# SQLite database (user data, generated at runtime)
+data/ylproxy.db
+data/.migration_completed
+data/*.migration.bak
+
 logs/*
 !logs/README.md
+
+# 3proxy runtime logs
+runtime/3proxy/logs/*.log
 
 # Temporary
 *.tmp
