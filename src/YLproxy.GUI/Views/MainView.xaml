@@ -5,16 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:YLproxy.GUI"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="160"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="180"/>
         </Grid.RowDefinitions>
 
+        <!-- Row 0: Host Info + Operations -->
         <Grid Grid.Row="0" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="220"/>
@@ -22,66 +21,205 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <GroupBox Header="本机信息" Margin="0,0,0,0" Grid.Column="0">
+            <GroupBox Header="本机信息" Grid.Column="0">
                 <StackPanel Margin="10" VerticalAlignment="Top">
-                    <TextBlock Text="电脑名" Foreground="#555"/>
-                    <TextBlock Text="{Binding ComputerName}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBlock Text="电脑名" Foreground="{StaticResource FgDimBrush}"/>
+                    <TextBlock Text="{Binding ComputerName}" FontWeight="SemiBold" Margin="0,0,0,6"/>
 
-                    <TextBlock Text="IP 地址" Foreground="#555"/>
-                    <TextBlock Text="{Binding IpAddress}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBlock Text="IP 地址" Foreground="{StaticResource FgDimBrush}"/>
+                    <TextBlock Text="{Binding IpAddress}" FontWeight="SemiBold" Margin="0,0,0,6"/>
 
-                    <TextBlock Text="网络状态" Foreground="#555"/>
-                    <TextBlock Text="{Binding NetworkStatus}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBlock Text="网络状态" Foreground="{StaticResource FgDimBrush}"/>
+                    <TextBlock Text="{Binding NetworkStatus}" FontWeight="SemiBold" Margin="0,0,0,6"/>
 
-                    <TextBlock Text="时间" Foreground="#555"/>
+                    <TextBlock Text="时间" Foreground="{StaticResource FgDimBrush}"/>
                     <TextBlock Text="{Binding Now, StringFormat={}{0:HH:mm:ss}}" FontWeight="SemiBold"/>
                 </StackPanel>
             </GroupBox>
 
-            <GridSplitter Grid.Column="1" Width="10" HorizontalAlignment="Stretch" />
+            <GridSplitter Grid.Column="1" Width="10" HorizontalAlignment="Stretch"/>
 
-            <GroupBox Header="操作区" Grid.Column="2" Margin="0">
+            <GroupBox Header="操作区" Grid.Column="2">
                 <DockPanel LastChildFill="True" Margin="10">
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                        <Button Content="添加" Width="90" Margin="0,0,10,0" Command="{Binding AddCommand}"/>
-                        <Button Content="删除" Width="90" Margin="0,0,10,0" Command="{Binding RemoveCommand}"/>
-                        <Button Content="测试" Width="90" Margin="0,0,10,0" Command="{Binding TestCommand}" IsEnabled="{Binding IsTesting, Converter={StaticResource InverseBoolConverter}}"/>
-                        <Button Content="启动" Width="90" Margin="0,0,10,0" Command="{Binding StartCommand}" IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBoolConverter}}"/>
-                        <Button Content="停止" Width="90" Command="{Binding StopCommand}" IsEnabled="{Binding IsStopping, Converter={StaticResource InverseBoolConverter}}"/>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0,0,0,4">
+                        <Button Content="添加" Width="72" Margin="0,0,6,0" Command="{Binding AddCommand}" ToolTip="添加新代理"/>
+                        <Button Content="删除" Width="72" Margin="0,0,6,0" Command="{Binding RemoveCommand}" ToolTip="删除选中的代理"/>
+                        <Button Content="测试" Width="72" Margin="0,0,6,0" ToolTip="测试选中的代理"
+                                Command="{Binding TestCommand}"
+                                IsEnabled="{Binding IsTesting, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="启动" Width="72" Margin="0,0,6,0"
+                                Command="{Binding StartCommand}"
+                                IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="停止" Width="72" Margin="0,0,6,0"
+                                Command="{Binding StopCommand}"
+                                IsEnabled="{Binding IsStopping, Converter={StaticResource InverseBoolConverter}}"/>
                     </StackPanel>
 
-                    <TextBlock Text="(Phase 6) 已接入添加/删除/测试/启动/停止功能。" Foreground="#666"/>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0,4,0,4">
+                        <Button Content="批量启动" Width="72" Margin="0,0,6,0" ToolTip="启动所有选中的代理"
+                                Command="{Binding BatchStartCommand}"
+                                IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="批量停止" Width="72" Margin="0,0,6,0" ToolTip="停止所有选中的代理"
+                                Command="{Binding BatchStopCommand}"
+                                IsEnabled="{Binding IsStopping, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="导出" Width="56" Margin="0,0,6,0" ToolTip="导出代理列表到JSON文件"
+                                Command="{Binding ExportCommand}"
+                                IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Content="导入" Width="56" Margin="0,0,6,0" ToolTip="从JSON文件导入代理列表"
+                                Command="{Binding ImportCommand}"
+                                IsEnabled="{Binding IsImporting, Converter={StaticResource InverseBoolConverter}}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource FgDimBrush}"
+                               FontSize="11" VerticalAlignment="Bottom"/>
                 </DockPanel>
             </GroupBox>
         </Grid>
 
-        <GroupBox Grid.Row="1" Margin="10" Header="代理列表">
-            <DataGrid ItemsSource="{Binding Proxies}" AutoGenerateColumns="False"
-                      SelectionMode="Single" SelectedItem="{Binding SelectedProxy, Mode=TwoWay}"
-                      HeadersVisibility="Column" IsReadOnly="True">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="编号" Binding="{Binding Id}" Width="80"/>
-                    <DataGridTextColumn Header="上游IP" Binding="{Binding RemoteHost}" Width="*"/>
-                    <DataGridTextColumn Header="上游端口" Binding="{Binding RemotePort}" Width="100"/>
-                    <DataGridTextColumn Header="账号" Binding="{Binding Username}" Width="150"/>
-                    <DataGridTextColumn Header="本地IP" Binding="{Binding LocalHost}" Width="150"/>
-                    <DataGridTextColumn Header="本地端口" Binding="{Binding LocalPort}" Width="100"/>
-                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="120"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </GroupBox>
+        <!-- Row 1: Dashboard Stats Bar -->
+        <Border Grid.Row="1" Margin="10,0,10,6" Padding="8,6" Background="{StaticResource HeaderBackgroundBrush}" CornerRadius="4">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                    <TextBlock Text="总计：" Foreground="{StaticResource FgDimBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalCount}" FontWeight="Bold" FontSize="16"
+                               Foreground="{StaticResource FgPrimaryBrush}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                    <Ellipse Width="10" Height="10" Fill="{StaticResource SuccessBrush}" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="运行中：" Foreground="{StaticResource FgDimBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RunningCount}" FontWeight="Bold" FontSize="16"
+                               Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                    <Ellipse Width="10" Height="10" Fill="{StaticResource FgDimBrush}" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="已停止：" Foreground="{StaticResource FgDimBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StoppedCount}" FontWeight="Bold" FontSize="16"
+                               Foreground="{StaticResource FgDimBrush}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="10" Height="10" Fill="{StaticResource ErrorBrush}" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="失败：" Foreground="{StaticResource FgDimBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding FailedCount}" FontWeight="Bold" FontSize="16"
+                               Foreground="{StaticResource ErrorBrush}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
 
-        <GroupBox Grid.Row="2" Margin="10" Header="运行日志">
+        <!-- Row 2: Proxy List with Search -->
+        <GroupBox Grid.Row="2" Margin="10,0" Header="代理列表">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="{StaticResource BgDarkBrush}" Padding="4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="SearchBox" Grid.Column="0"
+                                 Background="{StaticResource BgInputBrush}" Foreground="{StaticResource FgPrimaryBrush}"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Padding="6,4"/>
+                        <TextBlock Grid.Column="0" Text="🔍 搜索代理名称、IP、用户名..."
+                                   Foreground="{StaticResource FgMutedBrush}" IsHitTestVisible="False"
+                                   Padding="8,4" VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchText}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <Button Grid.Column="1" Content="✕" Width="28" Height="24"
+                                Background="Transparent" Foreground="{StaticResource FgDimBrush}" BorderThickness="0"
+                                Padding="0" FontSize="14"
+                                Command="{Binding ClearSearchCommand}"/>
+                    </Grid>
+                </Border>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredProxies}"
+                          AutoGenerateColumns="False"
+                          SelectionMode="Extended"
+                          SelectionChanged="DataGrid_SelectionChanged"
+                          HeadersVisibility="Column" IsReadOnly="True"
+                          AlternationCount="2">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="启动" Command="{Binding PlacementTarget.DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            <MenuItem Header="停止" Command="{Binding PlacementTarget.DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            <MenuItem Header="测试" Command="{Binding PlacementTarget.DataContext.TestCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            <Separator/>
+                            <MenuItem Header="删除" Command="{Binding PlacementTarget.DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="编号" Binding="{Binding Id}" Width="60"/>
+                        <DataGridTextColumn Header="分组" Binding="{Binding Group}" Width="70"/>
+                        <DataGridTextColumn Header="代理名称" Binding="{Binding Name}" Width="110"/>
+                        <DataGridTextColumn Header="上游IP" Binding="{Binding RemoteHost}" Width="*"/>
+                        <DataGridTextColumn Header="上游端口" Binding="{Binding RemotePort}" Width="80"/>
+                        <DataGridTextColumn Header="账号" Binding="{Binding Username}" Width="100"/>
+                        <DataGridTextColumn Header="本地IP" Binding="{Binding LocalHost}" Width="110"/>
+                        <DataGridTextColumn Header="本地端口" Binding="{Binding LocalPort}" Width="80"/>
+                        <DataGridTemplateColumn Header="状态" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="3" Padding="6,2"
+                                            Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
+                                        <TextBlock Text="{Binding Status}" Foreground="White" FontSize="11"
+                                                   HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+
+        <!-- Row 3: Log Panel -->
+        <GroupBox Grid.Row="3" Margin="10" Header="运行日志">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" ItemsSource="{Binding Logs}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-                <Button Grid.Row="1" Content="清空日志" Width="90" Height="24" 
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,4">
+                    <TextBlock Text="级别：" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource FgDimBrush}" Margin="0,0,6,0"/>
+                    <ComboBox Width="90" Height="22"
+                              ItemsSource="{Binding LogLevels}"
+                              SelectedItem="{Binding SelectedLogLevel}"
+                              FontSize="11"/>
+                </StackPanel>
+
+                <ListView Grid.Row="1" x:Name="LogListView"
+                          ItemsSource="{Binding FilteredLogs}"
+                          Background="{StaticResource BgDarkBrush}" Foreground="{StaticResource FgPrimaryBrush}"
+                          BorderThickness="0"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          VirtualizingPanel.ScrollUnit="Pixel">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Text}"
+                                       Foreground="{Binding Text, Converter={StaticResource LogLevelToColorConverter}}"
+                                       FontFamily="Consolas" FontSize="11"
+                                       Padding="2,0" TextWrapping="NoWrap"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Button Grid.Row="2" Content="清空日志" Width="80" Height="24"
                         Command="{Binding ClearLogCommand}" HorizontalAlignment="Right" Margin="0,4,0,0"/>
             </Grid>
         </GroupBox>
     </Grid>
 </UserControl>
-

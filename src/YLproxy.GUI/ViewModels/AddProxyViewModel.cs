@@ -49,6 +49,13 @@ public sealed class AddProxyViewModel : ViewModelBase
         set => SetProperty(ref _password, value);
     }
 
+    private string _group = string.Empty;
+    public string Group
+    {
+        get => _group;
+        set => SetProperty(ref _group, value);
+    }
+
     private bool _isAutoPort = true;
     public bool IsAutoPort
     {
@@ -176,6 +183,7 @@ public sealed class AddProxyViewModel : ViewModelBase
             RemotePort = remotePort,
             Username = Username ?? string.Empty,
             Password = Password ?? string.Empty,
+            Group = (Group ?? string.Empty).Trim(),
             LocalHost = localIp,
             LocalPort = localPort,
             Status = ProxyStatus.Stopped,
@@ -214,9 +222,9 @@ public sealed class AddProxyViewModel : ViewModelBase
                     return ip.ToString();
             }
         }
-        catch
+        catch (Exception ex) when (ex is not System.OperationCanceledException)
         {
-            // ignore
+            System.Diagnostics.Trace.WriteLine($"[YLproxy] AddProxy GetBestLocalIp failed: {ex.Message}");
         }
 
         return null;

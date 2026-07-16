@@ -6,12 +6,13 @@
         xmlns:local="clr-namespace:YLproxy.GUI.Views"
         mc:Ignorable="d"
         Title="添加代理"
-        Height="450" Width="500"
+        Height="500" Width="500"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -30,50 +31,56 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,10" FontWeight="SemiBold" FontSize="16" Text="请输入代理信息"/>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,10" FontWeight="SemiBold" FontSize="16"
+                   Text="请输入代理信息" Foreground="{StaticResource FgPrimaryBrush}"/>
 
         <!-- Name -->
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="代理名称" Foreground="#555"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="代理名称" Foreground="{StaticResource FgDimBrush}"/>
         <TextBox Grid.Row="1" Grid.Column="1" Margin="0,8,0,0"
                  Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- RemoteHost -->
-        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="服务器IP" Foreground="#555"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="服务器IP" Foreground="{StaticResource FgDimBrush}"/>
         <TextBox Grid.Row="2" Grid.Column="1" Margin="0,8,0,0"
                  Text="{Binding RemoteHost, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- RemotePort -->
-        <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="服务器端口" Foreground="#555"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="服务器端口" Foreground="{StaticResource FgDimBrush}"/>
         <TextBox Grid.Row="3" Grid.Column="1" Margin="0,8,0,0"
                  Text="{Binding RemotePortText, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- Username -->
-        <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="用户名" Foreground="#555"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="用户名" Foreground="{StaticResource FgDimBrush}"/>
         <TextBox Grid.Row="4" Grid.Column="1" Margin="0,8,0,0"
                  Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- Password -->
-        <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="密码" Foreground="#555"/>
-<PasswordBox Grid.Row="5" Grid.Column="1" Margin="0,8,0,0" PasswordChanged="OnPasswordChanged"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="密码" Foreground="{StaticResource FgDimBrush}"/>
+        <PasswordBox Grid.Row="5" Grid.Column="1" Margin="0,8,0,0" PasswordChanged="OnPasswordChanged"/>
+
+        <!-- Group -->
+        <TextBlock Grid.Row="6" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="分组（可选）" Foreground="{StaticResource FgDimBrush}"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Margin="0,8,0,0"
+                 Text="{Binding Group, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- AutoPort -->
-        <CheckBox Grid.Row="6" Grid.ColumnSpan="2" Margin="0,10,0,0"
+        <CheckBox Grid.Row="7" Grid.ColumnSpan="2" Margin="0,10,0,0"
                   Content="自动分配本地端口"
                   IsChecked="{Binding IsAutoPort, UpdateSourceTrigger=PropertyChanged}"/>
 
         <!-- LocalPort -->
-        <TextBlock Grid.Row="7" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="本地端口" Foreground="#555"/>
-<TextBox Grid.Row="7" Grid.Column="1" Margin="0,8,0,0"
+        <TextBlock Grid.Row="8" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="本地端口" Foreground="{StaticResource FgDimBrush}"/>
+        <TextBox Grid.Row="8" Grid.Column="1" Margin="0,8,0,0"
                  Text="{Binding LocalPortText, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <!-- Validation error -->
-        <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Margin="0,10,0,0" Foreground="#B00020" TextWrapping="Wrap" Text="{Binding ValidationMessage}"/>
+        <!-- Validation message -->
+        <TextBlock Grid.Row="9" Grid.ColumnSpan="2" Margin="0,10,0,0" Foreground="{StaticResource ErrorBrush}"
+                   TextWrapping="Wrap" Text="{Binding ValidationMessage}"/>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+        <StackPanel Grid.Row="11" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
             <Button Content="取消" Width="90" Margin="0,0,10,0" IsCancel="True" Click="OnCancelClicked"/>
-            <Button Content="确定" Width="90" Command="{Binding ConfirmCommand}"/>
+            <Button Content="确定" Width="90" Command="{Binding ConfirmCommand}" IsDefault="True"/>
         </StackPanel>
     </Grid>
 </Window>
-

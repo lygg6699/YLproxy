@@ -12,6 +12,8 @@ public sealed class ProxyItem : INotifyPropertyChanged
 
     public string Name { get; init; } = string.Empty;
 
+    public string Group { get; init; } = string.Empty;
+
     public string RemoteHost { get; init; } = string.Empty;
     public int RemotePort { get; init; }
 

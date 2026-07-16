@@ -1,0 +1,103 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dotnet: restore",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "restore",
+        "YLproxy.sln"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "dotnet: build (Debug)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "YLproxy.sln",
+        "-c",
+        "Debug",
+        "-warnaserror"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "dotnet: build (Release)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "YLproxy.sln",
+        "-c",
+        "Release",
+        "-warnaserror"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "dotnet: test (Debug)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/YLproxy.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-build",
+        "--verbosity",
+        "minimal"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "test"
+    },
+    {
+      "label": "dotnet: test (Release)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "tests/YLproxy.Tests.csproj",
+        "-c",
+        "Release",
+        "--no-build",
+        "--verbosity",
+        "minimal"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "test"
+    },
+    {
+      "label": "dotnet: clean",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "YLproxy.sln",
+        "-c",
+        "Debug"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "dotnet: full-check (scripts/full-check.ps1)",
+      "type": "process",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts/full-check.ps1"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
+}
+
