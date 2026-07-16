@@ -9,6 +9,7 @@ using YLproxy.Proxy;
 
 namespace YLproxy.Tests;
 
+[Trait("Category", "Unit")]
 public sealed class LoggingAndMonitorTests
 {
     [Fact]
@@ -19,9 +20,9 @@ public sealed class LoggingAndMonitorTests
 
         try
         {
-            var currentLog = Path.Combine(directory, "current.txt");
-            var recentLog = Path.Combine(directory, "recent.log");
-            var expiredLog = Path.Combine(directory, "expired.txt");
+            var currentLog = Path.Combine(directory, "log_current.txt");
+            var recentLog = Path.Combine(directory, "log_recent.txt");
+            var expiredLog = Path.Combine(directory, "log_expired.txt");
             var unrelatedFile = Path.Combine(directory, "notes.json");
             File.WriteAllText(currentLog, "current");
             File.WriteAllText(recentLog, "recent");

@@ -7,12 +7,14 @@ using YLproxy.Infrastructure;
 namespace YLproxy.Tests;
 
 [SupportedOSPlatform("windows")]
+[Trait("Category", "Unit")]
 public sealed class SecurityServiceTests
 {
     [Fact]
     public void DpapiSecurityService_ShouldRoundTripWithoutStoringPlaintext()
     {
-        Assert.True(OperatingSystem.IsWindows());
+        if (!OperatingSystem.IsWindows())
+            return; // DPAPI is Windows-only
 
         var service = new DpapiSecurityService();
         const string secret = "legacy-secret-42";
@@ -28,7 +30,8 @@ public sealed class SecurityServiceTests
     [Fact]
     public void ProxyDataSerializer_ShouldMigrateLegacyCredentials()
     {
-        Assert.True(OperatingSystem.IsWindows());
+        if (!OperatingSystem.IsWindows())
+            return; // DPAPI is Windows-only
 
         const string legacyJson = """
         {
@@ -78,7 +81,8 @@ public sealed class SecurityServiceTests
       [Fact]
       public void DpapiSecurityService_ShouldRejectMalformedProtectedPayload()
       {
-        Assert.True(OperatingSystem.IsWindows());
+        if (!OperatingSystem.IsWindows())
+            return; // DPAPI is Windows-only
 
         var service = new DpapiSecurityService();
 

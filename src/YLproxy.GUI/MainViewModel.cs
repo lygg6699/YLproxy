@@ -113,7 +113,7 @@ public sealed class MainViewModel : ViewModelBase
         _logger = LoggerFactory.CreateLogger();
         _proxyConfig = _settingsService.GetSection<GlobalProxyConfig>("Proxy");
         _threeProxyConfig = _settingsService.GetSection<GlobalThreeProxyConfig>("ThreeProxy");
-        YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig);
+        YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig, _logger);
 
         InitFromConfig();
         LoadHostInfo();
@@ -131,7 +131,8 @@ public sealed class MainViewModel : ViewModelBase
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
             refreshAction: RefreshDataGrid,
-            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)));
+            checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)),
+            logger: _logger);
 
         _timer = new Timer(_ => Tick(), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }

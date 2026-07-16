@@ -1,0 +1,25 @@
+{
+  "name": "YLproxy Dev",
+  "image": "mcr.microsoft.com/dotnet/sdk:10.0",
+  "features": {
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "files.encoding": "utf8",
+        "files.autoGuessEncoding": false,
+        "terminal.integrated.env.linux": {
+          "DOTNET_CLI_UI_LANGUAGE": "en-US"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "dotnet restore YLproxy.sln",
+  "remoteUser": "root"
+}

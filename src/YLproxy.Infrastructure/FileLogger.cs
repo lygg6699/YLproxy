@@ -12,6 +12,9 @@ namespace YLproxy.Infrastructure
         private readonly int _retentionDays;
         private readonly string _minLevel;
         private static readonly object _lock = new object();
+        private readonly List<string> _cleanupErrors = new();
+
+        public IReadOnlyList<string> CleanupErrors => _cleanupErrors.AsReadOnly();
 
         public FileLogger(string logDirectory, int retentionDays, string minLevel)
         {
@@ -119,7 +122,7 @@ namespace YLproxy.Infrastructure
             WriteLog("FATAL", message, exception);
         }
 
-        private void CleanupOldLogs()
+        public void CleanupOldLogs()
         {
             try
             {
@@ -134,20 +137,20 @@ namespace YLproxy.Infrastructure
                     try
                     {
                         var fileInfo = new FileInfo(file);
-                        if (fileInfo.CreationTime < cutoffDate)
+                        if (fileInfo.LastWriteTime < cutoffDate)
                         {
                             File.Delete(file);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Ignore errors during cleanup
+                        _cleanupErrors.Add($"Failed to clean up log file '{file}': {ex.Message}");
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore errors during cleanup
+                _cleanupErrors.Add($"Log cleanup directory enumeration failed: {ex.Message}");
             }
         }
     }

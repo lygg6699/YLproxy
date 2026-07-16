@@ -13,6 +13,11 @@ namespace YLproxy.Infrastructure
         private readonly string _configFilePath;
         private AppSettingsConfig _config = new AppSettingsConfig();
         private readonly FileSystemWatcher _watcher;
+        private readonly List<string> _loadErrors = new();
+        private readonly List<string> _saveErrors = new();
+
+        public IReadOnlyList<string> LoadErrors => _loadErrors.AsReadOnly();
+        public IReadOnlyList<string> SaveErrors => _saveErrors.AsReadOnly();
 
         public AppSettingsService(string configFilePath = "AppSettings.json")
         {
@@ -78,8 +83,9 @@ namespace YLproxy.Infrastructure
                     SaveConfig();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _loadErrors.Add($"Failed to load config: {ex.Message}");
                 _config = new AppSettingsConfig();
             }
         }
@@ -91,8 +97,9 @@ namespace YLproxy.Infrastructure
                 string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(_configFilePath, json);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _saveErrors.Add($"Failed to save config: {ex.Message}");
             }
         }
 
