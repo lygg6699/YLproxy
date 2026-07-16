@@ -1,4 +1,6 @@
 using System;
+using System.Text.Json;
+
 namespace YLproxy.Infrastructure
 {
     public class LoggerFactory
@@ -8,30 +10,46 @@ namespace YLproxy.Infrastructure
 
         public static ILogger CreateLogger()
         {
-            if (_logger == null)
+            if (_logger is not null)
+                return _logger;
+
+            lock (_lock)
             {
-                lock (_lock)
+                if (_logger is not null)
+                    return _logger;
+
+                // Read config directly to avoid circular dependency with AppSettingsService.
+                try
                 {
-                    if (_logger == null)
+                    var configPath = Utils.PathResolver.ResolvePath("AppSettings.json");
+                    if (System.IO.File.Exists(configPath))
                     {
-                        try
+                        var json = System.IO.File.ReadAllText(configPath);
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty("Logging", out var loggingEl))
                         {
-                            var settings = new AppSettingsService().GetSection<LoggingConfig>("Logging");
-                            _logger = new FileLogger(
-                                settings.LogDirectory,
-                                settings.RetentionDays,
-                                settings.MinLevel);
-                        }
-                        catch
-                        {
-                            // Fallback to default logger if configuration fails
-                            _logger = new FileLogger("logs", 30, "Info");
+                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                            var config = JsonSerializer.Deserialize<LoggingConfig>(
+                                loggingEl.GetRawText(), options);
+                            if (config is not null)
+                            {
+                                _logger = new FileLogger(
+                                    config.LogDirectory,
+                                    config.RetentionDays,
+                                    config.MinLevel);
+                                return _logger;
+                            }
                         }
                     }
                 }
+                catch
+                {
+                    // Use defaults if reading config fails.
+                }
+
+                _logger = new FileLogger("logs", 30, "Info");
+                return _logger;
             }
-            
-            return _logger!;
         }
     }
 }

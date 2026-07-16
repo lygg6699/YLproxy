@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using YLproxy.Models;
 using YLproxy.Utils;
@@ -44,6 +45,22 @@ namespace YLproxy.Infrastructure
             _watcher.EnableRaisingEvents = true;
         }
 
+        private ILogger? _logger;
+
+        private ILogger Logger
+        {
+            get
+            {
+                if (_logger is null)
+                {
+                    try { _logger = LoggerFactory.CreateLogger(); }
+                    catch { /* LoggerFactory failed — defer to stderr fallback */ }
+                    _logger ??= new FileLogger("logs", 30, "Info");
+                }
+                return _logger;
+            }
+        }
+
         public T GetSection<T>(string sectionName) where T : class, new()
         {
             return sectionName switch
@@ -78,21 +95,39 @@ namespace YLproxy.Infrastructure
                     SaveConfig();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                try { Logger.Warn($"Failed to load AppSettings, using defaults: {ex.Message}"); }
+                catch { /* final fallback */ }
                 _config = new AppSettingsConfig();
             }
         }
 
         private void SaveConfig()
         {
+            var tempPath = $"{_configFilePath}.{Guid.NewGuid():N}.tmp";
             try
             {
                 string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(_configFilePath, json);
+                Directory.CreateDirectory(Path.GetDirectoryName(_configFilePath) ?? "");
+                File.WriteAllText(tempPath, json, Encoding.UTF8);
+                File.Move(tempPath, _configFilePath, true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                try { Logger.Error($"Failed to save AppSettings: {ex.Message}", ex); }
+                catch { /* final fallback */ }
+            }
+            finally
+            {
+                try
+                {
+                    if (File.Exists(tempPath))
+                        File.Delete(tempPath);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -117,9 +152,9 @@ namespace YLproxy.Infrastructure
             if (config.Logging.RetentionDays < 0)
                 throw new InvalidDataException("Logging.RetentionDays must be zero or greater.");
 
-            if (!new[] { "Debug", "Info", "Warn", "Error" }
+            if (!new[] { "Debug", "Info", "Warn", "Error", "Fatal" }
                     .Contains(config.Logging.MinLevel, StringComparer.OrdinalIgnoreCase))
-                throw new InvalidDataException("Logging.MinLevel must be Debug, Info, Warn, or Error.");
+                throw new InvalidDataException("Logging.MinLevel must be Debug, Info, Warn, Error, or Fatal.");
 
             if (config.Proxy is null || config.Proxy.PortRangeStart < 1 ||
                 config.Proxy.PortRangeEnd < config.Proxy.PortRangeStart || config.Proxy.PortRangeEnd > 65535 ||
@@ -146,6 +181,8 @@ namespace YLproxy.Infrastructure
         public LoggingConfig Logging { get; set; } = new LoggingConfig();
         public ProxyConfig Proxy { get; set; } = new ProxyConfig();
         public ThreeProxyConfig ThreeProxy { get; set; } = new ThreeProxyConfig();
+        public ApiConfig Api { get; set; } = new ApiConfig();
+        public StartupConfig Startup { get; set; } = new StartupConfig();
     }
 
     public class LoggingConfig
@@ -168,5 +205,16 @@ namespace YLproxy.Infrastructure
     {
         public string RuntimeDirectory { get; set; } = "runtime/3proxy";
         public List<string> RequiredDlls { get; set; } = new List<string> { "FilePlugin.dll", "StringsPlugin.dll" };
+    }
+
+    public class ApiConfig
+    {
+        public int Port { get; set; } = 9100;
+        public string AccessToken { get; set; } = "ylproxy-api-token-change-me-in-production";
+    }
+
+    public class StartupConfig
+    {
+        public bool AutoStart { get; set; } = false;
     }
 }

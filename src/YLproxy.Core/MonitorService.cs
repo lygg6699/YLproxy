@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Proxy;
 
@@ -12,6 +13,7 @@ public sealed class MonitorService : IDisposable
     private readonly Func<IReadOnlyList<ProxyItem>> _getProxies;
     private readonly Action<string> _logAction;
     private readonly Action _refreshAction;
+    private readonly ILogger _logger;
     private bool _disposed;
 
     public MonitorService(
@@ -23,6 +25,7 @@ public sealed class MonitorService : IDisposable
         _getProxies = getProxies ?? throw new ArgumentNullException(nameof(getProxies));
         _logAction = logAction ?? throw new ArgumentNullException(nameof(logAction));
         _refreshAction = refreshAction ?? throw new ArgumentNullException(nameof(refreshAction));
+        _logger = LoggerFactory.CreateLogger();
         var interval = checkInterval ?? TimeSpan.FromSeconds(5);
         if (interval <= TimeSpan.Zero)
             throw new ArgumentOutOfRangeException(nameof(checkInterval));
@@ -40,8 +43,9 @@ public sealed class MonitorService : IDisposable
             {
                 proxies = _getProxies();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.Warn($"Monitor: failed to retrieve proxy list: {ex.Message}");
                 return;
             }
 
@@ -61,9 +65,9 @@ public sealed class MonitorService : IDisposable
                 {
                     isAlive = ProxyProcessManager.IsRunning(proxy);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Process tracking issue - treat as dead
+                    _logger.Warn($"Monitor: process check failed for proxy {proxy.Id}: {ex.Message}");
                 }
 
                 if (!isAlive)
@@ -79,9 +83,9 @@ public sealed class MonitorService : IDisposable
                 _refreshAction();
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Silently handle monitor exceptions to avoid crashing the timer
+            _logger.Error($"Monitor: unexpected error in monitor tick: {ex.Message}", ex);
         }
     }
 

@@ -16,6 +16,8 @@ public sealed class ProxyProcessManager
     // key: Proxy.Id
     private static readonly ConcurrentDictionary<int, Process> Processes = new();
 
+    private static readonly ILogger _logger = LoggerFactory.CreateLogger();
+
     public static void Configure(ThreeProxyConfig settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
@@ -42,9 +44,9 @@ public sealed class ProxyProcessManager
     public static void Ensure3ProxyDependencies()
     {
         var exePath = Get3ProxyExePath();
-        
-        Console.WriteLine($"[ProxyProcessManager] Checking 3proxy dependencies...");
-        Console.WriteLine($"[ProxyProcessManager] Checking main executable: {exePath}");
+
+        _logger.Debug($"Checking 3proxy dependencies...");
+        _logger.Debug($"Checking main executable: {exePath}");
 
         // 检查主执行文件
         if (!File.Exists(exePath))
@@ -52,45 +54,45 @@ public sealed class ProxyProcessManager
             string errorMsg = $"3proxy.exe not found at {exePath}. " +
                             $"Please ensure 3proxy is properly installed. " +
                             $"Expected location: {Path.GetDirectoryName(exePath)}";
-            Console.WriteLine($"[ProxyProcessManager] ERROR: {errorMsg}");
+            _logger.Error(errorMsg);
             throw new FileNotFoundException(errorMsg);
         }
-        
-        Console.WriteLine($"[ProxyProcessManager] Main executable found: {exePath}");
+
+        _logger.Debug($"Main executable found: {exePath}");
 
         // 检查必要的DLL依赖
         var dllDirectory = Path.GetDirectoryName(exePath)
             ?? throw new InvalidOperationException($"Unable to determine DLL directory for {exePath}");
-        
-        Console.WriteLine($"[ProxyProcessManager] Checking DLL dependencies in: {dllDirectory}");
+
+        _logger.Debug($"Checking DLL dependencies in: {dllDirectory}");
 
         foreach (var dll in ProxyRuntimeConfiguration.GetRequiredDlls())
         {
             var dllPath = Path.Combine(dllDirectory, dll);
-            Console.WriteLine($"[ProxyProcessManager] Checking dependency: {dllPath}");
-            
+            _logger.Debug($"Checking dependency: {dllPath}");
+
             if (!File.Exists(dllPath))
             {
                 string errorMsg = $"Required dependency {dll} not found at {dllPath}. " +
                                 $"Please ensure all 3proxy dependencies are present.";
-                Console.WriteLine($"[ProxyProcessManager] ERROR: {errorMsg}");
+                _logger.Error(errorMsg);
                 throw new FileNotFoundException(errorMsg);
             }
-            
-            Console.WriteLine($"[ProxyProcessManager] Dependency found: {dllPath}");
+
+            _logger.Debug($"Dependency found: {dllPath}");
         }
 
         // 确保配置和日志目录存在
         var configDir = Get3ProxyConfigDirectory();
         var logDir = Get3ProxyLogDirectory();
-        
-        Console.WriteLine($"[ProxyProcessManager] Ensuring config directory exists: {configDir}");
-        Console.WriteLine($"[ProxyProcessManager] Ensuring log directory exists: {logDir}");
-        
+
+        _logger.Debug($"Ensuring config directory exists: {configDir}");
+        _logger.Debug($"Ensuring log directory exists: {logDir}");
+
         Directory.CreateDirectory(configDir);
         Directory.CreateDirectory(logDir);
-        
-        Console.WriteLine($"[ProxyProcessManager] All 3proxy dependencies verified successfully.");
+
+        _logger.Debug($"All 3proxy dependencies verified successfully.");
     }
 
     /// <summary>
@@ -103,9 +105,9 @@ public sealed class ProxyProcessManager
         {
             throw new InvalidOperationException("Unable to determine 3proxy runtime directory");
         }
-        
+
         string exePath = Path.Combine(runtimePath, "bin64", "3proxy.exe");
-        Console.WriteLine($"[ProxyProcessManager] Resolved 3proxy.exe path: {exePath}");
+        _logger.Debug($"Resolved 3proxy.exe path: {exePath}");
         return exePath;
     }
 
@@ -152,8 +154,8 @@ public sealed class ProxyProcessManager
     {
         if (proxy is null) throw new ArgumentNullException(nameof(proxy));
 
-        Console.WriteLine($"[ProxyProcessManager] Starting proxy ID: {proxy.Id}");
-        
+        _logger.Debug($"Starting proxy ID: {proxy.Id}");
+
         // 添加依赖验证
         Ensure3ProxyDependencies();
 
@@ -162,7 +164,7 @@ public sealed class ProxyProcessManager
         {
             if (!existing.HasExited)
             {
-                Console.WriteLine($"[ProxyProcessManager] Proxy ID {proxy.Id} is already running.");
+                _logger.Debug($"Proxy ID {proxy.Id} is already running.");
                 return;
             }
 
@@ -182,7 +184,7 @@ public sealed class ProxyProcessManager
         try
         {
             var cfgText = ConfigGenerator.Generate(proxy);
-            Console.WriteLine($"[ProxyProcessManager] Writing config to: {cfgPath}");
+            _logger.Debug($"Writing config to: {cfgPath}");
             File.WriteAllText(cfgPath, cfgText);
 
             // Start 3proxy in its working directory so relative cfg path works.
@@ -190,8 +192,8 @@ public sealed class ProxyProcessManager
             if (!File.Exists(exePath))
                 throw new FileNotFoundException($"3proxy.exe not found: {exePath}");
 
-            Console.WriteLine($"[ProxyProcessManager] Starting 3proxy with arguments: cfg\\{proxy.Id}.cfg");
-            Console.WriteLine($"[ProxyProcessManager] Working directory: {Get3ProxyDirectory()}");
+            _logger.Debug($"Starting 3proxy with arguments: cfg\\{proxy.Id}.cfg");
+            _logger.Debug($"Working directory: {Get3ProxyDirectory()}");
 
             var psi = new ProcessStartInfo
             {
@@ -207,19 +209,22 @@ public sealed class ProxyProcessManager
             if (!process.Start())
                 throw new InvalidOperationException("Failed to start 3proxy process");
 
-            Console.WriteLine($"[ProxyProcessManager] 3proxy started successfully with PID: {process.Id}");
+            _logger.Debug($"3proxy started successfully with PID: {process.Id}");
             Processes[proxy.Id] = process;
             WaitForPort(process, proxy.LocalPort, TimeSpan.FromSeconds(5));
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.Error($"Failed to start proxy ID {proxy.Id}: {ex.Message}", ex);
+
             try
             {
                 if (process is not null && !process.HasExited)
                     process.Kill(true);
             }
-            catch
+            catch (Exception killEx)
             {
+                _logger.Warn($"Failed to kill process during cleanup: {killEx.Message}");
             }
 
             process?.Dispose();
@@ -240,10 +245,10 @@ public sealed class ProxyProcessManager
         {
             Ensure3ProxyDependencies();
         }
-        catch
+        catch (Exception ex)
         {
             // 如果依赖检查失败，认为进程不在运行中（安全策略）
-            Console.WriteLine($"[ProxyProcessManager] Dependency check failed for proxy {proxy?.Id ?? 0}, considering as not running.");
+            _logger.Warn($"Dependency check failed for proxy {proxy?.Id ?? 0}, considering as not running: {ex.Message}");
             if (Processes.TryRemove(proxyId, out var failedProcess))
                 failedProcess?.Dispose();
             TryDeleteConfigFile(configPath);
@@ -252,12 +257,12 @@ public sealed class ProxyProcessManager
 
         if (!Processes.TryGetValue(proxy.Id, out var process))
         {
-            Console.WriteLine($"[ProxyProcessManager] No process found for proxy ID: {proxy.Id}");
+            _logger.Debug($"No process found for proxy ID: {proxy.Id}");
             return false;
         }
 
         bool isRunning = !process.HasExited;
-        Console.WriteLine($"[ProxyProcessManager] Proxy ID {proxy.Id} is running: {isRunning} (HasExited: {process.HasExited})");
+        _logger.Debug($"Proxy ID {proxy.Id} is running: {isRunning} (HasExited: {process.HasExited})");
 
         if (!isRunning && Processes.TryRemove(proxy.Id, out var exitedProcess))
         {
@@ -272,11 +277,11 @@ public sealed class ProxyProcessManager
     {
         if (proxy is null) throw new ArgumentNullException(nameof(proxy));
 
-        Console.WriteLine($"[ProxyProcessManager] Stopping proxy ID: {proxy.Id}");
+        _logger.Debug($"Stopping proxy ID: {proxy.Id}");
 
         if (!Processes.TryGetValue(proxy.Id, out var process))
         {
-            Console.WriteLine($"[ProxyProcessManager] No process found to stop for proxy ID: {proxy.Id}");
+            _logger.Debug($"No process found to stop for proxy ID: {proxy.Id}");
             TryDeleteConfigFile(GetConfigPath(proxy));
             return;
         }
@@ -285,29 +290,29 @@ public sealed class ProxyProcessManager
         {
             if (!process.HasExited)
             {
-                Console.WriteLine($"[ProxyProcessManager] Killing 3proxy process with PID: {process.Id}");
+                _logger.Debug($"Killing 3proxy process with PID: {process.Id}");
                 // 3proxy doesn't provide an RPC in this integration; kill is the reliable option.
                 process.Kill(true);
 
                 // small wait to release port
-                Console.WriteLine($"[ProxyProcessManager] Waiting for process to exit...");
+                _logger.Debug($"Waiting for process to exit...");
                 for (var i = 0; i < 30 && !process.HasExited; i++)
                 {
                     Thread.Sleep(50);
                 }
-                
+
                 if (process.HasExited)
                 {
-                    Console.WriteLine($"[ProxyProcessManager] 3proxy process exited successfully.");
+                    _logger.Debug($"3proxy process exited successfully.");
                 }
                 else
                 {
-                    Console.WriteLine($"[ProxyProcessManager] Warning: 3proxy process did not exit after waiting.");
+                    _logger.Warn($"3proxy process did not exit after waiting.");
                 }
             }
             else
             {
-                Console.WriteLine($"[ProxyProcessManager] Process already exited for proxy ID: {proxy.Id}");
+                _logger.Debug($"Process already exited for proxy ID: {proxy.Id}");
             }
         }
         finally
@@ -315,7 +320,7 @@ public sealed class ProxyProcessManager
             Processes.TryRemove(proxy.Id, out _);
             TryDeleteConfigFile(GetConfigPath(proxy));
             process.Dispose();
-            Console.WriteLine($"[ProxyProcessManager] Removed proxy ID {proxy.Id} from process tracking.");
+            _logger.Debug($"Removed proxy ID {proxy.Id} from process tracking.");
         }
     }
 
@@ -328,7 +333,7 @@ public sealed class ProxyProcessManager
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ProxyProcessManager] Warning: unable to delete runtime config: {ex.Message}");
+            _logger.Warn($"Unable to delete runtime config: {ex.Message}");
         }
     }
 

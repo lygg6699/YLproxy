@@ -119,7 +119,7 @@ namespace YLproxy.Infrastructure
             WriteLog("FATAL", message, exception);
         }
 
-        private void CleanupOldLogs()
+        public void CleanupOldLogs()
         {
             try
             {
@@ -134,7 +134,7 @@ namespace YLproxy.Infrastructure
                     try
                     {
                         var fileInfo = new FileInfo(file);
-                        if (fileInfo.CreationTime < cutoffDate)
+                        if (fileInfo.LastWriteTime < cutoffDate)
                         {
                             File.Delete(file);
                         }

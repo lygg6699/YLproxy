@@ -8,5 +8,10 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <SatelliteResourceLanguages>en-US;zh-CN</SatelliteResourceLanguages>
+    <NoWarn>$(NoWarn);CS1591;NU1903</NoWarn>
   </PropertyGroup>
 </Project>
