@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace YLproxy.Infrastructure
 {
@@ -69,6 +70,69 @@ namespace YLproxy.Infrastructure
 
                     if (attempt < maxAttempts - 1)
                         Thread.Sleep(delayMs);
+                }
+            }
+
+            throw new AggregateException(
+                $"Operation failed after {maxAttempts} attempts.", exceptions);
+        }
+
+        /// <summary>
+        /// Executes an async action with a fixed-delay retry policy.
+        /// </summary>
+        public static async Task ExecuteAsync(Func<Task> action, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
+        {
+            ArgumentNullException.ThrowIfNull(action);
+            if (maxAttempts < 1) throw new ArgumentOutOfRangeException(nameof(maxAttempts));
+            if (delayMs < 0) throw new ArgumentOutOfRangeException(nameof(delayMs));
+
+            var exceptions = new System.Collections.Generic.List<Exception>();
+
+            for (var attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                try
+                {
+                    await action().ConfigureAwait(false);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                    logger?.Warn($"Retry attempt {attempt + 1}/{maxAttempts} failed: {ex.Message}");
+
+                    if (attempt < maxAttempts - 1)
+                        await Task.Delay(delayMs).ConfigureAwait(false);
+                }
+            }
+
+            throw new AggregateException(
+                $"Operation failed after {maxAttempts} attempts.", exceptions);
+        }
+
+        /// <summary>
+        /// Executes an async function with a fixed-delay retry policy.
+        /// </summary>
+        public static async Task<T> ExecuteAsync<T>(Func<Task<T>> func, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
+        {
+            ArgumentNullException.ThrowIfNull(func);
+            if (maxAttempts < 1) throw new ArgumentOutOfRangeException(nameof(maxAttempts));
+            if (delayMs < 0) throw new ArgumentOutOfRangeException(nameof(delayMs));
+
+            var exceptions = new System.Collections.Generic.List<Exception>();
+
+            for (var attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                try
+                {
+                    return await func().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                    logger?.Warn($"Retry attempt {attempt + 1}/{maxAttempts} failed: {ex.Message}");
+
+                    if (attempt < maxAttempts - 1)
+                        await Task.Delay(delayMs).ConfigureAwait(false);
                 }
             }
 

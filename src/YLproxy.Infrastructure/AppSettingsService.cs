@@ -87,7 +87,7 @@ namespace YLproxy.Infrastructure
             {
                 if (File.Exists(_configFilePath))
                 {
-                    string json = File.ReadAllText(_configFilePath);
+                    string json = SimpleRetry.Execute(() => File.ReadAllText(_configFilePath), maxAttempts: 3, delayMs: 100);
                     var config = JsonSerializer.Deserialize<AppSettingsConfig>(json) ?? new AppSettingsConfig();
                     Validate(config);
                     _config = config;

@@ -121,16 +121,29 @@ public sealed class ProxyDataService
                 return empty;
             }
 
-            var json = File.ReadAllText(ConfigPath);
+            return ReadAndDeserializeConfig();
+        }
+        finally
+        {
+            _ioLock.Release();
+        }
+    }
+
+    private AppConfig ReadAndDeserializeConfig()
+    {
+        try
+        {
+            var json = SimpleRetry.Execute(() => File.ReadAllText(ConfigPath), maxAttempts: 3, delayMs: 100, logger: _logger);
             var cfg = _serializer.Deserialize(json, out var requiresMigration);
             if (requiresMigration)
                 SaveInternal(cfg);
 
             return cfg;
         }
-        finally
+        catch (AggregateException ex)
         {
-            _ioLock.Release();
+            _logger.Error($"Failed to read config.json after retries: {ex.Message}", ex);
+            return new AppConfig();
         }
     }
 
@@ -221,16 +234,31 @@ public sealed class ProxyDataService
                 return empty;
             }
 
-            var json = await File.ReadAllTextAsync(ConfigPath, cancellationToken).ConfigureAwait(false);
+            return await ReadAndDeserializeConfigAsync(cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            _ioLock.Release();
+        }
+    }
+
+    private async Task<AppConfig> ReadAndDeserializeConfigAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var json = await SimpleRetry.ExecuteAsync(
+                () => File.ReadAllTextAsync(ConfigPath, cancellationToken),
+                maxAttempts: 3, delayMs: 100, logger: _logger).ConfigureAwait(false);
             var cfg = _serializer.Deserialize(json, out var requiresMigration);
             if (requiresMigration)
                 SaveInternal(cfg);
 
             return cfg;
         }
-        finally
+        catch (AggregateException ex)
         {
-            _ioLock.Release();
+            _logger.Error($"Failed to read config.json after retries: {ex.Message}", ex);
+            return new AppConfig();
         }
     }
 

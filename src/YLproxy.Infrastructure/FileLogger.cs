@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using YLproxy.Utils;
 
@@ -12,6 +13,14 @@ namespace YLproxy.Infrastructure
         private readonly int _retentionDays;
         private readonly string _minLevel;
         private static readonly object _lock = new object();
+
+        /// <summary>
+        /// Matches DPAPI-encrypted credential blobs that may leak into log output.
+        /// Pattern: dpapi:v1: followed by Base64 characters.
+        /// </summary>
+        private static readonly Regex _credentialPattern = new(
+            @"dpapi:v1:[A-Za-z0-9+/=]{20,}",
+            RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public FileLogger(string logDirectory, int retentionDays, string minLevel)
         {
@@ -52,21 +61,42 @@ namespace YLproxy.Infrastructure
             if (!IsLogLevelEnabled(level))
                 return;
 
+            // 脱敏：将 dpapi:v1:... 凭据替换为 [REDACTED]
+            message = Sanitize(message);
+
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string logLine = $"{timestamp} [{level}] {message}";
             
             if (exception != null)
             {
-                logLine += Environment.NewLine + $"Exception: {exception.Message}";
-                logLine += Environment.NewLine + $"StackTrace: {exception.StackTrace}";
+                var exMsg = Sanitize(exception.Message);
+                var exStack = Sanitize(exception.StackTrace ?? string.Empty);
+                logLine += Environment.NewLine + $"Exception: {exMsg}";
+                logLine += Environment.NewLine + $"StackTrace: {exStack}";
             }
 
             logLine += Environment.NewLine;
 
+            var bytes = Encoding.UTF8.GetBytes(logLine);
             lock (_lock)
             {
-                File.AppendAllText(GetLogFilePath(), logLine, Encoding.UTF8);
+                using (var fs = new FileStream(GetLogFilePath(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    fs.Write(bytes, 0, bytes.Length);
+                    fs.Flush(true);
+                }
             }
+        }
+
+        /// <summary>
+        /// 将日志中的 DPAPI 加密凭据替换为占位符，防止泄露。
+        /// </summary>
+        private static string Sanitize(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            return _credentialPattern.Replace(text, "[REDACTED]");
         }
 
         public void Debug(string message)

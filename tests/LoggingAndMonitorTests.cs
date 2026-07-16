@@ -206,7 +206,7 @@ public sealed class LoggingAndMonitorTests
 
         Thread.Sleep(50); // ensure flush
 
-        var currentLogPath = Path.Combine(directory, $"log_{DateTime.UtcNow:yyyyMMdd}.txt");
+        var currentLogPath = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
         Assert.True(File.Exists(currentLogPath));
         var allContent = File.ReadAllText(currentLogPath);
 

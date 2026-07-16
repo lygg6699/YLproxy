@@ -1,0 +1,281 @@
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using YLproxy.Infrastructure;
+using YLproxy.Models;
+
+namespace YLproxy.Proxy;
+
+/// <summary>
+/// .NET 托管的代理转发器——替代 3proxy parent http 认证不兼容问题。
+/// 客户端连入本地端口后，使用 HttpClient + WebProxy 通过上游代理转发请求，
+/// .NET 内置代理栈自动处理 407 挑战-响应、Basic/Digest/NTLM 等认证协商。
+/// </summary>
+public sealed class ManagedProxyForwarder : IDisposable
+{
+    private readonly TcpListener _listener;
+    private readonly HttpClient _upstreamClient;
+    private readonly ILogger _logger;
+    private readonly string _proxyName;
+    private readonly CancellationTokenSource _cts = new();
+    private int _disposed;
+
+    public ManagedProxyForwarder(ProxyItem proxy, ILogger? logger = null)
+    {
+        ArgumentNullException.ThrowIfNull(proxy);
+
+        _proxyName = proxy.Name ?? $"proxy-{proxy.Id}";
+        _logger = logger ?? LoggerFactory.CreateLogger();
+
+        var handler = new HttpClientHandler
+        {
+            Proxy = new WebProxy($"http://{proxy.RemoteHost}:{proxy.RemotePort}"),
+            UseProxy = true,
+            AllowAutoRedirect = false,
+        };
+
+        if (!string.IsNullOrEmpty(proxy.Username) && !string.IsNullOrEmpty(proxy.Password))
+        {
+            handler.Proxy!.Credentials = new NetworkCredential(proxy.Username, proxy.Password);
+            // 预认证：避免 407 往返，直接发送 Basic auth
+            handler.PreAuthenticate = true;
+            handler.DefaultProxyCredentials = handler.Proxy.Credentials;
+        }
+
+        _upstreamClient = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(30),
+        };
+
+        _listener = new TcpListener(IPAddress.Loopback, proxy.LocalPort);
+        LocalPort = proxy.LocalPort;
+    }
+
+    public int LocalPort { get; }
+
+    public void Start()
+    {
+        _listener.Start();
+        _ = AcceptLoopAsync();
+        _logger.Debug($"ManagedProxyForwarder [{_proxyName}] started on 127.0.0.1:{LocalPort}");
+    }
+
+    private async Task AcceptLoopAsync()
+    {
+        var token = _cts.Token;
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                TcpClient? client = null;
+                try { client = await _listener.AcceptTcpClientAsync(token).ConfigureAwait(false); }
+                catch (OperationCanceledException) { return; }
+                catch (ObjectDisposedException) { return; }
+                catch (SocketException) when (token.IsCancellationRequested) { return; }
+                catch { continue; }
+
+                _ = Task.Run(() => HandleClientAsync(client, token), token);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn($"ManagedProxyForwarder [{_proxyName}] accept loop: {ex.Message}");
+        }
+    }
+
+    private async Task HandleClientAsync(TcpClient client, CancellationToken token)
+    {
+        using (client)
+        {
+            try
+            {
+                var clientStream = client.GetStream();
+
+                // 读取客户端原始 HTTP 请求
+                var reqBuf = new byte[65536];
+                var totalRead = 0;
+                var headerEnd = -1;
+
+                while (headerEnd < 0 && totalRead < reqBuf.Length)
+                {
+                    var r = await clientStream.ReadAsync(reqBuf.AsMemory(totalRead, reqBuf.Length - totalRead), token).ConfigureAwait(false);
+                    if (r <= 0) break;
+                    totalRead += r;
+
+                    // 寻找 \r\n\r\n 头结束标记
+                    for (var i = 0; i <= totalRead - 4; i++)
+                    {
+                        if (reqBuf[i] == '\r' && reqBuf[i + 1] == '\n' && reqBuf[i + 2] == '\r' && reqBuf[i + 3] == '\n')
+                        {
+                            headerEnd = i + 4;
+                            break;
+                        }
+                    }
+
+                    if (totalRead > 65536) break;
+                }
+
+                if (totalRead == 0) return;
+
+                var headerText = headerEnd >= 0
+                    ? Encoding.ASCII.GetString(reqBuf, 0, headerEnd)
+                    : Encoding.ASCII.GetString(reqBuf, 0, totalRead);
+
+                var firstLine = headerText.Split("\r\n")[0];
+                var methodUrl = firstLine.Split(' ');
+
+                if (methodUrl.Length < 2)
+                {
+                    await WriteError(clientStream, 400, "Bad Request");
+                    return;
+                }
+
+                var method = methodUrl[0];
+                var url = methodUrl[1];
+
+                // 如果是 CONNECT 隧道（HTTPS）
+                if (method.Equals("CONNECT", StringComparison.OrdinalIgnoreCase))
+                {
+                    await HandleConnectAsync(clientStream, url, token).ConfigureAwait(false);
+                    return;
+                }
+
+                // 普通 HTTP 方法：用 HttpClient 通过上游代理请求
+                using var request = new HttpRequestMessage(new HttpMethod(method), url);
+
+                // 复制头部（跳过 Host 和 Proxy-Authorization）
+                var lines = headerText.Split("\r\n");
+                for (var i = 1; i < lines.Length; i++)
+                {
+                    var line = lines[i];
+                    if (string.IsNullOrEmpty(line)) continue;
+                    var colon = line.IndexOf(':');
+                    if (colon < 0) continue;
+                    var name = line[..colon].Trim();
+                    if (name.Equals("Host", StringComparison.OrdinalIgnoreCase) ||
+                        name.Equals("Proxy-Authorization", StringComparison.OrdinalIgnoreCase) ||
+                        name.Equals("Proxy-Connection", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    try { request.Headers.TryAddWithoutValidation(name, line[(colon + 1)..].Trim()); }
+                    catch { }
+                }
+
+                // 如果有 body，写入
+                if (headerEnd >= 0 && headerEnd < totalRead)
+                {
+                    var bodyLen = totalRead - headerEnd;
+                    request.Content = new ByteArrayContent(reqBuf, headerEnd, bodyLen);
+                    // 复制 Content-Type
+                    var ct = headerText.Split("\r\n")
+                        .FirstOrDefault(l => l.StartsWith("Content-Type:", StringComparison.OrdinalIgnoreCase));
+                    if (ct is not null)
+                    {
+                        var ctVal = ct[(ct.IndexOf(':') + 1)..].Trim();
+                        request.Content.Headers.TryAddWithoutValidation("Content-Type", ctVal);
+                    }
+                }
+
+                using var response = await _upstreamClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+
+                // 将响应写回客户端
+                var respSb = new StringBuilder();
+                respSb.Append($"HTTP/1.1 {(int)response.StatusCode} {response.ReasonPhrase}\r\n");
+                foreach (var h in response.Headers)
+                    respSb.Append($"{h.Key}: {string.Join(", ", h.Value)}\r\n");
+                foreach (var h in response.Content.Headers)
+                    respSb.Append($"{h.Key}: {string.Join(", ", h.Value)}\r\n");
+                respSb.Append("\r\n");
+
+                var respBytes = Encoding.ASCII.GetBytes(respSb.ToString());
+                await clientStream.WriteAsync(respBytes, token).ConfigureAwait(false);
+
+                using var respStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+                await respStream.CopyToAsync(clientStream, token).ConfigureAwait(false);
+                await clientStream.FlushAsync(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                _logger.Debug($"ManagedProxyForwarder [{_proxyName}] client: {ex.Message}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 处理 CONNECT 隧道（HTTPS）：向上游代理发送 CONNECT 请求（带 Basic 认证），
+    /// 收到 200 后双向 relay。
+    /// </summary>
+    private async Task HandleConnectAsync(NetworkStream clientStream, string target, CancellationToken token)
+    {
+        using var upstream = new TcpClient();
+        await upstream.ConnectAsync(_upstreamClient.BaseAddress!.Host,
+            _upstreamClient.BaseAddress.Port, token).ConfigureAwait(false);
+        await using var upstreamStream = upstream.GetStream();
+
+        var connectReq = new StringBuilder();
+        connectReq.Append($"CONNECT {target} HTTP/1.1\r\n");
+        connectReq.Append($"Host: {target}\r\n");
+
+        if (_upstreamClient.DefaultRequestHeaders.Authorization is not null)
+        {
+            connectReq.Append("Proxy-Authorization: ");
+            connectReq.Append(_upstreamClient.DefaultRequestHeaders.Authorization.Scheme);
+            connectReq.Append(' ');
+            connectReq.Append(_upstreamClient.DefaultRequestHeaders.Authorization.Parameter);
+            connectReq.Append("\r\n");
+        }
+
+        connectReq.Append("\r\n");
+        var connectBytes = Encoding.ASCII.GetBytes(connectReq.ToString());
+        await upstreamStream.WriteAsync(connectBytes, token).ConfigureAwait(false);
+
+        var respBuf = new byte[4096];
+        var respLen = await upstreamStream.ReadAsync(respBuf.AsMemory(0, respBuf.Length), token).ConfigureAwait(false);
+        var respText = Encoding.ASCII.GetString(respBuf, 0, respLen);
+
+        if (respText.Contains("200"))
+        {
+            var ok = "HTTP/1.1 200 Connection Established\r\n\r\n"u8;
+            await clientStream.WriteAsync(ok.ToArray(), token).ConfigureAwait(false);
+
+            await Task.WhenAny(
+                clientStream.CopyToAsync(upstreamStream, token),
+                upstreamStream.CopyToAsync(clientStream, token)
+            ).ConfigureAwait(false);
+        }
+        else
+        {
+            var err = "HTTP/1.1 502 Bad Gateway\r\n\r\n"u8;
+            await clientStream.WriteAsync(err.ToArray(), token).ConfigureAwait(false);
+        }
+    }
+
+    private static async Task WriteError(NetworkStream stream, int code, string msg)
+    {
+        var resp = Encoding.ASCII.GetBytes($"HTTP/1.1 {code} {msg}\r\nContent-Length: 0\r\n\r\n");
+        try { await stream.WriteAsync(resp).ConfigureAwait(false); } catch { }
+    }
+
+    public void Stop()
+    {
+        try { _cts.Cancel(); } catch { }
+        try { _listener.Stop(); } catch { }
+    }
+
+    public bool IsListening
+    {
+        get
+        {
+            try { using var c = new TcpClient(); c.ConnectAsync(IPAddress.Loopback, LocalPort).Wait(TimeSpan.FromMilliseconds(200)); return true; }
+            catch { return false; }
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        Stop();
+        _cts.Dispose();
+        _upstreamClient.Dispose();
+    }
+}

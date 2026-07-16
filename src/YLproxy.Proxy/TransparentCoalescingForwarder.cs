@@ -145,15 +145,26 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
                 }
 
                 var headerPart = all.Slice(0, headerEndIndex);
-                var bodyAndRest = all.Slice(headerEndIndex);
+                // 跳过 \r\n\r\n 分隔符，bodyAndRest 从 body 起始位置开始
+                var bodyAndRest = all.Slice(headerEndIndex + HeaderTerminator.Length);
 
                 var rewrittenHeaderBytes = RewriteRequestHeader(headerPart, GetBasicAuthHeaderValue());
+                if (GetBasicAuthHeaderValue() is not null)
+                {
+                    Console.WriteLine("Upstream authentication injected");
+                }
                 var bodyBytes = bodyAndRest.ToArray();
 
                 await upstreamStream.WriteAsync(rewrittenHeaderBytes, token).ConfigureAwait(false);
                 if (bodyBytes.Length > 0)
                 {
-                    await upstreamStream.WriteAsync(bodyBytes, token).ConfigureAwait(false);
+                    // 合并 header + \\r\\n 分隔符 + body 为单次写入，满足 coalesce 语义
+                    var combined = new byte[rewrittenHeaderBytes.Length + 2 + bodyBytes.Length];
+                    rewrittenHeaderBytes.CopyTo(combined, 0);
+                    combined[rewrittenHeaderBytes.Length] = (byte)'\r';
+                    combined[rewrittenHeaderBytes.Length + 1] = (byte)'\n';
+                    bodyBytes.CopyTo(combined, rewrittenHeaderBytes.Length + 2);
+                    await upstreamStream.WriteAsync(combined, token).ConfigureAwait(false);
                 }
 
                 await clientStream.CopyToAsync(upstreamStream, token).ConfigureAwait(false);

@@ -101,7 +101,37 @@ public sealed class ProxyProcessManager
         Directory.CreateDirectory(configDir);
         Directory.CreateDirectory(logDir);
 
+        // 清理孤立 cfg 文件（进程已不再运行的残留配置）
+        CleanOrphanedConfigFiles(configDir);
+
         _logger.Debug($"All 3proxy dependencies verified successfully.");
+    }
+
+    /// <summary>
+    /// 清理 cfg 目录中不再有对应运行进程的孤立配置文件，避免明文凭据残留。
+    /// </summary>
+    private static void CleanOrphanedConfigFiles(string configDir)
+    {
+        try
+        {
+            var cfgFiles = Directory.GetFiles(configDir, "*.cfg");
+            foreach (var cfgFile in cfgFiles)
+            {
+                var fileName = Path.GetFileNameWithoutExtension(cfgFile);
+                if (!int.TryParse(fileName, out var proxyId))
+                    continue;
+
+                // 如果有活动的进程跟踪记录且进程仍在运行，保留 cfg
+                if (Processes.TryGetValue(proxyId, out var process) && !process.HasExited)
+                    continue;
+
+                TryDeleteConfigFile(cfgFile);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn($"Orphaned cfg cleanup scan failed: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -333,12 +363,15 @@ public sealed class ProxyProcessManager
     {
         try
         {
-            if (File.Exists(configPath))
-                File.Delete(configPath);
+            SimpleRetry.Execute(() =>
+            {
+                if (File.Exists(configPath))
+                    File.Delete(configPath);
+            }, maxAttempts: 3, delayMs: 50, logger: _logger);
         }
-        catch (Exception ex)
+        catch (AggregateException ex)
         {
-            _logger.Warn($"Unable to delete runtime config: {ex.Message}");
+            _logger.Warn($"Unable to delete runtime config after retries: {ex.Message}");
         }
     }
 
