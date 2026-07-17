@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -198,11 +199,11 @@ public sealed class ManagedProxyForwarder : IDisposable
 
                 // 将响应写回客户端
                 var respSb = new StringBuilder();
-                respSb.Append($"HTTP/1.1 {(int)response.StatusCode} {response.ReasonPhrase}\r\n");
+                respSb.Append(CultureInfo.InvariantCulture, $"HTTP/1.1 {(int)response.StatusCode} {response.ReasonPhrase}\r\n");
                 foreach (var h in response.Headers)
-                    respSb.Append($"{h.Key}: {string.Join(", ", h.Value)}\r\n");
+                    respSb.Append(CultureInfo.InvariantCulture, $"{h.Key}: {string.Join(", ", h.Value)}\r\n");
                 foreach (var h in response.Content.Headers)
-                    respSb.Append($"{h.Key}: {string.Join(", ", h.Value)}\r\n");
+                    respSb.Append(CultureInfo.InvariantCulture, $"{h.Key}: {string.Join(", ", h.Value)}\r\n");
                 respSb.Append("\r\n");
 
                 var respBytes = Encoding.ASCII.GetBytes(respSb.ToString());
@@ -246,9 +247,9 @@ public sealed class ManagedProxyForwarder : IDisposable
             var basicAuth = "Basic " + System.Convert.ToBase64String(authBytes);
 
             var retryReq = new StringBuilder();
-            retryReq.Append($"CONNECT {target} HTTP/1.1\r\n");
-            retryReq.Append($"Host: {target}\r\n");
-            retryReq.Append($"Proxy-Authorization: {basicAuth}\r\n");
+            retryReq.Append(CultureInfo.InvariantCulture, $"CONNECT {target} HTTP/1.1\r\n");
+            retryReq.Append(CultureInfo.InvariantCulture, $"Host: {target}\r\n");
+            retryReq.Append(CultureInfo.InvariantCulture, $"Proxy-Authorization: {basicAuth}\r\n");
             retryReq.Append("\r\n");
 
             var retryBytes = Encoding.ASCII.GetBytes(retryReq.ToString());
@@ -277,8 +278,8 @@ public sealed class ManagedProxyForwarder : IDisposable
     private string BuildConnectRequest(string target, bool addAuth)
     {
         var sb = new StringBuilder();
-        sb.Append($"CONNECT {target} HTTP/1.1\r\n");
-        sb.Append($"Host: {target}\r\n");
+        sb.Append(CultureInfo.InvariantCulture, $"CONNECT {target} HTTP/1.1\r\n");
+        sb.Append(CultureInfo.InvariantCulture, $"Host: {target}\r\n");
 
         if (addAuth && _upstreamClient.DefaultRequestHeaders.Authorization is not null)
         {

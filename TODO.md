@@ -1,43 +1,15 @@
-# YLproxy 部署现状与后续执行方案
+# TODO：提升覆盖率（ProxyTester / MonitorService / PreFlight 等）
 
-**更新时间：** 2026-07-17
-**当前基线：** P0–P11 全部完成，安全加固 + 架构优化 + 可观测性
-**版本基线：** 0.3.0
+**更新时间：2026-07-17**
 
-## 已完成 ✅
+## 目标
+把覆盖率中 `YLproxy.Core.ProxyTester`、`YLproxy.Core.MonitorService`、`YLproxy.Core.PreFlight/*` 等模块当前的大量 `hits=0` 分支补齐，且不破坏现有行为与 E2E 测试。
 
-| 阶段 | 内容 |
-|---|---|
-| P0 | SQLitePCLRaw 安全升级 + 0 Error/0 Warning |
-| P1 | DPAPI 迁移策略 + ProxyTester `PreAuthenticate` 避免 407 + CancellationToken |
-| P2 | 13 处空 catch 修复 + FileLogger 文件锁竞争修复 |
-| P3 | GUI 主题/右键菜单/导出/快捷键 + ProxyTester 可配置重试+指数退避+15s 超时 |
-| P4 | FileLogger 并发写入 + MonitorService TCP 健康检测 + 自动重启 + 指数退避 |
-| P5 | 孤立 cfg 清理 + 凭据脱敏 + AES-256-GCM 非 Windows 加密 |
-| P6 | CI pipeline (ci.yml) + Dependabot + 3proxy runtime 构建 |
-| P7 | 代理分组/标签 — UI ↔ JSON ↔ SQLite(含迁移) ↔ API 全链路持久化 |
-| P8 | Swagger/OpenAPI (Swashbuckle) — `/swagger` 文档 + Bearer auth |
-| **P9** | **安全加固**：API Token 首次启动自动生成随机密钥 · 测试凭据外置 `REAL_PROXY_CREDENTIALS` 环境变量 · fire-and-forget 加 `ContinueWith` 异常日志 · `SemaphoreSlim.Wait()`→`WaitAsync()` 防死锁 |
-| **P10** | **代码质量**：`MainViewModel` 移除死代码 + DRY `NetworkUtil.GetBestLocalIp()` · API `POST /proxies` 输入验证 (Name≤200 / Port 1-65535) · `Console.WriteLine`→`ILogger.Debug` |
-| **P11** | **可维护性**：`AppSettings.example.json` 补全 `Api`/`Startup` 段 · `TransparentCoalescingForwarder` 注入 `ILogger` · `StringWriterLogger` 测试适配 |
-| E2E | 5 真实代理端到端自动测试：6 Phase 全 PASS（凭据外置后 CI 安全） |
+## 计划步骤
+- [ ] 1) 为 `ProxyTester` 增加“可注入 HTTP 执行器/ClientFactory”（默认行为保持不变）
+- [ ] 2) 新增 `ProxyTesterTests`：覆盖 host 为空、认证信息不完整、取消/超时、HttpRequestException、通用异常、重试分支
+- [ ] 3) 新增 `MonitorServiceTests`：覆盖 enumerate 失败、isRunning 抛异常、端口不可连导致 Failed、auto-restart backoff/超限/重启失败
+- [ ] 4) 新增 `PreFlightTests`（含 AutoStartService）：覆盖 Passed/Errors/Warn 与 AutoStart 开关
+- [ ] 5) 如覆盖率仍不足：为 `ProxyDataService` 补齐 JSON/异常/异常清理等分支
+- [ ] 6) 跑 `dotnet test` + 重新生成 `coverage.cobertura.xml` 并验证覆盖率提升
 
-## 剩余手动配置项
-
-- [ ] **P6-配置**: GitHub 分支保护规则（Settings → Branches → Add rule → `main` → "Require status checks" → `CI / quality-gate`）
-- [ ] **E2E 凭据**: 设置环境变量 `REAL_PROXY_CREDENTIALS=host:port:user:pass,...` 以启用真实代理 E2E Phase 2-3
-
-> 以上为纯配置项，无需修改代码。
-
-## 架构改进摘要
-
-```
-P9-1  AppSettingsService.EnsureApiToken() → 随机 192-bit token (ylpx-...)
-P9-2  RealProxyEndToEnd → REAL_PROXY_CREDENTIALS env var (空=安全跳过)
-P9-3  ManagedProxyForwarder / TransparentCoalescingForwarder → ContinueWith(OnlyOnFaulted)
-P9-4  ProxyDataService → _ioLock.WaitAsync().GetAwaiter().GetResult()
-P10-2 ApiEndpoints POST /proxies → BadRequest(400) 参数校验
-P11-1 NetworkUtil.GetBestLocalIp() → 单一定义 (曾MainViewModel+AddProxyViewModel重复)
-```
-
-**40/40 测试通过，0 Error。**

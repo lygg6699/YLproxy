@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,7 +34,7 @@ namespace YLproxy.Infrastructure
                 ? Path.GetFullPath(logDirectory)
                 : PathResolver.ResolvePath(logDirectory);
             _retentionDays = retentionDays;
-            _minLevel = minLevel.ToUpper();
+            _minLevel = minLevel.ToUpper(CultureInfo.InvariantCulture);
             
             // Ensure log directory exists
             if (!Directory.Exists(_logDirectory))
@@ -47,7 +48,7 @@ namespace YLproxy.Infrastructure
 
         private string GetLogFilePath()
         {
-            string datePart = DateTime.Now.ToString("yyyyMMdd");
+            string datePart = DateTime.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
             return Path.Combine(_logDirectory, $"log_{datePart}.txt");
         }
 
@@ -55,7 +56,7 @@ namespace YLproxy.Infrastructure
         {
             var levels = new[] { "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
             int minLevelIndex = Array.IndexOf(levels, _minLevel);
-            int levelIndex = Array.IndexOf(levels, level.ToUpper());
+            int levelIndex = Array.IndexOf(levels, level.ToUpper(CultureInfo.InvariantCulture));
             
             return levelIndex >= minLevelIndex;
         }
@@ -68,7 +69,7 @@ namespace YLproxy.Infrastructure
             // 脱敏：将 dpapi:v1:... 凭据替换为 [REDACTED]
             message = Sanitize(message);
 
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             string logLine = $"{timestamp} [{level}] {message}";
             
             if (exception != null)

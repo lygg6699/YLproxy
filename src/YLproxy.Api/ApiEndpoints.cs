@@ -33,7 +33,7 @@ public static class ApiEndpoints
                 var svc = CreateSvc();
                 var cfg = svc.Load();
                 var dtos = cfg.Proxies.Select(MapToDto).ToList();
-                return Results.Ok(ApiResponse<List<ProxyDto>>.Ok(dtos));
+                return Results.Ok(ApiResponse.Ok(dtos));
             }
             catch (Exception ex) { _logger.Error($"GET /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse<List<ProxyDto>>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
@@ -50,7 +50,7 @@ public static class ApiEndpoints
                 var proxy = cfg.Proxies.FirstOrDefault(p => p.Id == id);
                 if (proxy is null)
                     return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
-                return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
+                return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
             }
             catch (Exception ex) { _logger.Error($"GET /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
@@ -122,7 +122,7 @@ public static class ApiEndpoints
                 cfg.Proxies.Add(item);
                 svc.Save(cfg);
                 _logger.Info($"API: added proxy {item.Id} ({item.RemoteHost}:{item.RemotePort})");
-                return Results.Created($"/api/proxies/{item.Id}", ApiResponse<ProxyDto>.Ok(MapToDto(item)));
+                return Results.Created($"/api/proxies/{item.Id}", ApiResponse.Ok(MapToDto(item)));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse<ProxyDto>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
@@ -145,7 +145,7 @@ public static class ApiEndpoints
 
                 svc.Save(cfg);
                 _logger.Info($"API: deleted proxy {id}");
-                return Results.Ok(ApiResponse<object>.Ok(new { deleted = true }));
+                return Results.Ok(ApiResponse.Ok(new { deleted = true }));
             }
             catch (Exception ex) { _logger.Error($"DELETE /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
@@ -196,7 +196,7 @@ public static class ApiEndpoints
                 ProxyProcessManager.Start(proxy);
                 svc.Save(cfg);
                 _logger.Info($"API: started proxy {id}");
-                return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
+                return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies/{id}/start: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
@@ -218,7 +218,7 @@ public static class ApiEndpoints
                 proxy.Status = ProxyStatus.Stopped;
                 svc.Save(cfg);
                 _logger.Info($"API: stopped proxy {id}");
-                return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
+                return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies/{id}/stop: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
@@ -232,7 +232,7 @@ public static class ApiEndpoints
             {
                 var svc = CreateSvc();
                 var cfg = svc.Load();
-                return Results.Ok(ApiResponse<object>.Ok(new
+                return Results.Ok(ApiResponse.Ok(new
                 {
                     total = cfg.Proxies.Count,
                     running = cfg.Proxies.Count(p => p.Status == ProxyStatus.Running),

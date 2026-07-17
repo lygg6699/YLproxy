@@ -6,9 +6,12 @@ public sealed class ApiResponse<T>
     public T? Data { get; set; }
     public string? Error { get; set; }
     public string? ErrorCode { get; set; }
+}
 
-    public static ApiResponse<T> Ok(T data) => new() { Success = true, Data = data };
-    public static ApiResponse<T> Fail(string error, string? errorCode = null) => new() { Success = false, Error = error, ErrorCode = errorCode };
+public static class ApiResponse
+{
+    public static ApiResponse<T> Ok<T>(T data) => new() { Success = true, Data = data };
+    public static ApiResponse<T> Fail<T>(string error, string? errorCode = null) => new() { Success = false, Error = error, ErrorCode = errorCode };
 }
 
 public sealed class ProxyDto

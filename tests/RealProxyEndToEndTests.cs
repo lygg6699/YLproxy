@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -168,7 +169,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
         }
         var passN = testResults.Count(r => r.Success);
         R($"  连通性: {passN}/{testResults.Count} 通过");
-        _report.AppendLine($"Phase 2 (连通性): {passN}/{testResults.Count} 通过");
+        _report.AppendLine(CultureInfo.InvariantCulture, $"Phase 2 (连通性): {passN}/{testResults.Count} 通过");
 
         // ═══ Phase 3: 代理生命周期 (启动→转发→停止) ═══
         R("");
@@ -241,7 +242,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             Assert.True(fwdGotResponse, $"转发链路应收到上游响应, 状态码={fwdStatusCode}, 延迟={fwdLat}ms");
             Assert.True(cfgGone, "cfg 文件应在 Stop 后删除");
             Assert.True(portFree, "端口应在 Stop 后释放");
-            _report.AppendLine($"Phase 3 (生命周期): PASS (上游响应{fwdStatusCode}, {fwdLat}ms, cfg清理OK, 端口释放OK)");
+            _report.AppendLine(CultureInfo.InvariantCulture, $"Phase 3 (生命周期): PASS (上游响应{fwdStatusCode}, {fwdLat}ms, cfg清理OK, 端口释放OK)");
         }
 
         // ═══ Phase 4: DPAPI 加密验证 ═══
