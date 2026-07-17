@@ -15,6 +15,7 @@ public sealed class ProxyProcessManager
 {
     // key: Proxy.Id
     private static readonly ConcurrentDictionary<int, Process> Processes = new();
+    private static readonly ConcurrentDictionary<int, ManagedProxyForwarder> Forwarders = new();
 
     private static readonly ILogger _logger = LoggerFactory.CreateLogger();
 
@@ -190,9 +191,6 @@ public sealed class ProxyProcessManager
 
         _logger.Debug($"Starting proxy ID: {proxy.Id}");
 
-        // 添加依赖验证
-        Ensure3ProxyDependencies();
-
         // Prevent double-start
         if (Processes.TryGetValue(proxy.Id, out var existing))
         {
@@ -209,14 +207,49 @@ public sealed class ProxyProcessManager
             }
         }
 
+        if (Forwarders.TryGetValue(proxy.Id, out var existingFwd))
+        {
+            if (existingFwd.IsListening)
+            {
+                _logger.Debug($"Proxy ID {proxy.Id} forwarder is already running.");
+                return;
+            }
+            Forwarders.TryRemove(proxy.Id, out _);
+            existingFwd.Dispose();
+        }
+
         if (!IsPortAvailable(proxy.LocalPort))
             throw new InvalidOperationException($"Local proxy port {proxy.LocalPort} is already in use.");
+
+        // 有凭据且上游非本地的代理优先使用 .NET ManagedProxyForwarder（正确处理 407 挑战-响应认证），
+        // 无凭据或本地 mock 上游使用 3proxy。
+        var isRemoteProxy = !string.IsNullOrEmpty(proxy.RemoteHost)
+            && !proxy.RemoteHost.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase)
+            && !proxy.RemoteHost.Equals("localhost", StringComparison.OrdinalIgnoreCase);
+
+        if (isRemoteProxy && !string.IsNullOrEmpty(proxy.Username) && !string.IsNullOrEmpty(proxy.Password))
+        {
+            try
+            {
+                var forwarder = new ManagedProxyForwarder(proxy, _logger);
+                forwarder.Start();
+                Forwarders[proxy.Id] = forwarder;
+                _logger.Info($"Proxy ID {proxy.Id} started via ManagedProxyForwarder on port {proxy.LocalPort}");
+                return;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn($"ManagedProxyForwarder failed for proxy ID {proxy.Id}, falling back to 3proxy: {ex.Message}");
+            }
+        }
 
         var cfgPath = GetConfigPath(proxy);
         Process? process = null;
 
         try
         {
+            Ensure3ProxyDependencies();
+
             var cfgText = ConfigGenerator.Generate(proxy);
             _logger.Debug($"Writing config to: {cfgPath}");
             File.WriteAllText(cfgPath, cfgText);
@@ -275,6 +308,13 @@ public sealed class ProxyProcessManager
         var proxyId = proxy.Id;
         var configPath = GetConfigPath(proxy);
 
+        // 检查 ManagedProxyForwarder
+        if (Forwarders.TryGetValue(proxy.Id, out var forwarder))
+        {
+            return forwarder.IsListening;
+        }
+
+        // 无 forwarder 时检查 3proxy 进程。
         // 添加依赖验证（虽然检查运行状态不严格需要exe，但保持一致性）
         try
         {
@@ -313,6 +353,15 @@ public sealed class ProxyProcessManager
         ArgumentNullException.ThrowIfNull(proxy);
 
         _logger.Debug($"Stopping proxy ID: {proxy.Id}");
+
+        // Stop ManagedProxyForwarder if it exists
+        if (Forwarders.TryRemove(proxy.Id, out var forwarder))
+        {
+            forwarder.Stop();
+            forwarder.Dispose();
+            _logger.Info($"Proxy ID {proxy.Id} forwarder stopped.");
+            return;
+        }
 
         if (!Processes.TryGetValue(proxy.Id, out var process))
         {

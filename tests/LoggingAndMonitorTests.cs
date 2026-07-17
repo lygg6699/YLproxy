@@ -31,8 +31,10 @@ public sealed class LoggingAndMonitorTests
             File.SetLastWriteTimeUtc(recentLog, DateTime.UtcNow.AddDays(-10));
             File.SetLastWriteTimeUtc(expiredLog, DateTime.UtcNow.AddDays(-40));
 
-            var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Info");
-            logger.CleanupOldLogs();
+            using (var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Info"))
+            {
+                logger.CleanupOldLogs();
+            }
 
             Assert.True(File.Exists(currentLog));
             Assert.True(File.Exists(recentLog));
@@ -118,7 +120,7 @@ public sealed class LoggingAndMonitorTests
     {
         using var logDir = new TempDirectory();
         var directory = logDir.Path;
-        var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug");
+        using var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug");
         var attemptCount = 0;
 
         var result = SimpleRetry.Execute(
@@ -180,8 +182,10 @@ public sealed class LoggingAndMonitorTests
             }
 
             // After releasing the lock, recreate logger to clean up.
-            var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Info");
-            logger.CleanupOldLogs();
+            using (var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Info"))
+            {
+                logger.CleanupOldLogs();
+            }
             Assert.False(File.Exists(expiredFile));
         }
         finally
@@ -197,14 +201,12 @@ public sealed class LoggingAndMonitorTests
         using var logDir = new TempDirectory();
         var directory = logDir.Path;
 
-        var debugLogger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug");
-        var warnLogger = new FileLogger(directory, retentionDays: 30, minLevel: "Warn");
-
-        debugLogger.Debug("debug message");
-        debugLogger.Info("info message");
-        debugLogger.Warn("warn message");
-
-        Thread.Sleep(50); // ensure flush
+        using (var debugLogger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug"))
+        {
+            debugLogger.Debug("debug message");
+            debugLogger.Info("info message");
+            debugLogger.Warn("warn message");
+        }
 
         var currentLogPath = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
         Assert.True(File.Exists(currentLogPath));
@@ -217,11 +219,12 @@ public sealed class LoggingAndMonitorTests
         // Clean up and test Warn-level logger
         File.Delete(currentLogPath);
 
-        warnLogger.Debug("debug message");
-        warnLogger.Info("info message");
-        warnLogger.Warn("warn message");
-
-        Thread.Sleep(50);
+        using (var warnLogger = new FileLogger(directory, retentionDays: 30, minLevel: "Warn"))
+        {
+            warnLogger.Debug("debug message");
+            warnLogger.Info("info message");
+            warnLogger.Warn("warn message");
+        }
 
         if (File.Exists(currentLogPath))
         {
@@ -237,18 +240,18 @@ public sealed class LoggingAndMonitorTests
     {
         using var logDir = new TempDirectory();
         var directory = logDir.Path;
-        var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug");
 
-        try
+        using (var logger = new FileLogger(directory, retentionDays: 30, minLevel: "Debug"))
         {
-            throw new InvalidOperationException("test exception detail");
+            try
+            {
+                throw new InvalidOperationException("test exception detail");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Something went wrong", ex);
+            }
         }
-        catch (Exception ex)
-        {
-            logger.Error("Something went wrong", ex);
-        }
-
-        Thread.Sleep(50);
 
         var currentLogPath = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
         Assert.True(File.Exists(currentLogPath));
@@ -275,8 +278,10 @@ public sealed class LoggingAndMonitorTests
             File.SetLastWriteTime(todayLog, DateTime.Now);
             File.SetLastWriteTime(yesterdayLog, DateTime.Now.AddDays(-1));
 
-            var logger = new FileLogger(directory, retentionDays: 0, minLevel: "Info");
-            logger.CleanupOldLogs();
+            using (var logger = new FileLogger(directory, retentionDays: 0, minLevel: "Info"))
+            {
+                logger.CleanupOldLogs();
+            }
 
             // RetentionDays=0: files older than 0 days are deleted → today survives.
             Assert.True(File.Exists(todayLog));

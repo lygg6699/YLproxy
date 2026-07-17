@@ -158,6 +158,7 @@ namespace YLproxy.Infrastructure
         public LoggingConfig Logging { get; set; } = new LoggingConfig();
         public ProxyConfig Proxy { get; set; } = new ProxyConfig();
         public ThreeProxyConfig ThreeProxy { get; set; } = new ThreeProxyConfig();
+        public StartupConfig Startup { get; set; } = new StartupConfig();
     }
 
     public class LoggingConfig
@@ -180,5 +181,10 @@ namespace YLproxy.Infrastructure
     {
         public string RuntimeDirectory { get; set; } = "runtime/3proxy";
         public List<string> RequiredDlls { get; set; } = new List<string> { "FilePlugin.dll", "StringsPlugin.dll" };
+    }
+
+    public class StartupConfig
+    {
+        public bool AutoStart { get; set; }
     }
 }

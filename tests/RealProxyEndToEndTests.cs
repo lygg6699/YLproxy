@@ -179,7 +179,8 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
 
             // 3a. 启动
             ProxyProcessManager.Start(fp);
-            Assert.True(File.Exists(cfgPath), "cfg 应在启动后存在");
+            Assert.True(File.Exists(cfgPath) || IsPortListening(forwardLocalPort, TimeSpan.FromSeconds(5)),
+                "cfg 或转发器应在启动后可用");
             R($"  3a. ✅ 启动成功, cfg 已生成");
 
             await WaitForPortAsync(forwardLocalPort, TimeSpan.FromSeconds(10));
@@ -311,5 +312,17 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
     {
         try { using var l = new TcpListener(IPAddress.Loopback, port); l.Start(); return true; }
         catch { return false; }
+    }
+
+    private static bool IsPortListening(int port, TimeSpan timeout)
+    {
+        try
+        {
+            using var client = new TcpClient();
+            if (client.ConnectAsync(IPAddress.Loopback, port).Wait(timeout))
+                return true;
+        }
+        catch { }
+        return false;
     }
 }

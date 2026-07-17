@@ -15,6 +15,10 @@ public sealed class ManagedProxyForwarder : IDisposable
 {
     private readonly TcpListener _listener;
     private readonly HttpClient _upstreamClient;
+    private readonly string _upstreamHost;
+    private readonly int _upstreamPort;
+    private readonly string? _username;
+    private readonly string? _password;
     private readonly ILogger _logger;
     private readonly string _proxyName;
     private readonly CancellationTokenSource _cts = new();
@@ -25,6 +29,10 @@ public sealed class ManagedProxyForwarder : IDisposable
         ArgumentNullException.ThrowIfNull(proxy);
 
         _proxyName = proxy.Name ?? $"proxy-{proxy.Id}";
+        _upstreamHost = proxy.RemoteHost;
+        _upstreamPort = proxy.RemotePort;
+        _username = proxy.Username;
+        _password = proxy.Password;
         _logger = logger ?? LoggerFactory.CreateLogger();
 
         var handler = new HttpClientHandler
@@ -46,6 +54,15 @@ public sealed class ManagedProxyForwarder : IDisposable
         {
             Timeout = TimeSpan.FromSeconds(30),
         };
+
+        // 为 CONNECT 隧道设置 Authorization 头，使其对 DefaultRequestHeaders 可见。
+        if (!string.IsNullOrEmpty(_username) && !string.IsNullOrEmpty(_password))
+        {
+            var authBytes = System.Text.Encoding.UTF8.GetBytes($"{_username}:{_password}");
+            var basicValue = System.Convert.ToBase64String(authBytes);
+            _upstreamClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", basicValue);
+        }
 
         _listener = new TcpListener(IPAddress.Loopback, proxy.LocalPort);
         LocalPort = proxy.LocalPort;
@@ -203,35 +220,40 @@ public sealed class ManagedProxyForwarder : IDisposable
 
     /// <summary>
     /// 处理 CONNECT 隧道（HTTPS）：向上游代理发送 CONNECT 请求（带 Basic 认证），
-    /// 收到 200 后双向 relay。
+    /// 收到 200 后双向 relay。若上游返回 407，则重新发送带认证头的请求。
     /// </summary>
     private async Task HandleConnectAsync(NetworkStream clientStream, string target, CancellationToken token)
     {
         using var upstream = new TcpClient();
-        await upstream.ConnectAsync(_upstreamClient.BaseAddress!.Host,
-            _upstreamClient.BaseAddress.Port, token).ConfigureAwait(false);
+        await upstream.ConnectAsync(_upstreamHost,
+            _upstreamPort, token).ConfigureAwait(false);
         await using var upstreamStream = upstream.GetStream();
 
-        var connectReq = new StringBuilder();
-        connectReq.Append($"CONNECT {target} HTTP/1.1\r\n");
-        connectReq.Append($"Host: {target}\r\n");
-
-        if (_upstreamClient.DefaultRequestHeaders.Authorization is not null)
-        {
-            connectReq.Append("Proxy-Authorization: ");
-            connectReq.Append(_upstreamClient.DefaultRequestHeaders.Authorization.Scheme);
-            connectReq.Append(' ');
-            connectReq.Append(_upstreamClient.DefaultRequestHeaders.Authorization.Parameter);
-            connectReq.Append("\r\n");
-        }
-
-        connectReq.Append("\r\n");
-        var connectBytes = Encoding.ASCII.GetBytes(connectReq.ToString());
+        var connectReq = BuildConnectRequest(target, addAuth: !string.IsNullOrEmpty(_username));
+        var connectBytes = Encoding.ASCII.GetBytes(connectReq);
         await upstreamStream.WriteAsync(connectBytes, token).ConfigureAwait(false);
 
         var respBuf = new byte[4096];
         var respLen = await upstreamStream.ReadAsync(respBuf.AsMemory(0, respBuf.Length), token).ConfigureAwait(false);
         var respText = Encoding.ASCII.GetString(respBuf, 0, respLen);
+
+        // 407 挑战-响应：若预认证被拒绝，发送带完整 Basic 认证的 CONNECT
+        if (respText.Contains("407") && !string.IsNullOrEmpty(_username))
+        {
+            var authBytes = System.Text.Encoding.UTF8.GetBytes($"{_username}:{_password}");
+            var basicAuth = "Basic " + System.Convert.ToBase64String(authBytes);
+
+            var retryReq = new StringBuilder();
+            retryReq.Append($"CONNECT {target} HTTP/1.1\r\n");
+            retryReq.Append($"Host: {target}\r\n");
+            retryReq.Append($"Proxy-Authorization: {basicAuth}\r\n");
+            retryReq.Append("\r\n");
+
+            var retryBytes = Encoding.ASCII.GetBytes(retryReq.ToString());
+            await upstreamStream.WriteAsync(retryBytes, token).ConfigureAwait(false);
+            respLen = await upstreamStream.ReadAsync(respBuf.AsMemory(0, respBuf.Length), token).ConfigureAwait(false);
+            respText = Encoding.ASCII.GetString(respBuf, 0, respLen);
+        }
 
         if (respText.Contains("200"))
         {
@@ -250,6 +272,25 @@ public sealed class ManagedProxyForwarder : IDisposable
         }
     }
 
+    private string BuildConnectRequest(string target, bool addAuth)
+    {
+        var sb = new StringBuilder();
+        sb.Append($"CONNECT {target} HTTP/1.1\r\n");
+        sb.Append($"Host: {target}\r\n");
+
+        if (addAuth && _upstreamClient.DefaultRequestHeaders.Authorization is not null)
+        {
+            sb.Append("Proxy-Authorization: ");
+            sb.Append(_upstreamClient.DefaultRequestHeaders.Authorization.Scheme);
+            sb.Append(' ');
+            sb.Append(_upstreamClient.DefaultRequestHeaders.Authorization.Parameter);
+            sb.Append("\r\n");
+        }
+
+        sb.Append("\r\n");
+        return sb.ToString();
+    }
+
     private static async Task WriteError(NetworkStream stream, int code, string msg)
     {
         var resp = Encoding.ASCII.GetBytes($"HTTP/1.1 {code} {msg}\r\nContent-Length: 0\r\n\r\n");
@@ -266,7 +307,16 @@ public sealed class ManagedProxyForwarder : IDisposable
     {
         get
         {
-            try { using var c = new TcpClient(); c.ConnectAsync(IPAddress.Loopback, LocalPort).Wait(TimeSpan.FromMilliseconds(200)); return true; }
+            try
+            {
+                using var c = new TcpClient
+                {
+                    SendTimeout = 200,
+                    ReceiveTimeout = 200,
+                };
+                c.Connect(IPAddress.Loopback, LocalPort);
+                return true;
+            }
             catch { return false; }
         }
     }

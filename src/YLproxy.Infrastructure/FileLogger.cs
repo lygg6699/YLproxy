@@ -7,13 +7,14 @@ using YLproxy.Utils;
 
 namespace YLproxy.Infrastructure
 {
-    public class FileLogger : ILogger
+    public class FileLogger : ILogger, IDisposable
     {
         private readonly string _logDirectory;
         private readonly int _retentionDays;
         private readonly string _minLevel;
         private static readonly object _lock = new object();
         private readonly List<string> _cleanupErrors = new();
+        private int _disposed;
 
         public IReadOnlyList<string> CleanupErrors => _cleanupErrors.AsReadOnly();
 
@@ -80,15 +81,27 @@ namespace YLproxy.Infrastructure
 
             logLine += Environment.NewLine;
 
-            var bytes = Encoding.UTF8.GetBytes(logLine);
+            var targetFile = GetLogFilePath();
             lock (_lock)
             {
-                using (var fs = new FileStream(GetLogFilePath(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                try
                 {
-                    fs.Write(bytes, 0, bytes.Length);
-                    fs.Flush(true);
+                    using var fs = new FileStream(targetFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                    using var writer = new StreamWriter(fs, Encoding.UTF8);
+                    writer.Write(logLine);
+                    writer.Flush();
+                }
+                catch (IOException)
+                {
+                    // 文件被锁定时丢弃本条日志，不阻塞调用方
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

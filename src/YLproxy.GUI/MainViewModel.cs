@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using YLproxy.Core;
 using YLproxy.Infrastructure;
@@ -12,13 +14,15 @@ using YLproxy.Utils;
 using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
 using GlobalProxyConfig = YLproxy.Infrastructure.ProxyConfig;
 using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
+using Application = System.Windows.Application;
+using Timer = System.Threading.Timer;
 
 
 namespace YLproxy.GUI;
 
 public sealed class MainViewModel : ViewModelBase
 {
-    private readonly System.Threading.Timer _timer;
+    private readonly Timer _timer;
     private readonly MonitorService _monitorService;
     private readonly GlobalConfigService _settingsService;
     private readonly ILogger _logger;
@@ -58,6 +62,9 @@ public sealed class MainViewModel : ViewModelBase
 
     private readonly ObservableCollection<string> _logs = new();
     public ObservableCollection<string> Logs => _logs;
+    public ObservableCollection<string> FilteredLogs => _logs;
+
+    public List<ProxyItem> SelectedProxies { get; set; } = new();
 
     public RelayCommand AddCommand { get; }
     public RelayCommand RemoveCommand { get; }
@@ -113,10 +120,11 @@ public sealed class MainViewModel : ViewModelBase
         _logger = LoggerFactory.CreateLogger();
         _proxyConfig = _settingsService.GetSection<GlobalProxyConfig>("Proxy");
         _threeProxyConfig = _settingsService.GetSection<GlobalThreeProxyConfig>("ThreeProxy");
-        YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig, _logger);
+        YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig);
 
         InitFromConfig();
         LoadHostInfo();
+        RefreshStats();
         AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (Phase 7 with MonitorService) ");
 
         AddCommand = new RelayCommand(ShowAddWindow);
@@ -272,6 +280,7 @@ public sealed class MainViewModel : ViewModelBase
                 {
                     p.Status = ProxyStatus.Running;
                     YLproxy.Proxy.ProxyProcessManager.Start(p);
+                    Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Started proxy: {p.LocalHost}:{p.LocalPort} -> {p.RemoteHost}:{p.RemotePort}");
                 }
                 catch (Exception ex)
@@ -312,6 +321,7 @@ public sealed class MainViewModel : ViewModelBase
                 {
                     YLproxy.Proxy.ProxyProcessManager.Stop(p);
                     p.Status = ProxyStatus.Stopped;
+                    Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Stopped proxy: {p.LocalHost}:{p.LocalPort}");
                 }
                 catch (Exception ex)
@@ -359,6 +369,7 @@ public sealed class MainViewModel : ViewModelBase
             // If confirmed, the ViewModel already persisted to config.
             // Refresh UI list.
             InitFromConfig();
+            RefreshStats();
         }
         catch (Exception ex)
         {
@@ -401,6 +412,8 @@ public sealed class MainViewModel : ViewModelBase
             var after = cfg.Proxies.Count;
 
             svc.Save(cfg);
+
+            RefreshStats();
 
             AddLog($"[{DateTime.Now:HH:mm:ss}] Remove proxy persisted: configPath={configPath}, RemovedId={id}, ProxiesSaved={after} (before={before})");
         }
@@ -469,6 +482,15 @@ public sealed class MainViewModel : ViewModelBase
         }
 
         return null;
+    }
+
+    public async Task ShutdownAsync()
+    {
+        foreach (var proxy in Proxies.Where(p => p.Status == ProxyStatus.Running).ToList())
+        {
+            try { YLproxy.Proxy.ProxyProcessManager.Stop(proxy); } catch { }
+        }
+        await Task.CompletedTask;
     }
 
     private void RefreshStats()

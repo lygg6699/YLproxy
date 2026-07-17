@@ -52,7 +52,8 @@ public sealed class ProxyIntegrationTests
         try
         {
             ProxyProcessManager.Start(proxy);
-            Assert.True(File.Exists(configPath));
+            Assert.True(File.Exists(configPath) || IsPortListening(localPort, TimeSpan.FromSeconds(3)),
+                "cfg 或转发器应在启动后可用");
             await WaitForPortAsync(localPort, TimeSpan.FromSeconds(5));
 
             using var handler = new HttpClientHandler
@@ -155,5 +156,17 @@ public sealed class ProxyIntegrationTests
         }
 
         throw new TimeoutException($"Port {port} did not start listening within {timeout}.");
+    }
+
+    private static bool IsPortListening(int port, TimeSpan timeout)
+    {
+        try
+        {
+            using var client = new TcpClient();
+            if (client.ConnectAsync(IPAddress.Loopback, port).Wait(timeout))
+                return true;
+        }
+        catch { }
+        return false;
     }
 }
