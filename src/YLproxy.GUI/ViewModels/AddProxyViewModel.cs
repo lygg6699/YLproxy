@@ -173,7 +173,7 @@ public sealed class AddProxyViewModel : ViewModelBase
             }
         }
 
-        var localIp = GetBestLocalIp() ?? string.Empty;
+        var localIp = YLproxy.Utils.NetworkUtil.GetBestLocalIp() ?? string.Empty;
 
         var item = new ProxyItem
         {
@@ -207,27 +207,6 @@ public sealed class AddProxyViewModel : ViewModelBase
         {
             ValidationMessage = $"保存失败：{ex.Message}";
         }
-    }
-
-    private static string? GetBestLocalIp()
-    {
-        try
-        {
-            var host = System.Net.Dns.GetHostName();
-            var entry = System.Net.Dns.GetHostEntry(host);
-            foreach (var ip in entry.AddressList)
-            {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
-                    !System.Net.IPAddress.IsLoopback(ip))
-                    return ip.ToString();
-            }
-        }
-        catch (Exception ex) when (ex is not System.OperationCanceledException)
-        {
-            System.Diagnostics.Trace.WriteLine($"[YLproxy] AddProxy GetBestLocalIp failed: {ex.Message}");
-        }
-
-        return null;
     }
 
     private static bool TryParsePort(string text, out int port)

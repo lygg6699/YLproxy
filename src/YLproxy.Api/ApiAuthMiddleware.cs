@@ -19,8 +19,9 @@ public sealed class ApiAuthMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Allow health-check (no auth)
-        if (context.Request.Path.StartsWithSegments("/api/health", StringComparison.OrdinalIgnoreCase))
+        // Allow health-check and swagger (no auth)
+        if (context.Request.Path.StartsWithSegments("/api/health", StringComparison.OrdinalIgnoreCase) ||
+            context.Request.Path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase))
         {
             await _next(context);
             return;

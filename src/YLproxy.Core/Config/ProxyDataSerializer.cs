@@ -55,6 +55,7 @@ public sealed class ProxyDataSerializer
                 LocalPort = storedProxy.LocalPort,
                 Status = storedProxy.Status,
                 CreateTime = storedProxy.CreateTime,
+                Group = storedProxy.Group ?? string.Empty,
             });
         }
 
@@ -79,6 +80,7 @@ public sealed class ProxyDataSerializer
                 LocalPort = proxy.LocalPort,
                 Status = proxy.Status,
                 CreateTime = proxy.CreateTime,
+                Group = proxy.Group,
             }).ToList(),
         };
 
@@ -102,5 +104,6 @@ public sealed class ProxyDataSerializer
         public int LocalPort { get; set; }
         public ProxyStatus Status { get; set; }
         public DateTime CreateTime { get; set; }
+        public string? Group { get; set; }
     }
 }

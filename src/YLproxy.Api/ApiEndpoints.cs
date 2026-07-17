@@ -16,7 +16,9 @@ public static class ApiEndpoints
         var group = app.MapGroup("/api");
 
         // Health
-        group.MapGet("/health", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
+        group.MapGet("/health", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }))
+            .WithTags("Health")
+            .Produces(200);
 
         // List all
         group.MapGet("/proxies", () =>
@@ -29,7 +31,9 @@ public static class ApiEndpoints
                 return Results.Ok(ApiResponse<List<ProxyDto>>.Ok(dtos));
             }
             catch (Exception ex) { _logger.Error($"GET /proxies: {ex.Message}"); return Results.Ok(ApiResponse<List<ProxyDto>>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces<ApiResponse<List<ProxyDto>>>(200);
 
         // Get single
         group.MapGet("/proxies/{id:int}", (int id) =>
@@ -44,13 +48,30 @@ public static class ApiEndpoints
                 return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
             }
             catch (Exception ex) { _logger.Error($"GET /proxies/{id}: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces<ApiResponse<ProxyDto>>(200)
+            .Produces(404);
 
         // Add
         group.MapPost("/proxies", (ProxyDto dto) =>
         {
             try
             {
+                // --- input validation ---
+                if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length > 200)
+                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("Name is required (max 200 chars)"));
+
+                if (string.IsNullOrWhiteSpace(dto.RemoteHost))
+                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("RemoteHost is required"));
+
+                if (dto.RemotePort < 1 || dto.RemotePort > 65535)
+                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("RemotePort must be 1-65535"));
+
+                if (dto.LocalPort < 0 || dto.LocalPort > 65535)
+                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("LocalPort must be 0 (auto) or 1-65535"));
+                // --- end input validation ---
+
                 var svc = CreateSvc();
                 var cfg = svc.Load();
                 var existingPorts = new HashSet<int>(cfg.Proxies.Select(p => p.LocalPort));
@@ -86,7 +107,8 @@ public static class ApiEndpoints
                     LocalHost = "0.0.0.0",
                     LocalPort = localPort,
                     Status = ProxyStatus.Stopped,
-                    CreateTime = DateTime.UtcNow
+                    CreateTime = DateTime.UtcNow,
+                    Group = dto.Group ?? string.Empty
                 };
 
                 cfg.Proxies.Add(item);
@@ -95,7 +117,10 @@ public static class ApiEndpoints
                 return Results.Created($"/api/proxies/{item.Id}", ApiResponse<ProxyDto>.Ok(MapToDto(item)));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies: {ex.Message}"); return Results.Ok(ApiResponse<ProxyDto>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces<ApiResponse<ProxyDto>>(201)
+            .Produces<ApiResponse<ProxyDto>>(409);
 
         // Delete
         group.MapDelete("/proxies/{id:int}", (int id) =>
@@ -115,7 +140,10 @@ public static class ApiEndpoints
                 return Results.Ok(ApiResponse<object>.Ok(new { deleted = true }));
             }
             catch (Exception ex) { _logger.Error($"DELETE /proxies/{id}: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces(200)
+            .Produces(404);
 
         // Test
         group.MapPost("/proxies/{id:int}/test", async (int id) =>
@@ -141,7 +169,9 @@ public static class ApiEndpoints
                 }));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies/{id}/test: {ex.Message}"); return Results.Ok(ApiResponse<ProxyTestResult>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces<ApiResponse<ProxyTestResult>>(200);
 
         // Start
         group.MapPost("/proxies/{id:int}/start", (int id) =>
@@ -161,7 +191,9 @@ public static class ApiEndpoints
                 return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies/{id}/start: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces<ApiResponse<ProxyDto>>(200);
 
         // Stop
         group.MapPost("/proxies/{id:int}/stop", (int id) =>
@@ -181,7 +213,9 @@ public static class ApiEndpoints
                 return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
             }
             catch (Exception ex) { _logger.Error($"POST /proxies/{id}/stop: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Proxies")
+            .Produces<ApiResponse<ProxyDto>>(200);
 
         // Dashboard stats
         group.MapGet("/stats", () =>
@@ -199,7 +233,9 @@ public static class ApiEndpoints
                 }));
             }
             catch (Exception ex) { _logger.Error($"GET /stats: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
-        });
+        })
+            .WithTags("Stats")
+            .Produces(200);
     }
 
     private static ProxyDto MapToDto(ProxyItem p) => new()
@@ -213,6 +249,7 @@ public static class ApiEndpoints
         LocalHost = p.LocalHost,
         LocalPort = p.LocalPort,
         Status = p.Status.ToString(),
-        CreateTime = p.CreateTime
+        CreateTime = p.CreateTime,
+        Group = p.Group
     };
 }

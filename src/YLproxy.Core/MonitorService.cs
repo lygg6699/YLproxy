@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Threading;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
@@ -13,23 +15,56 @@ public sealed class MonitorService : IDisposable
     private readonly Func<IReadOnlyList<ProxyItem>> _getProxies;
     private readonly Action<string> _logAction;
     private readonly Action _refreshAction;
+    private readonly Action<ProxyItem>? _restartAction;
     private readonly ILogger? _logger;
     private readonly Func<ProxyItem, bool> _isRunning;
+    private readonly TimeSpan _healthCheckInterval;
+    private readonly int _maxRestartAttempts;
+    private readonly TimeSpan _restartBackoffBase;
+
+    /// <summary>
+    /// Tracks consecutive restart failures per proxy for exponential backoff.
+    /// Key: proxy Id, Value: (failureCount, lastAttemptTime)
+    /// </summary>
+    private readonly ConcurrentDictionary<int, (int FailureCount, DateTime LastAttempt)> _restartBackoff = new();
+
     private bool _disposed;
 
+    /// <summary>
+    /// Creates a MonitorService with health-check and optional auto-restart.
+    /// </summary>
+    /// <param name="getProxies">Callback to enumerate current proxies.</param>
+    /// <param name="logAction">Callback for UI log messages.</param>
+    /// <param name="refreshAction">Callback to refresh UI after status changes.</param>
+    /// <param name="restartAction">Optional callback to restart a failed proxy. If null, auto-restart is disabled.</param>
+    /// <param name="checkInterval">Polling interval for process liveness checks.</param>
+    /// <param name="healthCheckInterval">Interval for TCP connectivity health checks. Defaults to 30s.</param>
+    /// <param name="maxRestartAttempts">Max consecutive restart attempts before giving up. Default 5.</param>
+    /// <param name="restartBackoffBase">Base backoff duration for restart attempts. Default 30s.</param>
+    /// <param name="logger">Optional logger.</param>
+    /// <param name="isRunning">Optional override for process liveness check.</param>
     public MonitorService(
         Func<IReadOnlyList<ProxyItem>> getProxies,
         Action<string> logAction,
         Action refreshAction,
+        Action<ProxyItem>? restartAction = null,
         TimeSpan? checkInterval = null,
+        TimeSpan? healthCheckInterval = null,
+        int maxRestartAttempts = 5,
+        TimeSpan? restartBackoffBase = null,
         ILogger? logger = null,
         Func<ProxyItem, bool>? isRunning = null)
     {
         _getProxies = getProxies ?? throw new ArgumentNullException(nameof(getProxies));
         _logAction = logAction ?? throw new ArgumentNullException(nameof(logAction));
         _refreshAction = refreshAction ?? throw new ArgumentNullException(nameof(refreshAction));
+        _restartAction = restartAction;
         _logger = logger;
         _isRunning = isRunning ?? ProxyProcessManager.IsRunning;
+        _healthCheckInterval = healthCheckInterval ?? TimeSpan.FromSeconds(30);
+        _maxRestartAttempts = maxRestartAttempts;
+        _restartBackoffBase = restartBackoffBase ?? TimeSpan.FromSeconds(30);
+
         var interval = checkInterval ?? TimeSpan.FromSeconds(5);
         if (interval <= TimeSpan.Zero)
             throw new ArgumentOutOfRangeException(nameof(checkInterval));
@@ -60,7 +95,6 @@ public sealed class MonitorService : IDisposable
 
             foreach (var proxy in proxies)
             {
-                // Only monitor proxies that should be running
                 if (proxy.Status != ProxyStatus.Running)
                     continue;
 
@@ -80,6 +114,14 @@ public sealed class MonitorService : IDisposable
                     proxy.Status = ProxyStatus.Failed;
                     _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} ({proxy.LocalHost}:{proxy.LocalPort}) process exited unexpectedly");
                     changed = true;
+
+                    // Attempt auto-restart if configured
+                    TryAutoRestart(proxy);
+                }
+                else
+                {
+                    // Process is alive, check health periodically
+                    CheckHealth(proxy);
                 }
             }
 
@@ -92,6 +134,119 @@ public sealed class MonitorService : IDisposable
         {
             _logger?.Error($"MonitorService: monitor tick failed: {ex.Message}", ex);
         }
+    }
+
+    private void CheckHealth(ProxyItem proxy)
+    {
+        try
+        {
+            // Only check health at the configured interval
+            // Use _restartBackoff's LastAttempt as a coarse-grained last-health-check time
+            if (_restartBackoff.TryGetValue(proxy.Id, out var entry))
+            {
+                if (DateTime.UtcNow - entry.LastAttempt < _healthCheckInterval)
+                    return;
+            }
+
+            // Check TCP connectivity on the local proxy port
+            var isConnectable = IsPortConnectable(proxy.LocalPort);
+            if (!isConnectable)
+            {
+                // Track the health check time
+                _restartBackoff.AddOrUpdate(proxy.Id,
+                    (0, DateTime.UtcNow),
+                    (_, existing) => (existing.FailureCount, DateTime.UtcNow));
+
+                _logger?.Warn($"MonitorService: health check failed for proxy {proxy.Id} ({proxy.LocalPort}), port not reachable");
+                proxy.Status = ProxyStatus.Failed;
+                _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} health check failed, port unreachable");
+                _refreshAction();
+
+                TryAutoRestart(proxy);
+            }
+            else
+            {
+                // Health check passed — reset the tracking
+                _restartBackoff.AddOrUpdate(proxy.Id,
+                    (0, DateTime.UtcNow),
+                    (_, _) => (0, DateTime.UtcNow));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger?.Warn($"MonitorService: health check error for proxy {proxy.Id}: {ex.Message}");
+        }
+    }
+
+    private void TryAutoRestart(ProxyItem proxy)
+    {
+        if (_restartAction is null)
+            return;
+
+        var now = DateTime.UtcNow;
+        var entry = _restartBackoff.AddOrUpdate(proxy.Id,
+            (1, now),
+            (_, e) => (e.FailureCount + 1, now));
+
+        // Calculate backoff: base * 2^failureCount
+        if (entry.FailureCount > 0)
+        {
+            var backoffMultiplier = 1 << Math.Min(entry.FailureCount - 1, 8);
+            var backoff = _restartBackoffBase * backoffMultiplier;
+
+            if (now - entry.LastAttempt < backoff && entry.FailureCount > 1)
+            {
+                _logger?.Debug($"MonitorService: skipping restart for proxy {proxy.Id}, backoff {backoff.TotalSeconds:F0}s");
+                return;
+            }
+        }
+
+        if (entry.FailureCount > _maxRestartAttempts)
+        {
+            _logger?.Warn($"MonitorService: max restart attempts ({_maxRestartAttempts}) exceeded for proxy {proxy.Id}, giving up");
+            _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} restart abandoned after {_maxRestartAttempts} attempts");
+            return;
+        }
+
+        try
+        {
+            _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: auto-restarting proxy {proxy.Id} (attempt {entry.FailureCount}/{_maxRestartAttempts})");
+            proxy.Status = ProxyStatus.Running;
+            _restartAction(proxy);
+            _refreshAction();
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"MonitorService: auto-restart failed for proxy {proxy.Id}: {ex.Message}", ex);
+            proxy.Status = ProxyStatus.Failed;
+            _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} auto-restart failed: {ex.Message}");
+        }
+    }
+
+    private static bool IsPortConnectable(int port)
+    {
+        try
+        {
+            using var client = new TcpClient
+            {
+                SendTimeout = 2000,
+                ReceiveTimeout = 2000,
+            };
+            client.Connect("127.0.0.1", port);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Resets the restart backoff counter for a proxy (e.g., after manual restart by user).
+    /// </summary>
+    public void ResetBackoff(int proxyId)
+    {
+        _restartBackoff.TryRemove(proxyId, out _);
     }
 
     public void Dispose()

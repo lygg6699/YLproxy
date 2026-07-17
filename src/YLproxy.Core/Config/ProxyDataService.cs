@@ -111,7 +111,7 @@ public sealed class ProxyDataService
 
     private AppConfig LoadFromJson()
     {
-        _ioLock.Wait();
+        _ioLock.WaitAsync().GetAwaiter().GetResult();
         try
         {
             if (!File.Exists(ConfigPath))

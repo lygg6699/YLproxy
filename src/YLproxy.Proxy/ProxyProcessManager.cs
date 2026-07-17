@@ -450,9 +450,12 @@ public sealed class ProxyProcessManager
             try
             {
                 using var client = new TcpClient();
-                var connectTask = client.ConnectAsync(IPAddress.Loopback, port);
-                if (connectTask.Wait(TimeSpan.FromMilliseconds(250)) && connectTask.IsCompletedSuccessfully)
+                try
+                {
+                    client.Connect(IPAddress.Loopback, port);
                     return;
+                }
+                catch (SocketException) { }
             }
             catch (SocketException)
             {

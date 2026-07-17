@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.Json;
 using YLproxy.Models;
 using YLproxy.Utils;
@@ -56,6 +57,7 @@ namespace YLproxy.Infrastructure
                 "Logging" => _config.Logging as T ?? new T(),
                 "Proxy" => _config.Proxy as T ?? new T(),
                 "ThreeProxy" => _config.ThreeProxy as T ?? new T(),
+                "Api" => _config.Api as T ?? new T(),
                 _ => new T()
             };
         }
@@ -87,11 +89,27 @@ namespace YLproxy.Infrastructure
                     Validate(_config);
                     SaveConfig();
                 }
+
+                EnsureApiToken();
             }
             catch (Exception ex)
             {
                 _loadErrors.Add($"Failed to load config: {ex.Message}");
                 _config = new AppSettingsConfig();
+            }
+        }
+
+        private void EnsureApiToken()
+        {
+            const string defaultToken = "ylproxy-api-token-change-me-in-production";
+            if (string.IsNullOrWhiteSpace(_config.Api.AccessToken) ||
+                string.Equals(_config.Api.AccessToken, defaultToken, StringComparison.Ordinal))
+            {
+                var tokenBytes = new byte[24];
+                using var rng = RandomNumberGenerator.Create();
+                rng.GetBytes(tokenBytes);
+                _config.Api.AccessToken = "ylpx-" + Convert.ToBase64String(tokenBytes).Replace("+", "").Replace("/", "").Replace("=", "");
+                SaveConfig();
             }
         }
 
@@ -158,6 +176,7 @@ namespace YLproxy.Infrastructure
         public LoggingConfig Logging { get; set; } = new LoggingConfig();
         public ProxyConfig Proxy { get; set; } = new ProxyConfig();
         public ThreeProxyConfig ThreeProxy { get; set; } = new ThreeProxyConfig();
+        public ApiConfig Api { get; set; } = new ApiConfig();
         public StartupConfig Startup { get; set; } = new StartupConfig();
     }
 
@@ -186,5 +205,11 @@ namespace YLproxy.Infrastructure
     public class StartupConfig
     {
         public bool AutoStart { get; set; }
+    }
+
+    public class ApiConfig
+    {
+        public int Port { get; set; } = 9100;
+        public string AccessToken { get; set; } = string.Empty;
     }
 }

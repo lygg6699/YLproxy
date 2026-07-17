@@ -62,8 +62,11 @@ public sealed class MainViewModel : ViewModelBase
 
     private readonly ObservableCollection<string> _logs = new();
     public ObservableCollection<string> Logs => _logs;
+
+    /// <summary>Alias for Logs. Used by MainView code-behind for collection-changed tracking.</summary>
     public ObservableCollection<string> FilteredLogs => _logs;
 
+    /// <summary>Used by MainView code-behind for DataGrid multi-select.</summary>
     public List<ProxyItem> SelectedProxies { get; set; } = new();
 
     public RelayCommand AddCommand { get; }
@@ -135,10 +138,12 @@ public sealed class MainViewModel : ViewModelBase
         ClearLogCommand = new RelayCommand(() => _logs.Clear());
 
         // Start the background monitor that checks 3proxy process health every 5 seconds
+        // with TCP health check every 30s and auto-restart with exponential backoff
         _monitorService = new MonitorService(
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
             refreshAction: RefreshDataGrid,
+            restartAction: RestartProxySafe,
             checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)),
             logger: _logger);
 
@@ -158,7 +163,7 @@ public sealed class MainViewModel : ViewModelBase
     {
         var now = DateTime.Now;
         var netStatus = GetNetworkStatus();
-        var ip = GetBestLocalIp();
+        var ip = YLproxy.Utils.NetworkUtil.GetBestLocalIp();
 
         Application.Current?.Dispatcher.BeginInvoke(() =>
         {
@@ -303,7 +308,7 @@ public sealed class MainViewModel : ViewModelBase
 
     private void StopSelectedProxy()
     {
-        if (IsStopping) return; // 防止重复点击
+        if (IsStopping) return;
         IsStopping = true;
         try
         {
@@ -340,6 +345,28 @@ public sealed class MainViewModel : ViewModelBase
             AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: {ex.Message}");
             IsStopping = false;
         }
+    }
+
+    /// <summary>
+    /// Safe restart wrapper used by MonitorService auto-restart callback.
+    /// Runs on thread-pool to avoid blocking the monitor tick.
+    /// </summary>
+    private void RestartProxySafe(ProxyItem proxy)
+    {
+        _ = System.Threading.Tasks.Task.Run(() =>
+        {
+            try
+            {
+                YLproxy.Proxy.ProxyProcessManager.Stop(proxy);
+                Thread.Sleep(500);
+                YLproxy.Proxy.ProxyProcessManager.Start(proxy);
+            }
+            catch (Exception ex)
+            {
+                proxy.Status = ProxyStatus.Failed;
+                AddLog($"[{DateTime.Now:HH:mm:ss}] Monitor: auto-restart proxy {proxy.Id} failed: {ex.Message}");
+            }
+        });
     }
 
 
@@ -446,7 +473,7 @@ public sealed class MainViewModel : ViewModelBase
     {
         ComputerName = Environment.MachineName;
         NetworkStatus = GetNetworkStatus();
-        IpAddress = GetBestLocalIp() ?? "";
+        IpAddress = YLproxy.Utils.NetworkUtil.GetBestLocalIp() ?? "";
         Now = DateTime.Now;
 
         // LocalHost/LocalPort should come from config when present.
@@ -464,24 +491,6 @@ public sealed class MainViewModel : ViewModelBase
         {
             return "Unknown";
         }
-    }
-
-    private static string? GetBestLocalIp()
-    {
-        try
-        {
-            foreach (var ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
-            {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip))
-                    return ip.ToString();
-            }
-        }
-        catch
-        {
-            // ignore
-        }
-
-        return null;
     }
 
     public async Task ShutdownAsync()

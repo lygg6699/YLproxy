@@ -3,43 +3,76 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace YLproxy.Core;
 
 public static class ProxyTester
 {
-    private const int MaxRetries = 2;
-    private const int RetryDelayMs = 1000;
+    private const int DefaultMaxRetries = 2;
+    private const int DefaultRetryDelayMs = 1000;
 
     /// <summary>
-    /// 代理连通性测试使用的目标 URL（可配置回退）。
+    /// 代理连通性测试使用的目标 URL（可配置）。
     /// </summary>
     public static string TestUrl { get; set; } = "https://www.baidu.com";
 
     /// <summary>
-    /// 代理连通性测试，内置重试 + 指数退避（延迟 1s → 2s，最多 3 次尝试）。
+    /// 单次测试超时时间（毫秒），默认 15000ms。
     /// </summary>
+    public static int TimeoutMs { get; set; } = 15000;
+
+    /// <summary>
+    /// 代理连通性测试，内置重试 + 指数退避。
+    /// </summary>
+    public static Task<(bool Success, long LatencyMs, string? Error)> TestAsync(
+        string host,
+        int port,
+        string? username,
+        string? password,
+        CancellationToken cancellationToken = default)
+    {
+        return TestAsync(host, port, username, password, DefaultMaxRetries, DefaultRetryDelayMs, cancellationToken);
+    }
+
+    /// <summary>
+    /// 代理连通性测试，可配置重试策略。
+    /// </summary>
+    /// <param name="maxRetries">最大重试次数（总共尝试 maxRetries + 1 次）。</param>
+    /// <param name="retryDelayMs">基础重试延迟（毫秒），每次重试翻倍。</param>
     public static async Task<(bool Success, long LatencyMs, string? Error)> TestAsync(
         string host,
         int port,
         string? username,
-        string? password)
+        string? password,
+        int maxRetries,
+        int retryDelayMs,
+        CancellationToken cancellationToken = default)
     {
         string? lastError = null;
 
-        for (var attempt = 0; attempt <= MaxRetries; attempt++)
+        for (var attempt = 0; attempt <= maxRetries; attempt++)
         {
-            var (success, latency, error) = await TestOnceAsync(host, port, username, password);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var (success, latency, error) = await TestOnceAsync(host, port, username, password, cancellationToken);
             if (success) return (true, latency, null);
 
             lastError = error;
 
-            if (attempt < MaxRetries)
+            if (attempt < maxRetries)
             {
-                // 指数退避：1s, 2s
-                var delay = RetryDelayMs * (1 << attempt);
-                await Task.Delay(delay).ConfigureAwait(false);
+                // 指数退避: delay, delay*2, delay*4, ...
+                var delay = retryDelayMs * (1 << attempt);
+                try
+                {
+                    await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    return (false, 0, "测试已取消");
+                }
             }
         }
 
@@ -50,58 +83,60 @@ public static class ProxyTester
         string host,
         int port,
         string? username,
-        string? password)
+        string? password,
+        CancellationToken cancellationToken)
     {
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (string.IsNullOrWhiteSpace(host))
                 return (false, 0, "host 为空");
 
             var handler = new HttpClientHandler
             {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                AllowAutoRedirect = true,
             };
 
             var hasUser = !string.IsNullOrEmpty(username);
             var hasPass = !string.IsNullOrEmpty(password);
 
-            // If proxy does not require auth, username/password left empty => use default proxy settings.
-            if (hasUser || hasPass)
-            {
-                if (!(hasUser && hasPass))
-                    return (false, 0, "代理认证信息不完整");
+            if (hasUser != hasPass)
+                return (false, 0, "代理认证信息不完整");
 
-                handler.Proxy = new WebProxy($"http://{host}:{port}")
-                {
-                    Credentials = new NetworkCredential(username!, password!)
-                };
-                handler.UseProxy = true;
-            }
-            else
+            handler.Proxy = new WebProxy($"http://{host}:{port}");
+            handler.UseProxy = true;
+
+            if (hasUser)
             {
-                handler.Proxy = new WebProxy($"http://{host}:{port}");
-                handler.UseProxy = true;
+                handler.Proxy.Credentials = new NetworkCredential(username, password);
+                // 预认证：避免 407 往返，直接发送 Basic auth
+                handler.PreAuthenticate = true;
+                handler.DefaultProxyCredentials = handler.Proxy.Credentials;
             }
 
             using var client = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromSeconds(10)
+                Timeout = TimeSpan.FromMilliseconds(TimeoutMs)
             };
 
-            // Avoid chunked issues; just request a simple GET.
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
 
             var sw = Stopwatch.StartNew();
-            using var response = await client.GetAsync(TestUrl).ConfigureAwait(false);
+            using var response = await client.GetAsync(TestUrl, cancellationToken).ConfigureAwait(false);
             sw.Stop();
 
             return (response.IsSuccessStatusCode, sw.ElapsedMilliseconds, null);
         }
-        catch (TaskCanceledException ex)
+        catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
-            // Timeout manifests as TaskCanceledException in HttpClient.
-            return (false, 0, ex.InnerException?.Message ?? "连接失败: 超时");
+            return (false, 0, "连接失败: 超时");
+        }
+        catch (OperationCanceledException)
+        {
+            return (false, 0, "测试已取消");
         }
         catch (HttpRequestException ex)
         {
@@ -113,4 +148,3 @@ public static class ProxyTester
         }
     }
 }
-

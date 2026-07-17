@@ -1,3 +1,5 @@
+using YLproxy.Infrastructure;
+
 namespace YLproxy.Proxy;
 
 public sealed class TransparentCoalescingForwarder : System.IDisposable
@@ -7,6 +9,7 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
     private readonly System.Net.Sockets.TcpListener _listener;
     private readonly System.Threading.CancellationTokenSource _cts = new();
     private readonly System.Threading.Tasks.Task _acceptLoop;
+    private readonly ILogger _logger;
 
     private int _disposed;
 
@@ -18,7 +21,8 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
         string listenHost,
         int upstreamPort,
         string? username,
-        string? password)
+        string? password,
+        ILogger? logger = null)
     {
         System.ArgumentException.ThrowIfNullOrWhiteSpace(listenHost);
         if (upstreamPort < 1 || upstreamPort > 65535)
@@ -28,6 +32,7 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
 
         _username = username;
         _password = password;
+        _logger = logger ?? LoggerFactory.CreateLogger();
 
         _listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Parse(listenHost), 0);
         _listener.Start();
@@ -82,7 +87,9 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
                 continue;
             }
 
-            _ = System.Threading.Tasks.Task.Run(() => HandleClientAsync(client, token), token);
+            _ = System.Threading.Tasks.Task.Run(() => HandleClientAsync(client, token), token)
+                .ContinueWith(t => { if (t.IsFaulted) _logger.Warn($"TransparentCoalescingForwarder client fault: {t.Exception?.InnerException?.Message}"); },
+                System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
         }
     }
 
@@ -151,7 +158,7 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
                 var rewrittenHeaderBytes = RewriteRequestHeader(headerPart, GetBasicAuthHeaderValue());
                 if (GetBasicAuthHeaderValue() is not null)
                 {
-                    Console.WriteLine("Upstream authentication injected");
+                    _logger.Debug("Upstream authentication injected");
                 }
                 var bodyBytes = bodyAndRest.ToArray();
 

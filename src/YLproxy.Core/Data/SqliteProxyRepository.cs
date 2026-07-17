@@ -68,8 +68,8 @@ public class SqliteProxyRepository : IDisposable
             using var cmd = _connection.CreateCommand();
             cmd.Transaction = transaction;
             cmd.CommandText = """
-                INSERT INTO proxies (Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime)
-                VALUES (@Name, @RemoteHost, @RemotePort, @Username, @Password, @LocalHost, @LocalPort, @Status, @CreateTime);
+                INSERT INTO proxies (Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime, "Group")
+                VALUES (@Name, @RemoteHost, @RemotePort, @Username, @Password, @LocalHost, @LocalPort, @Status, @CreateTime, @Group);
                 SELECT last_insert_rowid();
                 """;
 
@@ -82,6 +82,7 @@ public class SqliteProxyRepository : IDisposable
             cmd.Parameters.AddWithValue("@LocalPort", proxy.LocalPort);
             cmd.Parameters.AddWithValue("@Status", (int)proxy.Status);
             cmd.Parameters.AddWithValue("@CreateTime", proxy.CreateTime.ToString("o"));
+            cmd.Parameters.AddWithValue("@Group", proxy.Group ?? string.Empty);
 
             var newId = Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
             return newId;
@@ -106,7 +107,8 @@ public class SqliteProxyRepository : IDisposable
                 LocalHost   TEXT    NOT NULL,
                 LocalPort   INTEGER NOT NULL,
                 Status      INTEGER NOT NULL DEFAULT 0,
-                CreateTime  TEXT    NOT NULL
+                CreateTime  TEXT    NOT NULL,
+                "Group"     TEXT    NOT NULL DEFAULT ''
             );
             """;
 
@@ -121,6 +123,26 @@ public class SqliteProxyRepository : IDisposable
             _logger.Error("Failed to initialize SQLite database.", ex);
             throw;
         }
+
+        MigrateAddGroupColumn();
+    }
+
+    private void MigrateAddGroupColumn()
+    {
+        try
+        {
+            // Check if column exists (ignore case on pragma)
+            using var check = _connection.CreateCommand();
+            check.CommandText = "SELECT \"Group\" FROM proxies LIMIT 0";
+            check.ExecuteNonQuery();
+        }
+        catch (SqliteException ex) when (ex.Message.Contains("no such column", StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.Info("SQLite: adding Group column to proxies table (schema migration)");
+            using var alter = _connection.CreateCommand();
+            alter.CommandText = "ALTER TABLE proxies ADD COLUMN \"Group\" TEXT NOT NULL DEFAULT ''";
+            alter.ExecuteNonQuery();
+        }
     }
 
     public List<ProxyItem> GetAll()
@@ -131,7 +153,7 @@ public class SqliteProxyRepository : IDisposable
         try
         {
             using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "SELECT Id, Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime FROM proxies ORDER BY Id";
+            cmd.CommandText = "SELECT Id, Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime, \"Group\" FROM proxies ORDER BY Id";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -154,7 +176,7 @@ public class SqliteProxyRepository : IDisposable
         try
         {
             using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "SELECT Id, Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime FROM proxies WHERE Id = @Id";
+            cmd.CommandText = "SELECT Id, Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime, \"Group\" FROM proxies WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
 
             using var reader = cmd.ExecuteReader();
@@ -181,8 +203,8 @@ public class SqliteProxyRepository : IDisposable
         {
             using var cmd = _connection.CreateCommand();
             cmd.CommandText = """
-                INSERT INTO proxies (Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime)
-                VALUES (@Name, @RemoteHost, @RemotePort, @Username, @Password, @LocalHost, @LocalPort, @Status, @CreateTime);
+                INSERT INTO proxies (Name, RemoteHost, RemotePort, Username, Password, LocalHost, LocalPort, Status, CreateTime, "Group")
+                VALUES (@Name, @RemoteHost, @RemotePort, @Username, @Password, @LocalHost, @LocalPort, @Status, @CreateTime, @Group);
                 SELECT last_insert_rowid();
                 """;
 
@@ -195,6 +217,7 @@ public class SqliteProxyRepository : IDisposable
             cmd.Parameters.AddWithValue("@LocalPort", proxy.LocalPort);
             cmd.Parameters.AddWithValue("@Status", (int)proxy.Status);
             cmd.Parameters.AddWithValue("@CreateTime", proxy.CreateTime.ToString("o"));
+            cmd.Parameters.AddWithValue("@Group", proxy.Group ?? string.Empty);
 
             var newId = Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
             return newId;
@@ -224,7 +247,8 @@ public class SqliteProxyRepository : IDisposable
                     LocalHost = @LocalHost,
                     LocalPort = @LocalPort,
                     Status = @Status,
-                    CreateTime = @CreateTime
+                    CreateTime = @CreateTime,
+                    "Group" = @Group
                 WHERE Id = @Id
                 """;
 
@@ -238,6 +262,7 @@ public class SqliteProxyRepository : IDisposable
             cmd.Parameters.AddWithValue("@LocalPort", proxy.LocalPort);
             cmd.Parameters.AddWithValue("@Status", (int)proxy.Status);
             cmd.Parameters.AddWithValue("@CreateTime", proxy.CreateTime.ToString("o"));
+            cmd.Parameters.AddWithValue("@Group", proxy.Group ?? string.Empty);
 
             cmd.ExecuteNonQuery();
         }
@@ -295,6 +320,7 @@ public class SqliteProxyRepository : IDisposable
             LocalPort = reader.GetInt32(7),
             Status = (ProxyStatus)reader.GetInt32(8),
             CreateTime = DateTime.Parse(reader.GetString(9), null, System.Globalization.DateTimeStyles.RoundtripKind),
+            Group = reader.IsDBNull(10) ? string.Empty : reader.GetString(10),
         };
     }
 

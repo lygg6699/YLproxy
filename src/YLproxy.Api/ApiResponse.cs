@@ -22,6 +22,7 @@ public sealed class ProxyDto
     public int LocalPort { get; set; }
     public string Status { get; set; } = "Stopped";
     public DateTime CreateTime { get; set; }
+    public string Group { get; set; } = string.Empty;
 }
 
 public sealed class ProxyTestResult

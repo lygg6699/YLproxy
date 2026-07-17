@@ -91,7 +91,9 @@ public sealed class ManagedProxyForwarder : IDisposable
                 catch (SocketException) when (token.IsCancellationRequested) { return; }
                 catch { continue; }
 
-                _ = Task.Run(() => HandleClientAsync(client, token), token);
+                _ = Task.Run(() => HandleClientAsync(client, token), token)
+                    .ContinueWith(t => { if (t.IsFaulted) _logger.Warn($"ManagedProxyForwarder [{_proxyName}] client fault: {t.Exception?.InnerException?.Message}"); },
+                    TaskContinuationOptions.OnlyOnFaulted);
             }
         }
         catch (Exception ex)

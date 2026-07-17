@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using YLproxy.Infrastructure;
 using YLproxy.Utils;
 
@@ -11,6 +13,7 @@ public sealed class ApiServer
     private readonly ProxyConfig _proxyConfig;
     private readonly string _accessToken;
     private readonly int _port;
+    private readonly bool _enableSwagger;
     private readonly ILog _logger;
     private WebApplication? _app;
     private Task? _runTask;
@@ -19,12 +22,13 @@ public sealed class ApiServer
     public int Port => _port;
     public bool IsRunning => _app is not null;
 
-    public ApiServer(string configPath, ProxyConfig proxyConfig, int port, string accessToken)
+    public ApiServer(string configPath, ProxyConfig proxyConfig, int port, string accessToken, bool enableSwagger = false)
     {
         _configPath = configPath;
         _proxyConfig = proxyConfig;
         _port = port;
         _accessToken = accessToken;
+        _enableSwagger = enableSwagger;
         _logger = LogFactory.CreateLogger();
     }
 
@@ -46,7 +50,55 @@ public sealed class ApiServer
 
         builder.Logging.ClearProviders();
 
+        if (_enableSwagger)
+        {
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "YLproxy API",
+                    Version = "v1",
+                    Description = "代理管理 REST API — 配置、测试、启停",
+                });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "输入 Bearer token",
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
+                        },
+                        Array.Empty<string>()
+                    },
+                });
+            });
+        }
+
         _app = builder.Build();
+
+        if (_enableSwagger)
+        {
+            _app.UseSwagger(c =>
+            {
+                c.RouteTemplate = "swagger/{documentName}/swagger.json";
+            });
+            _app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "YLproxy API v1");
+                c.RoutePrefix = "swagger";
+            });
+        }
 
         _app.UseMiddleware<ApiAuthMiddleware>(_accessToken);
         ApiEndpoints.Map(_app, _configPath, _proxyConfig);

@@ -25,14 +25,32 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
     private const int ApiPort = 9102;
     private const string ApiToken = "e2e-real-proxy-test-token";
 
+    /// <summary>
+    /// Real proxy credentials sourced from environment variable REAL_PROXY_CREDENTIALS.
+    /// Format: "host:port:user:pass,host:port:user:pass,..."
+    /// If unset, tests will skip connectivity phases gracefully with fake credentials.
+    /// </summary>
     private static readonly (string Host, int Port, string User, string Pass)[] RealProxies =
-    [
-        ("107.150.105.8", 1037, "8d50af7c08bb", "qzpx3yztmnao3yjhcqyk"),
-        ("107.150.105.8", 2410, "6e2b0f7c323b", "qzpx3yztmnao3yjhcqyk"),
-        ("107.150.105.8", 1406, "42d33c90cf0d", "qzpx3yztmnao3yjhcqyk"),
-        ("107.150.105.8", 2696, "856a98c625b0", "qzpx3yztmnao3yjhcqyk"),
-        ("107.150.105.8", 2921, "3035f0ec5214", "qzpx3yztmnao3yjhcqyk"),
-    ];
+        LoadCredentialsFromEnv();
+
+    private static (string Host, int Port, string User, string Pass)[] LoadCredentialsFromEnv()
+    {
+        var env = Environment.GetEnvironmentVariable("REAL_PROXY_CREDENTIALS");
+        if (string.IsNullOrWhiteSpace(env))
+        {
+            // No real credentials configured — test will still validate non-connectivity phases
+            return [];
+        }
+
+        var result = new List<(string, int, string, string)>();
+        foreach (var entry in env.Split(',', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var parts = entry.Trim().Split(':', 4);
+            if (parts.Length == 4 && int.TryParse(parts[1], out var port))
+                result.Add((parts[0], port, parts[2], parts[3]));
+        }
+        return result.ToArray();
+    }
 
     private readonly string _tempDir;
     private readonly string _configPath;
