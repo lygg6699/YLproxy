@@ -23,6 +23,7 @@ public sealed class ProxyProcessManager
     {
         ArgumentNullException.ThrowIfNull(settings);
         ProxyRuntimeConfiguration.Configure(settings.RuntimeDirectory, settings.RequiredDlls);
+
     }
 
     private static string GetRuntime3ProxyPath()

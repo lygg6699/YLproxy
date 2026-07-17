@@ -16,6 +16,7 @@ public sealed class MonitorService : IDisposable
     private readonly Action<string> _logAction;
     private readonly Action _refreshAction;
     private readonly Action<ProxyItem>? _restartAction;
+    private readonly Action? _saveAction;
     private readonly ILogger? _logger;
     private readonly Func<ProxyItem, bool> _isRunning;
     private readonly TimeSpan _healthCheckInterval;
@@ -37,6 +38,7 @@ public sealed class MonitorService : IDisposable
     /// <param name="logAction">Callback for UI log messages.</param>
     /// <param name="refreshAction">Callback to refresh UI after status changes.</param>
     /// <param name="restartAction">Optional callback to restart a failed proxy. If null, auto-restart is disabled.</param>
+    /// <param name="saveAction">Optional callback to persist proxy state changes (e.g., status Failed → disk).</param>
     /// <param name="checkInterval">Polling interval for process liveness checks.</param>
     /// <param name="healthCheckInterval">Interval for TCP connectivity health checks. Defaults to 30s.</param>
     /// <param name="maxRestartAttempts">Max consecutive restart attempts before giving up. Default 5.</param>
@@ -48,6 +50,7 @@ public sealed class MonitorService : IDisposable
         Action<string> logAction,
         Action refreshAction,
         Action<ProxyItem>? restartAction = null,
+        Action? saveAction = null,
         TimeSpan? checkInterval = null,
         TimeSpan? healthCheckInterval = null,
         int maxRestartAttempts = 5,
@@ -59,6 +62,7 @@ public sealed class MonitorService : IDisposable
         _logAction = logAction ?? throw new ArgumentNullException(nameof(logAction));
         _refreshAction = refreshAction ?? throw new ArgumentNullException(nameof(refreshAction));
         _restartAction = restartAction;
+        _saveAction = saveAction;
         _logger = logger;
         _isRunning = isRunning ?? ProxyProcessManager.IsRunning;
         _healthCheckInterval = healthCheckInterval ?? TimeSpan.FromSeconds(30);
@@ -127,6 +131,7 @@ public sealed class MonitorService : IDisposable
 
             if (changed)
             {
+                _saveAction?.Invoke();
                 _refreshAction();
             }
         }
@@ -160,6 +165,7 @@ public sealed class MonitorService : IDisposable
                 _logger?.Warn($"MonitorService: health check failed for proxy {proxy.Id} ({proxy.LocalPort}), port not reachable");
                 proxy.Status = ProxyStatus.Failed;
                 _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} health check failed, port unreachable");
+                _saveAction?.Invoke();
                 _refreshAction();
 
                 TryAutoRestart(proxy);

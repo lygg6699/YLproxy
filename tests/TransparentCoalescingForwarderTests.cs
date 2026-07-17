@@ -1,6 +1,9 @@
+using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using YLproxy.Infrastructure;
 using YLproxy.Proxy;
 
 namespace YLproxy.Tests;
@@ -58,12 +61,11 @@ public sealed class TransparentCoalescingForwarderTests
         using var upstream = new TcpListener(IPAddress.Loopback, 0);
         upstream.Start();
         var upstreamPort = ((IPEndPoint)upstream.LocalEndpoint).Port;
-        using var forwarder = new TransparentCoalescingForwarder("127.0.0.1", upstreamPort, "new-user", "new-password");
+        using var output = new StringWriter();
+        var testLogger = new StringWriterLogger(output);
+        using var forwarder = new TransparentCoalescingForwarder("127.0.0.1", upstreamPort, "new-user", "new-password", logger: testLogger);
         using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         var upstreamTask = AcceptSingleReadAsync(upstream, cancellation.Token);
-        using var output = new StringWriter();
-        var originalOutput = Console.Out;
-        Console.SetOut(output);
 
         try
         {
@@ -85,7 +87,6 @@ public sealed class TransparentCoalescingForwarderTests
         }
         finally
         {
-            Console.SetOut(originalOutput);
         }
     }
 
@@ -170,4 +171,20 @@ public sealed class TransparentCoalescingForwarderTests
 
         throw new TimeoutException($"Port {port} was not released within {timeout}.");
     }
+}
+
+internal sealed class StringWriterLogger : ILogger
+{
+    private readonly StringWriter _writer;
+    public StringWriterLogger(StringWriter writer) => _writer = writer;
+    public void Debug(string message) => _writer.WriteLine(message);
+    public void Info(string message) => _writer.WriteLine(message);
+    public void Warn(string message) => _writer.WriteLine(message);
+    public void Error(string message) => _writer.WriteLine(message);
+    public void Fatal(string message) => _writer.WriteLine(message);
+    public void Debug(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
+    public void Info(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
+    public void Warn(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
+    public void Error(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
+    public void Fatal(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
 }

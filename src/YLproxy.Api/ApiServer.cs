@@ -46,6 +46,7 @@ public sealed class ApiServer
         builder.WebHost.UseKestrel(options =>
         {
             options.Listen(System.Net.IPAddress.Loopback, _port);
+            options.Limits.MaxRequestBodySize = 64 * 1024; // 64 KB
         });
 
         builder.Logging.ClearProviders();

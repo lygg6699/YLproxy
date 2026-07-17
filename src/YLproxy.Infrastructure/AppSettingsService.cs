@@ -117,8 +117,24 @@ namespace YLproxy.Infrastructure
         {
             try
             {
-                string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(_configFilePath, json);
+                var json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
+                var tempPath = _configFilePath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+                try
+                {
+                    var dir = Path.GetDirectoryName(_configFilePath);
+                    if (!string.IsNullOrWhiteSpace(dir))
+                        Directory.CreateDirectory(dir);
+                    using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                    using (var writer = new StreamWriter(fs, System.Text.Encoding.UTF8))
+                    {
+                        writer.Write(json);
+                    }
+                    File.Move(tempPath, _configFilePath, true);
+                }
+                finally
+                {
+                    try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { }
+                }
             }
             catch (Exception ex)
             {

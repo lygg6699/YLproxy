@@ -144,6 +144,7 @@ public sealed class MainViewModel : ViewModelBase
             logAction: (msg) => AddLog(msg),
             refreshAction: RefreshDataGrid,
             restartAction: RestartProxySafe,
+            saveAction: PersistProxyState,
             checkInterval: TimeSpan.FromSeconds(Math.Max(1, _proxyConfig.CheckIntervalSeconds)),
             logger: _logger);
 
@@ -508,6 +509,32 @@ public sealed class MainViewModel : ViewModelBase
         RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
         StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
         FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
+    }
+
+    /// <summary>
+    /// Called by MonitorService when proxy status changes (e.g., Running→Failed),
+    /// so the config.json is persisted immediately rather than only on app exit.
+    /// </summary>
+    private void PersistProxyState()
+    {
+        try
+        {
+            var configPath = GetConfigPath();
+            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
+            var cfg = svc.Load();
+            var proxyList = Proxies.ToList();
+            foreach (var p in cfg.Proxies)
+            {
+                var live = proxyList.FirstOrDefault(x => x.Id == p.Id);
+                if (live is not null)
+                    p.Status = live.Status;
+            }
+            svc.Save(cfg);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn($"PersistProxyState: failed to save config.json: {ex.Message}");
+        }
     }
 }
 

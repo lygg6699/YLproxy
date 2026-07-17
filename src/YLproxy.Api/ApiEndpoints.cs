@@ -2,12 +2,17 @@ using YLproxy.Core.Config;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Proxy;
+using Microsoft.AspNetCore.Http;
 
 namespace YLproxy.Api;
 
 public static class ApiEndpoints
 {
     private static readonly ILog _logger = LogFactory.CreateLogger();
+
+    private static bool IsJsonContentType(HttpRequest request) =>
+        request.Headers.ContentType.FirstOrDefault() is string ct &&
+        ct.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
 
     public static void Map(WebApplication app, string configPath, ProxyConfig proxyConfig)
     {
@@ -30,7 +35,7 @@ public static class ApiEndpoints
                 var dtos = cfg.Proxies.Select(MapToDto).ToList();
                 return Results.Ok(ApiResponse<List<ProxyDto>>.Ok(dtos));
             }
-            catch (Exception ex) { _logger.Error($"GET /proxies: {ex.Message}"); return Results.Ok(ApiResponse<List<ProxyDto>>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"GET /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse<List<ProxyDto>>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<List<ProxyDto>>>(200);
@@ -47,17 +52,20 @@ public static class ApiEndpoints
                     return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
                 return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
             }
-            catch (Exception ex) { _logger.Error($"GET /proxies/{id}: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"GET /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(200)
             .Produces(404);
 
         // Add
-        group.MapPost("/proxies", (ProxyDto dto) =>
+        group.MapPost("/proxies", (ProxyDto dto, HttpContext http) =>
         {
             try
             {
+                if (!IsJsonContentType(http.Request))
+                    return Results.StatusCode(415); // Unsupported Media Type
+
                 // --- input validation ---
                 if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length > 200)
                     return Results.BadRequest(ApiResponse<ProxyDto>.Fail("Name is required (max 200 chars)"));
@@ -116,7 +124,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: added proxy {item.Id} ({item.RemoteHost}:{item.RemotePort})");
                 return Results.Created($"/api/proxies/{item.Id}", ApiResponse<ProxyDto>.Ok(MapToDto(item)));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies: {ex.Message}"); return Results.Ok(ApiResponse<ProxyDto>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"POST /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse<ProxyDto>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(201)
@@ -139,7 +147,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: deleted proxy {id}");
                 return Results.Ok(ApiResponse<object>.Ok(new { deleted = true }));
             }
-            catch (Exception ex) { _logger.Error($"DELETE /proxies/{id}: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"DELETE /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces(200)
@@ -168,7 +176,7 @@ public static class ApiEndpoints
                     Error = result.Error
                 }));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/test: {ex.Message}"); return Results.Ok(ApiResponse<ProxyTestResult>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/test: {ex.Message}"); return Results.InternalServerError(ApiResponse<ProxyTestResult>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyTestResult>>(200);
@@ -190,7 +198,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: started proxy {id}");
                 return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/start: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/start: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(200);
@@ -212,7 +220,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: stopped proxy {id}");
                 return Results.Ok(ApiResponse<ProxyDto>.Ok(MapToDto(proxy)));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/stop: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/stop: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(200);
@@ -232,7 +240,7 @@ public static class ApiEndpoints
                     failed = cfg.Proxies.Count(p => p.Status == ProxyStatus.Failed)
                 }));
             }
-            catch (Exception ex) { _logger.Error($"GET /stats: {ex.Message}"); return Results.Ok(ApiResponse<object>.Fail(ex.Message)); }
+            catch (Exception ex) { _logger.Error($"GET /stats: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Stats")
             .Produces(200);

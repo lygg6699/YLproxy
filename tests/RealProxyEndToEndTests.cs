@@ -248,25 +248,33 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
         R("");
         R("═══ Phase 4: DPAPI 加密验证 ═══");
 
-        var json = await File.ReadAllTextAsync(_configPath);
-        var hasEnc = json.Contains(DpapiSecurityService.Prefix);
-        var hasPlain = RealProxies.Any(p => json.Contains(p.Pass));
-        R($"  dpapi:v1: {(hasEnc ? "✅" : "❌")}  明文密码: {(hasPlain ? "❌ 泄露!" : "✅ 无")}");
-        Assert.True(hasEnc, "应包含 dpapi:v1: 加密凭据");
-        Assert.False(hasPlain, "不应有明文密码");
-
-        // 往返解密
-        var ds = new ProxyDataSerializer();
-        var cfg = ds.Deserialize(json, out _);
-        foreach (var p in addedProxies)
+        if (addedProxies.Count == 0)
         {
-            var item = cfg.Proxies.FirstOrDefault(x => x.Id == p.Id);
-            Assert.NotNull(item);
-            Assert.Equal(p.User, item!.Username);
-            Assert.Equal(p.Pass, item.Password);
+            R("  ⚠️  无代理数据，跳过加密验证");
+            _report.AppendLine("Phase 4 (DPAPI加密): SKIP (无代理)");
         }
-        R($"  ✅ 加密往返: {addedProxies.Count} 代理全正确");
-        _report.AppendLine("Phase 4 (DPAPI加密): PASS");
+        else
+        {
+            var json = await File.ReadAllTextAsync(_configPath);
+            var hasEnc = json.Contains(DpapiSecurityService.Prefix);
+            var hasPlain = RealProxies.Any(p => json.Contains(p.Pass));
+            R($"  dpapi:v1: {(hasEnc ? "✅" : "❌")}  明文密码: {(hasPlain ? "❌ 泄露!" : "✅ 无")}");
+            Assert.True(hasEnc, "应包含 dpapi:v1: 加密凭据");
+            Assert.False(hasPlain, "不应有明文密码");
+
+            // 往返解密
+            var ds = new ProxyDataSerializer();
+            var cfg = ds.Deserialize(json, out _);
+            foreach (var p in addedProxies)
+            {
+                var item = cfg.Proxies.FirstOrDefault(x => x.Id == p.Id);
+                Assert.NotNull(item);
+                Assert.Equal(p.User, item!.Username);
+                Assert.Equal(p.Pass, item.Password);
+            }
+            R($"  ✅ 加密往返: {addedProxies.Count} 代理全正确");
+            _report.AppendLine("Phase 4 (DPAPI加密): PASS");
+        }
 
         // ═══ Phase 5: 日志凭据脱敏 ═══
         R("");

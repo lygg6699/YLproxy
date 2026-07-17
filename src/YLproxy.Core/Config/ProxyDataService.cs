@@ -149,7 +149,7 @@ public sealed class ProxyDataService
 
     public void Save(AppConfig config)
     {
-        _ioLock.Wait();
+        _ioLock.WaitAsync().GetAwaiter().GetResult();
         try
         {
             SaveInternal(config);

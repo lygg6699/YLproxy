@@ -16,6 +16,7 @@ public static class ProxyTester
     /// <summary>
     /// 代理连通性测试使用的目标 URL（可配置）。
     /// </summary>
+
     public static string TestUrl { get; set; } = "https://www.baidu.com";
 
     /// <summary>
@@ -26,6 +27,11 @@ public static class ProxyTester
     /// <summary>
     /// 代理连通性测试，内置重试 + 指数退避。
     /// </summary>
+    /// <param name="host">代理服务器主机名或 IP</param>
+    /// <param name="port">代理服务器端口</param>
+    /// <param name="username">代理用户名（可空，取决于上游认证需求）</param>
+    /// <param name="password">代理密码（可空，取决于上游认证需求）</param>
+    /// <param name="cancellationToken">取消令牌</param>
     public static Task<(bool Success, long LatencyMs, string? Error)> TestAsync(
         string host,
         int port,
@@ -33,14 +39,23 @@ public static class ProxyTester
         string? password,
         CancellationToken cancellationToken = default)
     {
+
         return TestAsync(host, port, username, password, DefaultMaxRetries, DefaultRetryDelayMs, cancellationToken);
     }
+
+
 
     /// <summary>
     /// 代理连通性测试，可配置重试策略。
     /// </summary>
+    /// <param name="host">代理服务器主机名或 IP</param>
+    /// <param name="port">代理服务器端口</param>
+    /// <param name="username">代理用户名（可空，取决于上游认证需求）</param>
+    /// <param name="password">代理密码（可空，取决于上游认证需求）</param>
     /// <param name="maxRetries">最大重试次数（总共尝试 maxRetries + 1 次）。</param>
     /// <param name="retryDelayMs">基础重试延迟（毫秒），每次重试翻倍。</param>
+    /// <param name="cancellationToken">取消令牌</param>
+
     public static async Task<(bool Success, long LatencyMs, string? Error)> TestAsync(
         string host,
         int port,
@@ -130,10 +145,11 @@ public static class ProxyTester
 
             return (response.IsSuccessStatusCode, sw.ElapsedMilliseconds, null);
         }
-        catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
             return (false, 0, "连接失败: 超时");
         }
+
         catch (OperationCanceledException)
         {
             return (false, 0, "测试已取消");
@@ -142,9 +158,10 @@ public static class ProxyTester
         {
             return (false, 0, $"连接失败: {ex.Message}");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return (false, 0, $"连接失败: {ex.Message}");
+            return (false, 0, "连接失败");
         }
+
     }
 }
