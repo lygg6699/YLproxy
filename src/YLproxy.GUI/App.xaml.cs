@@ -66,31 +66,10 @@ public partial class App : Application
         var settingsPath = System.IO.Path.Combine(
             System.IO.Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory,
             "AppSettings.json");
-
-        var services = new ServiceCollection();
-
-        // Logging (singleton for app lifecycle)
-        services.AddSingleton<ILogger>(_ => _logger ?? LoggerFactory.CreateLogger());
-
-        // AppSettingsService: instance per app, depends on settingsPath
-        services.AddSingleton(new AppSettingsService(settingsPath));
-
-        // Security (DPAPI only on Windows)
-        // Keep it as a factory to avoid platform activation on non-Windows.
-        if (OperatingSystem.IsWindows())
-            services.AddSingleton<ISecurityService, DpapiSecurityService>();
-
-        // ViewModels (transient)
-        services.AddTransient<MainViewModel>();
-
-
-        var provider = services.BuildServiceProvider();
-        ServiceLocator.SetProvider(provider);
-
-        // Auto-start
         try
         {
-            var cfg = provider.GetRequiredService<AppSettingsService>().GetConfig();
+            var svc = new AppSettingsService(settingsPath);
+            var cfg = svc.GetConfig();
             if (cfg?.Startup.AutoStart == true)
             {
                 AutoStartService.SetAutoStart(true);

@@ -19,8 +19,6 @@ public partial class MainWindow : Window
         InitializeKeyboardShortcuts();
     }
 
-
-
     private void InitializeKeyboardShortcuts()
     {
         KeyDown += (_, e) =>
