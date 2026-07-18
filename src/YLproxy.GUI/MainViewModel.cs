@@ -31,6 +31,12 @@ public sealed class MainViewModel : ViewModelBase
     private readonly GlobalProxyConfig _proxyConfig;
     private readonly GlobalThreeProxyConfig _threeProxyConfig;
 
+    private readonly Core.Abstractions.IProxyDataService _proxyDataService;
+    private readonly Core.Abstractions.IProxyTester _proxyTester;
+    private readonly Core.Abstractions.IProxyRepository _proxyRepository;
+    private readonly Proxy.Abstractions.IProxyProcessManager _proxyProcessManager;
+
+
     // --- Host Info ---
     private string _computerName = string.Empty;
     public string ComputerName { get => _computerName; set => SetProperty(ref _computerName, value); }

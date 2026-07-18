@@ -1,4 +1,25 @@
+## Phase A2：接口抽取（AppSettings/IProxy... 接口契约对齐）（2026-07-18）
+
+### 变更
+- `src/YLproxy.Infrastructure/IAppSettingsService.cs`：接口契约对齐 `AppSettingsConfig` 返回类型。
+- `src/YLproxy.Infrastructure/AppSettingsService.cs`：修复 `GetConfig()` 返回类型并确保 `AppSettingsConfig` 相关定义可用。
+
+### 验证
+- `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+- `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
+## Phase A1：DI 注册 + MainViewModel 构造链闭合（2026-07-18）
+
+### 变更
+- `src/YLproxy.GUI/App.xaml.cs`：补齐 DI 注册并通过 DI 创建 `MainViewModel`（启动链闭合）。
+- `src/YLproxy.GUI/MainViewModel.cs`：无参构造迁移为依赖注入构造。
+
+### 验证
+- `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+- `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
 ## v0.3.0 (2026-07-16)
+
 
 ### 新增
 - SQLite 数据持久化层（SqliteProxyRepository）

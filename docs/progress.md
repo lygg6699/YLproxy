@@ -1,4 +1,24 @@
+## Phase A1：DI 注册 + MainViewModel 构造链闭合（2026-07-18）
+
+**状态：已完成（build/test 复验通过）**
+
+
+- ✅ 修改 `src/YLproxy.GUI/App.xaml.cs`：补齐 DI 注册并通过 DI 创建 `MainViewModel`（使用 `ServiceLocator` 初始化 provider）。
+- ✅ 修改 `src/YLproxy.GUI/MainViewModel.cs`：`MainViewModel()` 无参构造迁移为带依赖注入构造（ILogger / AppSettingsService / ProxyConfig / ThreeProxyConfig）。
+- ✅ 验证复验：
+  - `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+  - `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
+## Phase A2：接口抽取（AppSettings/IProxy... 接口契约对齐）（2026-07-18）
+
+**状态：已完成（关键编译闭环）**
+
+- ✅ `IAppSettingsService.GetConfig()` 与 `AppSettingsConfig` 类型对齐（修复返回类型不一致导致的转换失败/编译阻断）。
+- ✅ `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+- ✅ `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
 ## Phase 2.5 代理认证与网络连接修复（2026-07-15）
+
 
 **状态：✅ 已完成**
 

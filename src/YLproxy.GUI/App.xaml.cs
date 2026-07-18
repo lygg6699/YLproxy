@@ -84,8 +84,9 @@ public partial class App : Application
             _logger.Warn($"Failed to configure auto-start: {ex.Message}");
         }
 
-        // Build DI container (Phase A1: startup chain closure)
+        // Build DI container (Phase A1/A2: startup chain closure + abstraction wiring)
         var services = new ServiceCollection();
+
 
 
         // Logging

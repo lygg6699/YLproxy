@@ -7,15 +7,6 @@
 
 ## 1. Phase A 执行计划（按可编译/可测试顺序推进）
 
-### Step A1 复验与证据（已完成）
-- 代码变更：
-  - `src/YLproxy.GUI/App.xaml.cs`：补齐 DI 容器构建与 provider 初始化；注册 `MainViewModel` 并通过 DI 创建窗口。
-  - `src/YLproxy.GUI/MainViewModel.cs`：`MainViewModel()` 无参构造迁移为带注入构造。
-- 验证命令与结果：
-  - `dotnet build YLproxy.sln`：Build succeeded（warning 不阻断）。
-  - `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
-
-
 ### Step A1. MainWindow / ViewModel 创建链路走 DI（启动链闭合）
 - 修改：`src/YLproxy.GUI/App.xaml.cs`
   - DI 注册：补齐 `MainViewModel` 所需的依赖（至少需要：ILogger、AppSettingsService、ProxyConfig、ThreeProxyConfig）。
@@ -26,11 +17,11 @@
   - 将 `MainViewModel()` 无参构造迁移为带依赖注入构造（保留可运行入口，确保 build 通过）。
   - 将 `new GlobalConfigService()`、`LoggerFactory.CreateLogger()`、`new ProxyDataService()` 等“内部 new 依赖链”最小化，优先做到 MainViewModel 初始化部分走 DI。
 
-**通过标准：**
-- `dotnet build YLproxy.sln` 通过
-- `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E` 通过
+**通过标准（已复验证据）：**
+- `dotnet build YLproxy.sln`：Build succeeded（warning 不阻断）。
+- `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
 
-### Step A2. 接口抽取（按你给的目录结构与命名目标落地）
+### Step A2. 接口抽取（按目录结构与命名目标落地）
 - 新增（由接口定义驱动）：
   - `src/YLproxy.Core/Abstractions/IProxyDataService.cs`
   - `src/YLproxy.Core/Abstractions/IProxyTester.cs`
@@ -48,8 +39,8 @@
   - `HostInfoViewModel`
   - `DashboardViewModel`
   - `LogPanelViewModel`
-  - `ProxyManagementService`（或等价结构）
-- 修改：`src/YLproxy.GUI/MainView.xaml`
+  - `ProxyOperationViewModel`（或等价结构）
+- 修改：`src/YLproxy.GUI/Views/MainView.xaml`
   - 将绑定从 `{Binding ComputerName}` 变为 `{Binding HostInfo.ComputerName}` 等子属性路径。
 - 修改：`src/YLproxy.GUI/MainViewModel.cs`
   - MainViewModel 作为协调器，组合并暴露：`HostInfo` / `Dashboard` / `LogPanel` / `Proxies` 等。

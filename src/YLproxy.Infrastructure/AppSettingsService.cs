@@ -6,11 +6,14 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using YLproxy.Models;
 using YLproxy.Utils;
+using YLproxy.Infrastructure.Abstractions;
 
 namespace YLproxy.Infrastructure
 {
-    public class AppSettingsService
+
+    public class AppSettingsService : IAppSettingsService
     {
+
         private readonly string _configFilePath;
         private AppSettingsConfig _config = new AppSettingsConfig();
         private readonly FileSystemWatcher _watcher;
@@ -71,6 +74,7 @@ namespace YLproxy.Infrastructure
         {
             return _config;
         }
+
 
         private void LoadConfig()
         {
