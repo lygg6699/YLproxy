@@ -152,6 +152,8 @@
                           AlternationCount="2">
                     <DataGrid.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="编辑" Command="{Binding PlacementTarget.DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            <Separator/>
                             <MenuItem Header="启动" Command="{Binding PlacementTarget.DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                             <MenuItem Header="停止" Command="{Binding PlacementTarget.DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                             <MenuItem Header="测试" Command="{Binding PlacementTarget.DataContext.TestCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
@@ -210,7 +212,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Text}"
-                                       Foreground="{Binding Text, Converter={StaticResource LogLevelToColorConverter}}"
+                                       Foreground="{Binding Level, Converter={StaticResource LogLevelToColorConverter}}"
                                        FontFamily="Consolas" FontSize="11"
                                        Padding="2,0" TextWrapping="NoWrap"/>
                         </DataTemplate>

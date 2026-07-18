@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using YLproxy.Infrastructure;
 
 namespace YLproxy.Core;
 
@@ -12,6 +13,8 @@ public static class ProxyTester
 {
     private const int DefaultMaxRetries = 2;
     private const int DefaultRetryDelayMs = 1000;
+
+    private static ILogger _testLogger = LoggerFactory.CreateLogger();
 
     /// <summary>
     /// 代理连通性测试使用的目标 URL（可配置）。
@@ -23,6 +26,17 @@ public static class ProxyTester
     /// 单次测试超时时间（毫秒），默认 15000ms。
     /// </summary>
     public static int TimeoutMs { get; set; } = 15000;
+
+    /// <summary>
+    /// Allows tests to inject a custom HttpMessageHandler.
+    /// When set, the normal HttpClientHandler / proxy configuration is bypassed.
+    /// </summary>
+    internal static Func<HttpMessageHandler>? HttpMessageHandlerFactory { get; set; }
+
+    /// <summary>
+    /// Allows tests or callers to replace the default logger.
+    /// </summary>
+    internal static void SetLogger(ILogger logger) => _testLogger = logger;
 
     /// <summary>
     /// 代理连通性测试，内置重试 + 指数退避。
@@ -69,12 +83,20 @@ public static class ProxyTester
 
         for (var attempt = 0; attempt <= maxRetries; attempt++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            catch (OperationCanceledException)
+            {
+                return (false, 0, "测试已取消");
+            }
 
             var (success, latency, error) = await TestOnceAsync(host, port, username, password, cancellationToken);
             if (success) return (true, latency, null);
 
             lastError = error;
+            _testLogger.Warn($"Proxy test attempt {attempt + 1}/{maxRetries + 1} failed for {host}:{port}: {error}");
 
             if (attempt < maxRetries)
             {
@@ -94,6 +116,27 @@ public static class ProxyTester
         return (false, 0, lastError ?? "连接失败（已重试）");
     }
 
+    private static HttpMessageHandler CreateDefaultHandler(string host, int port, string? username, string? password)
+    {
+        var handler = new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            AllowAutoRedirect = true,
+        };
+
+        handler.Proxy = new WebProxy($"http://{host}:{port}");
+        handler.UseProxy = true;
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            handler.Proxy.Credentials = new NetworkCredential(username, password);
+            handler.PreAuthenticate = true;
+            handler.DefaultProxyCredentials = handler.Proxy.Credentials;
+        }
+
+        return handler;
+    }
+
     private static async Task<(bool Success, long LatencyMs, string? Error)> TestOnceAsync(
         string host,
         int port,
@@ -108,28 +151,13 @@ public static class ProxyTester
             if (string.IsNullOrWhiteSpace(host))
                 return (false, 0, "host 为空");
 
-            var handler = new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                AllowAutoRedirect = true,
-            };
-
             var hasUser = !string.IsNullOrEmpty(username);
             var hasPass = !string.IsNullOrEmpty(password);
 
             if (hasUser != hasPass)
                 return (false, 0, "代理认证信息不完整");
 
-            handler.Proxy = new WebProxy($"http://{host}:{port}");
-            handler.UseProxy = true;
-
-            if (hasUser)
-            {
-                handler.Proxy.Credentials = new NetworkCredential(username, password);
-                // 预认证：避免 407 往返，直接发送 Basic auth
-                handler.PreAuthenticate = true;
-                handler.DefaultProxyCredentials = handler.Proxy.Credentials;
-            }
+            var handler = HttpMessageHandlerFactory?.Invoke() ?? CreateDefaultHandler(host, port, username, password);
 
             using var client = new HttpClient(handler)
             {

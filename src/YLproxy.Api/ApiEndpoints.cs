@@ -35,7 +35,7 @@ public static class ApiEndpoints
                 var dtos = cfg.Proxies.Select(MapToDto).ToList();
                 return Results.Ok(ApiResponse.Ok(dtos));
             }
-            catch (Exception ex) { _logger.Error($"GET /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse<List<ProxyDto>>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"GET /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<List<ProxyDto>>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<List<ProxyDto>>>(200);
@@ -49,10 +49,10 @@ public static class ApiEndpoints
                 var cfg = svc.Load();
                 var proxy = cfg.Proxies.FirstOrDefault(p => p.Id == id);
                 if (proxy is null)
-                    return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
+                    return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
                 return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
             }
-            catch (Exception ex) { _logger.Error($"GET /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"GET /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<object>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(200)
@@ -68,16 +68,16 @@ public static class ApiEndpoints
 
                 // --- input validation ---
                 if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length > 200)
-                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("Name is required (max 200 chars)"));
+                    return Results.BadRequest(ApiResponse.Fail<ProxyDto>("Name is required (max 200 chars)"));
 
                 if (string.IsNullOrWhiteSpace(dto.RemoteHost))
-                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("RemoteHost is required"));
+                    return Results.BadRequest(ApiResponse.Fail<ProxyDto>("RemoteHost is required"));
 
                 if (dto.RemotePort < 1 || dto.RemotePort > 65535)
-                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("RemotePort must be 1-65535"));
+                    return Results.BadRequest(ApiResponse.Fail<ProxyDto>("RemotePort must be 1-65535"));
 
                 if (dto.LocalPort < 0 || dto.LocalPort > 65535)
-                    return Results.BadRequest(ApiResponse<ProxyDto>.Fail("LocalPort must be 0 (auto) or 1-65535"));
+                    return Results.BadRequest(ApiResponse.Fail<ProxyDto>("LocalPort must be 0 (auto) or 1-65535"));
                 // --- end input validation ---
 
                 var svc = CreateSvc();
@@ -90,7 +90,7 @@ public static class ApiEndpoints
                 if (dto.LocalPort > 0)
                 {
                     if (existingPorts.Contains(dto.LocalPort))
-                        return Results.Conflict(ApiResponse<ProxyDto>.Fail("Local port already in use"));
+                        return Results.Conflict(ApiResponse.Fail<ProxyDto>("Local port already in use"));
                     localPort = dto.LocalPort;
                 }
                 else
@@ -100,7 +100,7 @@ public static class ApiEndpoints
                     {
                         localPort++;
                         if (localPort > proxyConfig.PortRangeEnd)
-                            return Results.Conflict(ApiResponse<ProxyDto>.Fail("Port range exhausted"));
+                            return Results.Conflict(ApiResponse.Fail<ProxyDto>("Port range exhausted"));
                     }
                 }
 
@@ -124,7 +124,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: added proxy {item.Id} ({item.RemoteHost}:{item.RemotePort})");
                 return Results.Created($"/api/proxies/{item.Id}", ApiResponse.Ok(MapToDto(item)));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse<ProxyDto>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"POST /proxies: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<ProxyDto>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(201)
@@ -139,7 +139,7 @@ public static class ApiEndpoints
                 var cfg = svc.Load();
                 var removed = cfg.Proxies.RemoveAll(p => p.Id == id);
                 if (removed == 0)
-                    return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
+                    return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
 
                 try { ProxyProcessManager.Stop(new ProxyItem { Id = id }); } catch (Exception ex) { _logger.Warn($"Failed to stop proxy {id} during delete: {ex.Message}"); }
 
@@ -147,7 +147,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: deleted proxy {id}");
                 return Results.Ok(ApiResponse.Ok(new { deleted = true }));
             }
-            catch (Exception ex) { _logger.Error($"DELETE /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"DELETE /proxies/{id}: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<object>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces(200)
@@ -162,21 +162,21 @@ public static class ApiEndpoints
                 var cfg = svc.Load();
                 var proxy = cfg.Proxies.FirstOrDefault(p => p.Id == id);
                 if (proxy is null)
-                    return Results.NotFound(ApiResponse<ProxyTestResult>.Fail("Proxy not found"));
+                    return Results.NotFound(ApiResponse.Fail<ProxyTestResult>("Proxy not found"));
 
                 var result = await YLproxy.Core.ProxyTester.TestAsync(
                     proxy.RemoteHost, proxy.RemotePort,
                     string.IsNullOrWhiteSpace(proxy.Username) ? null : proxy.Username,
                     string.IsNullOrWhiteSpace(proxy.Password) ? null : proxy.Password);
 
-                return Results.Ok(ApiResponse<ProxyTestResult>.Ok(new ProxyTestResult
+                return Results.Ok(ApiResponse.Ok<ProxyTestResult>(new ProxyTestResult
                 {
                     Success = result.Success,
                     LatencyMs = result.LatencyMs,
                     Error = result.Error
                 }));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/test: {ex.Message}"); return Results.InternalServerError(ApiResponse<ProxyTestResult>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/test: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<ProxyTestResult>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyTestResult>>(200);
@@ -190,7 +190,7 @@ public static class ApiEndpoints
                 var cfg = svc.Load();
                 var proxy = cfg.Proxies.FirstOrDefault(p => p.Id == id);
                 if (proxy is null)
-                    return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
+                    return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
 
                 proxy.Status = ProxyStatus.Running;
                 ProxyProcessManager.Start(proxy);
@@ -198,7 +198,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: started proxy {id}");
                 return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/start: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/start: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<object>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(200);
@@ -212,7 +212,7 @@ public static class ApiEndpoints
                 var cfg = svc.Load();
                 var proxy = cfg.Proxies.FirstOrDefault(p => p.Id == id);
                 if (proxy is null)
-                    return Results.NotFound(ApiResponse<object>.Fail("Proxy not found"));
+                    return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
 
                 ProxyProcessManager.Stop(proxy);
                 proxy.Status = ProxyStatus.Stopped;
@@ -220,7 +220,7 @@ public static class ApiEndpoints
                 _logger.Info($"API: stopped proxy {id}");
                 return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
             }
-            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/stop: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"POST /proxies/{id}/stop: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<object>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Proxies")
             .Produces<ApiResponse<ProxyDto>>(200);
@@ -240,7 +240,7 @@ public static class ApiEndpoints
                     failed = cfg.Proxies.Count(p => p.Status == ProxyStatus.Failed)
                 }));
             }
-            catch (Exception ex) { _logger.Error($"GET /stats: {ex.Message}"); return Results.InternalServerError(ApiResponse<object>.Fail(ex.Message, "INTERNAL_ERROR")); }
+            catch (Exception ex) { _logger.Error($"GET /stats: {ex.Message}"); return Results.InternalServerError(ApiResponse.Fail<object>(ex.Message, "INTERNAL_ERROR")); }
         })
             .WithTags("Stats")
             .Produces(200);

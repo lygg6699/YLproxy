@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using YLproxy.Core;
@@ -60,6 +61,152 @@ public sealed class ProxyTesterTests
         Assert.Equal(0, latency);
         Assert.NotNull(err);
         Assert.StartsWith("连接失败:", err);
+    }
+
+    [Fact]
+    public async Task Timeout_ShouldReturnTimeoutError()
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        ProxyTester.TestUrl = "https://example.com";
+        ProxyTester.TimeoutMs = 1; // immediate timeout
+
+        // Use a custom handler that blocks, to trigger timeout
+        ProxyTester.HttpMessageHandlerFactory = () => new DelayedHandler(delayMs: 5000);
+
+        try
+        {
+            var (ok, latency, err) = await ProxyTester.TestAsync(
+                host: "127.0.0.1",
+                port: 1234,
+                username: null,
+                password: null,
+                maxRetries: 0,
+                retryDelayMs: 0,
+                cancellationToken: cts.Token);
+
+            Assert.False(ok);
+            Assert.Equal(0, latency);
+            Assert.Equal("连接失败: 超时", err);
+        }
+        finally
+        {
+            ProxyTester.HttpMessageHandlerFactory = null;
+            ProxyTester.TestUrl = "https://www.baidu.com";
+            ProxyTester.TimeoutMs = 15000;
+        }
+    }
+
+    [Fact]
+    public async Task HttpRequestException_ShouldReturnConnectionFailed()
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        ProxyTester.HttpMessageHandlerFactory = () => new ThrowingHandler(() => throw new HttpRequestException("test hre"));
+
+        try
+        {
+            var (ok, latency, err) = await ProxyTester.TestAsync(
+                host: "127.0.0.1",
+                port: 1234,
+                username: null,
+                password: null,
+                maxRetries: 0,
+                retryDelayMs: 0,
+                cancellationToken: cts.Token);
+
+            Assert.False(ok);
+            Assert.Equal(0, latency);
+            Assert.StartsWith("连接失败:", err);
+        }
+        finally
+        {
+            ProxyTester.HttpMessageHandlerFactory = null;
+        }
+    }
+
+    [Fact]
+    public async Task GenericException_ShouldReturnConnectionFailed()
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        ProxyTester.HttpMessageHandlerFactory = () => new ThrowingHandler(() => throw new InvalidOperationException("test"));
+
+        try
+        {
+            var (ok, latency, err) = await ProxyTester.TestAsync(
+                host: "127.0.0.1",
+                port: 1234,
+                username: null,
+                password: null,
+                maxRetries: 0,
+                retryDelayMs: 0,
+                cancellationToken: cts.Token);
+
+            Assert.False(ok);
+            Assert.Equal(0, latency);
+            Assert.Equal("连接失败", err);
+        }
+        finally
+        {
+            ProxyTester.HttpMessageHandlerFactory = null;
+        }
+    }
+
+    [Fact]
+    public async Task Success_ShouldReturnSuccess()
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        ProxyTester.HttpMessageHandlerFactory = () => new FakeHttpMessageHandler(
+            new HttpResponseMessage(System.Net.HttpStatusCode.OK));
+
+        try
+        {
+            var (ok, latency, err) = await ProxyTester.TestAsync(
+                host: "127.0.0.1",
+                port: 1234,
+                username: null,
+                password: null,
+                maxRetries: 0,
+                retryDelayMs: 0,
+                cancellationToken: cts.Token);
+
+            Assert.True(ok);
+            Assert.True(latency >= 0);
+            Assert.Null(err);
+        }
+        finally
+        {
+            ProxyTester.HttpMessageHandlerFactory = null;
+        }
+    }
+
+    private sealed class DelayedHandler : HttpMessageHandler
+    {
+        private readonly int _delayMs;
+        public DelayedHandler(int delayMs) => _delayMs = delayMs;
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(_delayMs, cancellationToken);
+            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        }
+    }
+
+    private sealed class ThrowingHandler : HttpMessageHandler
+    {
+        private readonly Func<Exception> _factory;
+        public ThrowingHandler(Func<Exception> factory) => _factory = factory;
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            throw _factory();
+        }
+    }
+
+    private sealed class FakeHttpMessageHandler : HttpMessageHandler
+    {
+        private readonly HttpResponseMessage _response;
+        public FakeHttpMessageHandler(HttpResponseMessage response) => _response = response;
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(_response);
+        }
     }
 }
 

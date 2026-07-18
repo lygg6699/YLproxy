@@ -308,6 +308,8 @@ public sealed class LoggingAndMonitorTests
         public void Warn(string message, Exception exception) => Warnings.Add(message);
         public void Error(string message, Exception exception) { }
         public void Fatal(string message, Exception exception) { }
+        public void Log(LogLevel level, string message, object? data = null) { }
+        public void Log(LogLevel level, string message, Exception exception, object? data = null) { }
     }
 
     private sealed class TempDirectory : IDisposable

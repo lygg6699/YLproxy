@@ -20,4 +20,8 @@
     <!-- NU1903 suppressed globally in Directory.Build.props -->
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="YLproxy.Tests" />
+  </ItemGroup>
+
 </Project>

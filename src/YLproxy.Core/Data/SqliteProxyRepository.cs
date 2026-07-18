@@ -43,6 +43,7 @@ public class SqliteProxyRepository : IDisposable
         pragmaCmd.CommandText = "PRAGMA journal_mode=WAL";
         pragmaCmd.ExecuteNonQuery();
 
+        RunIntegrityCheck();
         InitializeDatabase();
     }
 
@@ -125,6 +126,28 @@ public class SqliteProxyRepository : IDisposable
         }
 
         MigrateAddGroupColumn();
+    }
+
+    private void RunIntegrityCheck()
+    {
+        try
+        {
+            using var cmd = _connection.CreateCommand();
+            cmd.CommandText = "PRAGMA integrity_check";
+            var result = cmd.ExecuteScalar() as string;
+            if (!string.Equals(result, "ok", StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.Log(LogLevel.Error, $"SQLite integrity check returned: {result}");
+            }
+            else
+            {
+                _logger.Info("SQLite integrity check passed.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn($"SQLite integrity check failed: {ex.Message}", ex);
+        }
     }
 
     private void MigrateAddGroupColumn()

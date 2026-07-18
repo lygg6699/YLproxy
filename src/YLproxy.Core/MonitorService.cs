@@ -17,7 +17,7 @@ public sealed class MonitorService : IDisposable
     private readonly Action _refreshAction;
     private readonly Action<ProxyItem>? _restartAction;
     private readonly Action? _saveAction;
-    private readonly ILogger? _logger;
+    private readonly ILogger _logger;
     private readonly Func<ProxyItem, bool> _isRunning;
     private readonly TimeSpan _healthCheckInterval;
     private readonly int _maxRestartAttempts;
@@ -63,7 +63,7 @@ public sealed class MonitorService : IDisposable
         _refreshAction = refreshAction ?? throw new ArgumentNullException(nameof(refreshAction));
         _restartAction = restartAction;
         _saveAction = saveAction;
-        _logger = logger;
+        _logger = logger ?? LoggerFactory.CreateLogger();
         _isRunning = isRunning ?? ProxyProcessManager.IsRunning;
         _healthCheckInterval = healthCheckInterval ?? TimeSpan.FromSeconds(30);
         _maxRestartAttempts = maxRestartAttempts;
@@ -88,7 +88,7 @@ public sealed class MonitorService : IDisposable
             }
             catch (Exception ex)
             {
-                _logger?.Warn($"MonitorService: failed to enumerate proxies: {ex.Message}");
+                _logger.Warn($"MonitorService: failed to enumerate proxies: {ex.Message}");
                 return;
             }
 
@@ -109,7 +109,7 @@ public sealed class MonitorService : IDisposable
                 }
                 catch (Exception ex)
                 {
-                    _logger?.Warn($"MonitorService: process inspection failed for proxy {proxy.Id}: {ex.Message}");
+                    _logger.Warn($"MonitorService: process inspection failed for proxy {proxy.Id}: {ex.Message}");
                     continue;
                 }
 
@@ -137,7 +137,7 @@ public sealed class MonitorService : IDisposable
         }
         catch (Exception ex)
         {
-            _logger?.Error($"MonitorService: monitor tick failed: {ex.Message}", ex);
+            _logger.Error($"MonitorService: monitor tick failed: {ex.Message}", ex);
         }
     }
 
@@ -190,17 +190,23 @@ public sealed class MonitorService : IDisposable
             return;
 
         var now = DateTime.UtcNow;
+
+        // Capture the previous LastAttempt before updating, so backoff is based on the
+        // actual elapsed time since the *last* restart attempt, not this one.
+        _restartBackoff.TryGetValue(proxy.Id, out var prev);
+        var prevLastAttempt = prev.LastAttempt;
+
         var entry = _restartBackoff.AddOrUpdate(proxy.Id,
             (1, now),
             (_, e) => (e.FailureCount + 1, now));
 
-        // Calculate backoff: base * 2^failureCount
-        if (entry.FailureCount > 0)
+        // Calculate backoff: base * 2^(failureCount-1)
+        if (entry.FailureCount > 1)
         {
-            var backoffMultiplier = 1 << Math.Min(entry.FailureCount - 1, 8);
+            var backoffMultiplier = 1 << Math.Min(entry.FailureCount - 2, 8);
             var backoff = _restartBackoffBase * backoffMultiplier;
 
-            if (now - entry.LastAttempt < backoff && entry.FailureCount > 1)
+            if (prevLastAttempt != default && now - prevLastAttempt < backoff)
             {
                 _logger?.Debug($"MonitorService: skipping restart for proxy {proxy.Id}, backoff {backoff.TotalSeconds:F0}s");
                 return;

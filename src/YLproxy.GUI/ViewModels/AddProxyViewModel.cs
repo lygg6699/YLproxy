@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using YLproxy.Core.Config;
 using YLproxy.Models;
 
@@ -12,7 +13,16 @@ public sealed class AddProxyViewModel : ViewModelBase
     private readonly string _configPath;
     private readonly int _portRangeStart;
     private readonly int _portRangeEnd;
-    private int _nextId;
+    private readonly ProxyItem? _editTarget;
+    private int _currentId;
+    private bool _isEditMode;
+
+    private string _title = "添加代理";
+    public string Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
 
     private string _name = string.Empty;
     public string Name
@@ -77,8 +87,16 @@ public sealed class AddProxyViewModel : ViewModelBase
         set => SetProperty(ref _validationMessage, value);
     }
 
+    private bool _isPasswordVisible;
+    public bool IsPasswordVisible
+    {
+        get => _isPasswordVisible;
+        set => SetProperty(ref _isPasswordVisible, value);
+    }
+
     public RelayCommand ConfirmCommand { get; }
     public RelayCommand CancelCommand { get; }
+    public ICommand TogglePasswordCommand { get; }
 
     public Action? CloseAction { get; set; }
 
@@ -86,7 +104,8 @@ public sealed class AddProxyViewModel : ViewModelBase
         IList<ProxyItem> existingProxies,
         string configPath,
         int portRangeStart = 9001,
-        int portRangeEnd = 9100)
+        int portRangeEnd = 9100,
+        ProxyItem? editTarget = null)
     {
         if (portRangeStart < 1 || portRangeStart > 65535)
             throw new ArgumentOutOfRangeException(nameof(portRangeStart));
@@ -97,19 +116,38 @@ public sealed class AddProxyViewModel : ViewModelBase
         _configPath = configPath;
         _portRangeStart = portRangeStart;
         _portRangeEnd = portRangeEnd;
-        _nextId = existingProxies.Count == 0 ? 1 : existingProxies.Max(p => p.Id) + 1;
+        _editTarget = editTarget;
+        _isEditMode = editTarget is not null;
 
-        // sensible defaults
-        Name = $"Proxy-{_nextId}";
-        RemoteHost = "";
-        RemotePortText = "";
-        Username = "";
-        Password = "";
-        IsAutoPort = true;
-        LocalPortText = "";
+        Title = _isEditMode ? "编辑代理" : "添加代理";
+
+        if (_isEditMode && editTarget is not null)
+        {
+            _currentId = editTarget.Id;
+            _name = editTarget.Name;
+            _remoteHost = editTarget.RemoteHost;
+            _remotePortText = editTarget.RemotePort.ToString();
+            _username = editTarget.Username ?? "";
+            _password = editTarget.Password ?? "";
+            _group = editTarget.Group ?? "";
+            _isAutoPort = false;
+            _localPortText = editTarget.LocalPort.ToString();
+        }
+        else
+        {
+            _currentId = existingProxies.Count == 0 ? 1 : existingProxies.Max(p => p.Id) + 1;
+            _name = $"Proxy-{_currentId}";
+            _remoteHost = "";
+            _remotePortText = "";
+            _username = "";
+            _password = "";
+            _isAutoPort = true;
+            _localPortText = "";
+        }
 
         ConfirmCommand = new RelayCommand(Confirm);
         CancelCommand = new RelayCommand(() => CloseAction?.Invoke());
+        TogglePasswordCommand = new RelayCommand(() => IsPasswordVisible = !IsPasswordVisible);
     }
 
     private void Confirm()
@@ -128,7 +166,6 @@ public sealed class AddProxyViewModel : ViewModelBase
             return;
         }
 
-        // Validate IP format (basic)
         if (string.IsNullOrWhiteSpace(RemoteHost) || !System.Net.IPAddress.TryParse(RemoteHost.Trim(), out _))
         {
             ValidationMessage = "服务器IP格式不正确";
@@ -147,9 +184,11 @@ public sealed class AddProxyViewModel : ViewModelBase
             requestedLocalPort = lp;
         }
 
-        var usedPorts = new HashSet<int>(_existingProxies.Select(p => p.LocalPort));
+        var usedPorts = new HashSet<int>(_existingProxies
+            .Where(p => _isEditMode || p.Id != _currentId)
+            .Select(p => p.LocalPort));
         int localPort;
-        
+
         if (IsAutoPort)
         {
             localPort = _portRangeStart;
@@ -175,32 +214,48 @@ public sealed class AddProxyViewModel : ViewModelBase
 
         var localIp = YLproxy.Utils.NetworkUtil.GetBestLocalIp() ?? string.Empty;
 
-        var item = new ProxyItem
-        {
-            Id = _nextId,
-            Name = Name.Trim(),
-            RemoteHost = RemoteHost.Trim(),
-            RemotePort = remotePort,
-            Username = Username ?? string.Empty,
-            Password = Password ?? string.Empty,
-            Group = (Group ?? string.Empty).Trim(),
-            LocalHost = localIp,
-            LocalPort = localPort,
-            Status = ProxyStatus.Stopped,
-            CreateTime = DateTime.UtcNow
-        };
-
         try
         {
             var svc = new ProxyDataService(_configPath);
             var cfg = svc.Load();
 
-            if (!cfg.Proxies.Any(p => p.Id == item.Id || p.LocalPort == item.LocalPort))
-                cfg.Proxies.Add(item);
+            if (_isEditMode)
+            {
+                var existing = cfg.Proxies.FirstOrDefault(p => p.Id == _currentId);
+                if (existing is not null)
+                {
+                    existing.Name = Name.Trim();
+                    existing.RemoteHost = RemoteHost.Trim();
+                    existing.RemotePort = remotePort;
+                    existing.Username = Username ?? string.Empty;
+                    existing.Password = Password ?? string.Empty;
+                    existing.Group = (Group ?? string.Empty).Trim();
+                    existing.LocalHost = localIp;
+                    existing.LocalPort = localPort;
+                }
+            }
+            else
+            {
+                var item = new ProxyItem
+                {
+                    Id = _currentId,
+                    Name = Name.Trim(),
+                    RemoteHost = RemoteHost.Trim(),
+                    RemotePort = remotePort,
+                    Username = Username ?? string.Empty,
+                    Password = Password ?? string.Empty,
+                    Group = (Group ?? string.Empty).Trim(),
+                    LocalHost = localIp,
+                    LocalPort = localPort,
+                    Status = ProxyStatus.Stopped,
+                    CreateTime = DateTime.UtcNow
+                };
+
+                if (!cfg.Proxies.Any(p => p.Id == item.Id || p.LocalPort == item.LocalPort))
+                    cfg.Proxies.Add(item);
+            }
 
             svc.Save(cfg);
-
-            // notify and close
             CloseAction?.Invoke();
         }
         catch (Exception ex)
@@ -218,6 +273,3 @@ public sealed class AddProxyViewModel : ViewModelBase
         return port >= 1 && port <= 65535;
     }
 }
-
-
-

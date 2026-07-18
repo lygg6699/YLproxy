@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace YLproxy.Infrastructure
@@ -11,9 +12,9 @@ namespace YLproxy.Infrastructure
         /// </summary>
         public static Action<string, string>? OnUserNotification { get; set; }
 
-        public static void Handle(Exception ex, ILogger logger, string context = "", bool showUser = true)
+        public static void Handle(Exception ex, ILogger logger, string context = "", bool showUser = true, object? data = null)
         {
-            logger.Error($"Exception in {context}: {ex.Message}", ex);
+            logger.Log(LogLevel.Error, $"Exception in {context}: {ex.Message}", ex, data);
 
             if (showUser && OnUserNotification is not null)
             {
@@ -28,7 +29,11 @@ namespace YLproxy.Infrastructure
             }
         }
 
-        public static T? TryCatch<T>(Func<T> func, ILogger logger, string context = "", T? defaultValue = default)
+        /// <summary>
+        /// Wraps a synchronous function with try-catch, logging and returning a default on failure.
+        /// </summary>
+        /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        public static T? TryCatch<T>(Func<T> func, ILogger logger, string context = "", T? defaultValue = default, object? data = null)
         {
             try
             {
@@ -36,12 +41,16 @@ namespace YLproxy.Infrastructure
             }
             catch (Exception ex)
             {
-                Handle(ex, logger, context);
+                Handle(ex, logger, context, data: data);
                 return defaultValue;
             }
         }
 
-        public static void TryCatch(Action action, ILogger logger, string context = "")
+        /// <summary>
+        /// Wraps a synchronous action with try-catch and logging.
+        /// </summary>
+        /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        public static void TryCatch(Action action, ILogger logger, string context = "", object? data = null)
         {
             try
             {
@@ -49,11 +58,15 @@ namespace YLproxy.Infrastructure
             }
             catch (Exception ex)
             {
-                Handle(ex, logger, context);
+                Handle(ex, logger, context, data: data);
             }
         }
 
-        public static async Task<T?> TryCatchAsync<T>(Func<Task<T>> func, ILogger logger, string context = "", T? defaultValue = default)
+        /// <summary>
+        /// Wraps an async function with try-catch, logging and returning a default on failure.
+        /// </summary>
+        /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        public static async Task<T?> TryCatchAsync<T>(Func<Task<T>> func, ILogger logger, string context = "", T? defaultValue = default, object? data = null)
         {
             try
             {
@@ -61,12 +74,16 @@ namespace YLproxy.Infrastructure
             }
             catch (Exception ex)
             {
-                Handle(ex, logger, context);
+                Handle(ex, logger, context, data: data);
                 return defaultValue;
             }
         }
 
-        public static async Task TryCatchAsync(Func<Task> func, ILogger logger, string context = "")
+        /// <summary>
+        /// Wraps an async action with try-catch and logging.
+        /// </summary>
+        /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        public static async Task TryCatchAsync(Func<Task> func, ILogger logger, string context = "", object? data = null)
         {
             try
             {
@@ -74,7 +91,7 @@ namespace YLproxy.Infrastructure
             }
             catch (Exception ex)
             {
-                Handle(ex, logger, context);
+                Handle(ex, logger, context, data: data);
             }
         }
     }

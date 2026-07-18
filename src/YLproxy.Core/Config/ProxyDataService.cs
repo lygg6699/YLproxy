@@ -9,6 +9,8 @@ namespace YLproxy.Core.Config;
 
 public sealed class ProxyDataService
 {
+    private const int MaxBackupCount = 3;
+
     private static readonly SemaphoreSlim _ioLock = new(1, 1);
     private readonly ProxyDataSerializer _serializer;
     private readonly SqliteProxyRepository? _sqliteRepository;
@@ -143,7 +145,12 @@ public sealed class ProxyDataService
         catch (AggregateException ex)
         {
             _logger.Error($"Failed to read config.json after retries: {ex.Message}", ex);
-            return new AppConfig();
+            return RecoverFromCorruption();
+        }
+        catch (Exception ex) when (ex is not AggregateException)
+        {
+            _logger.Error($"Failed to deserialize config.json: {ex.Message}", ex);
+            return RecoverFromCorruption();
         }
     }
 
@@ -164,8 +171,13 @@ public sealed class ProxyDataService
     {
         ArgumentNullException.ThrowIfNull(config);
 
+        var json = _serializer.Serialize(config);
+
+        // Create a rotating backup before overwriting
+        RotateBackups(json);
+
         // Always write JSON (primary persistence in transition period)
-        WriteAtomically(_serializer.Serialize(config));
+        WriteAtomically(json);
 
         // Dual-write to SQLite if available
         if (_sqliteRepository is not null)
@@ -258,7 +270,12 @@ public sealed class ProxyDataService
         catch (AggregateException ex)
         {
             _logger.Error($"Failed to read config.json after retries: {ex.Message}", ex);
-            return new AppConfig();
+            return RecoverFromCorruption();
+        }
+        catch (Exception ex) when (ex is not AggregateException)
+        {
+            _logger.Error($"Failed to deserialize config.json: {ex.Message}", ex);
+            return RecoverFromCorruption();
         }
     }
 
@@ -303,5 +320,74 @@ public sealed class ProxyDataService
         {
             _logger.Warn($"Failed to delete temporary file '{path}': {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Writes the current JSON state to a rotating backup slot (config.json.bak.0..N).
+    /// </summary>
+    private void RotateBackups(string json)
+    {
+        // Rotate existing backups: config.json.bak.2 → config.json.bak.1, etc.
+        for (int i = MaxBackupCount - 2; i >= 0; i--)
+        {
+            var oldPath = $"{ConfigPath}.bak.{i}";
+            var newPath = $"{ConfigPath}.bak.{i + 1}";
+            try
+            {
+                if (File.Exists(oldPath))
+                    File.Move(oldPath, newPath, overwrite: true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Backup rotation failed moving '{oldPath}' → '{newPath}': {ex.Message}");
+            }
+        }
+
+        // Write the freshest backup as .bak.0
+        var bakPath = $"{ConfigPath}.bak.0";
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(bakPath) ?? "");
+            File.WriteAllText(bakPath, json, Encoding.UTF8);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn($"Failed to write backup '{bakPath}': {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Attempts to recover from a corrupted config.json by trying backups in order,
+    /// then falls back to an empty config.
+    /// </summary>
+    private AppConfig RecoverFromCorruption()
+    {
+        for (int i = 0; i < MaxBackupCount; i++)
+        {
+            var bakPath = $"{ConfigPath}.bak.{i}";
+            if (!File.Exists(bakPath))
+                continue;
+
+            try
+            {
+                _logger.Info($"Attempting recovery from backup '{bakPath}'");
+                var json = File.ReadAllText(bakPath, Encoding.UTF8);
+                var cfg = _serializer.Deserialize(json, out _);
+                if (cfg.Proxies.Count > 0)
+                {
+                    // Restore from this backup
+                    WriteAtomically(json);
+                    _logger.Info($"Successfully recovered {cfg.Proxies.Count} proxies from backup '{bakPath}'");
+                    return cfg;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Backup recovery failed for '{bakPath}': {ex.Message}");
+            }
+        }
+
+        _logger.Error("All backup recovery attempts failed, starting with empty config");
+        return new AppConfig();
     }
 }

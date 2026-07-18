@@ -8,20 +8,20 @@ public sealed class ProxyItem : INotifyPropertyChanged
 {
     private ProxyStatus _status = ProxyStatus.Stopped;
 
-    public int Id { get; init; }
+    public int Id { get; set; }
 
-    public string Name { get; init; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
-    public string Group { get; init; } = string.Empty;
+    public string Group { get; set; } = string.Empty;
 
-    public string RemoteHost { get; init; } = string.Empty;
-    public int RemotePort { get; init; }
+    public string RemoteHost { get; set; } = string.Empty;
+    public int RemotePort { get; set; }
 
-    public string Username { get; init; } = string.Empty;
-    public string Password { get; init; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 
-    public string LocalHost { get; init; } = string.Empty;
-    public int LocalPort { get; init; }
+    public string LocalHost { get; set; } = string.Empty;
+    public int LocalPort { get; set; }
 
     public ProxyStatus Status
     {
@@ -36,7 +36,7 @@ public sealed class ProxyItem : INotifyPropertyChanged
         }
     }
 
-    public DateTime CreateTime { get; init; } = DateTime.UtcNow;
+    public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

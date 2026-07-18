@@ -3,9 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:YLproxy.GUI.Views"
         mc:Ignorable="d"
-        Title="添加代理"
+        Title="{Binding Title}"
         Height="500" Width="500"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
@@ -56,7 +55,17 @@
 
         <!-- Password -->
         <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="密码" Foreground="{StaticResource FgDimBrush}"/>
-        <PasswordBox Grid.Row="5" Grid.Column="1" Margin="0,8,0,0" PasswordChanged="OnPasswordChanged"/>
+        <Grid Grid.Row="5" Grid.Column="1" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="28"/>
+            </Grid.ColumnDefinitions>
+            <PasswordBox x:Name="PasswordBox" Grid.Column="0" PasswordChanged="OnPasswordChanged"/>
+            <Button Grid.Column="1" Content="👁" Width="28" Height="22"
+                    FontSize="12" Padding="0"
+                    Background="Transparent" Foreground="{StaticResource FgDimBrush}" BorderThickness="0"
+                    Command="{Binding TogglePasswordCommand}" ToolTip="显示/隐藏密码"/>
+        </Grid>
 
         <!-- Group -->
         <TextBlock Grid.Row="6" Grid.Column="0" Margin="0,8,10,0" VerticalAlignment="Center" Text="分组（可选）" Foreground="{StaticResource FgDimBrush}"/>

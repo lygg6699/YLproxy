@@ -187,4 +187,6 @@ internal sealed class StringWriterLogger : ILogger
     public void Warn(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
     public void Error(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
     public void Fatal(string message, Exception exception) => _writer.WriteLine($"{message}: {exception.Message}");
+    public void Log(LogLevel level, string message, object? data = null) => _writer.WriteLine(message);
+    public void Log(LogLevel level, string message, Exception exception, object? data = null) => _writer.WriteLine($"{message}: {exception.Message}");
 }

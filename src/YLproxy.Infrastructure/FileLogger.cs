@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using YLproxy.Utils;
@@ -27,6 +28,12 @@ namespace YLproxy.Infrastructure
             @"dpapi:v1:[A-Za-z0-9+/=]{20,}",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            WriteIndented = false,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+        };
+
         public FileLogger(string logDirectory, int retentionDays, string minLevel)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(logDirectory);
@@ -35,14 +42,12 @@ namespace YLproxy.Infrastructure
                 : PathResolver.ResolvePath(logDirectory);
             _retentionDays = retentionDays;
             _minLevel = minLevel.ToUpper(CultureInfo.InvariantCulture);
-            
-            // Ensure log directory exists
+
             if (!Directory.Exists(_logDirectory))
             {
                 Directory.CreateDirectory(_logDirectory);
             }
-            
-            // Clean up old logs
+
             CleanupOldLogs();
         }
 
@@ -57,31 +62,66 @@ namespace YLproxy.Infrastructure
             var levels = new[] { "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
             int minLevelIndex = Array.IndexOf(levels, _minLevel);
             int levelIndex = Array.IndexOf(levels, level.ToUpper(CultureInfo.InvariantCulture));
-            
             return levelIndex >= minLevelIndex;
         }
 
-        private void WriteLog(string level, string message, Exception? exception = null)
+        private static int LevelToOrdinal(string level) => level.ToUpper(CultureInfo.InvariantCulture) switch
         {
-            if (!IsLogLevelEnabled(level))
+            "DEBUG" => (int)LogLevel.Debug,
+            "INFO" => (int)LogLevel.Info,
+            "WARN" => (int)LogLevel.Warn,
+            "ERROR" => (int)LogLevel.Error,
+            "FATAL" => (int)LogLevel.Fatal,
+            _ => (int)LogLevel.Info,
+        };
+
+        public void Log(LogLevel level, string message, object? data = null)
+        {
+            WriteStructuredLog(level, Sanitize(message), correlationId: null, exception: null, data: data);
+        }
+
+        public void Log(LogLevel level, string message, Exception exception, object? data = null)
+        {
+            WriteStructuredLog(level, Sanitize(message), correlationId: null, exception: exception, data: data);
+        }
+
+        private void WriteStructuredLog(LogLevel level, string message, string? correlationId, Exception? exception, object? data)
+        {
+            var levelStr = level.ToString().ToUpper(CultureInfo.InvariantCulture);
+            if (!IsLogLevelEnabled(levelStr))
                 return;
 
-            // 脱敏：将 dpapi:v1:... 凭据替换为 [REDACTED]
-            message = Sanitize(message);
-
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            string logLine = $"{timestamp} [{level}] {message}";
-            
-            if (exception != null)
+            var entry = new StructuredLogEntry
             {
-                var exMsg = Sanitize(exception.Message);
-                var exStack = Sanitize(exception.StackTrace ?? string.Empty);
-                logLine += Environment.NewLine + $"Exception: {exMsg}";
-                logLine += Environment.NewLine + $"StackTrace: {exStack}";
+                Timestamp = DateTime.UtcNow.ToString("O"),
+                Level = levelStr,
+                Message = message,
+                CorrelationId = correlationId,
+                ExceptionMessage = exception?.Message is not null ? Sanitize(exception.Message) : null,
+                ExceptionType = exception?.GetType().FullName,
+                StackTrace = exception?.StackTrace is not null ? Sanitize(exception.StackTrace) : null,
+            };
+
+            if (data is not null)
+            {
+                entry = entry with { Data = new Dictionary<string, object?> { ["value"] = data } };
             }
 
-            logLine += Environment.NewLine;
+            string jsonLine;
+            try
+            {
+                jsonLine = JsonSerializer.Serialize(entry, _jsonOptions) + Environment.NewLine;
+            }
+            catch
+            {
+                jsonLine = $"{entry.Timestamp} [{levelStr}] {entry.Message}{Environment.NewLine}";
+            }
 
+            WriteLine(jsonLine);
+        }
+
+        private void WriteLine(string line)
+        {
             var targetFile = GetLogFilePath();
             lock (_lock)
             {
@@ -89,14 +129,23 @@ namespace YLproxy.Infrastructure
                 {
                     using var fs = new FileStream(targetFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
                     using var writer = new StreamWriter(fs, Encoding.UTF8);
-                    writer.Write(logLine);
+                    writer.Write(line);
                     writer.Flush();
                 }
                 catch (IOException)
                 {
-                    // 文件被锁定时丢弃本条日志，不阻塞调用方
+                    // Log file is locked, discard entry without blocking.
                 }
             }
+        }
+
+        private void WriteLog(string level, string message, Exception? exception = null)
+        {
+            var ordinal = LevelToOrdinal(level);
+            if (exception is not null)
+                Log((LogLevel)ordinal, message, exception);
+            else
+                Log((LogLevel)ordinal, message);
         }
 
         public void Dispose()
@@ -105,9 +154,6 @@ namespace YLproxy.Infrastructure
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// 将日志中的 DPAPI 加密凭据替换为占位符，防止泄露。
-        /// </summary>
         private static string Sanitize(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -116,55 +162,16 @@ namespace YLproxy.Infrastructure
             return _credentialPattern.Replace(text, "[REDACTED]");
         }
 
-        public void Debug(string message)
-        {
-            WriteLog("DEBUG", message);
-        }
-
-        public void Info(string message)
-        {
-            WriteLog("INFO", message);
-        }
-
-        public void Warn(string message)
-        {
-            WriteLog("WARN", message);
-        }
-
-        public void Error(string message)
-        {
-            WriteLog("ERROR", message);
-        }
-
-        public void Fatal(string message)
-        {
-            WriteLog("FATAL", message);
-        }
-
-        public void Debug(string message, Exception exception)
-        {
-            WriteLog("DEBUG", message, exception);
-        }
-
-        public void Info(string message, Exception exception)
-        {
-            WriteLog("INFO", message, exception);
-        }
-
-        public void Warn(string message, Exception exception)
-        {
-            WriteLog("WARN", message, exception);
-        }
-
-        public void Error(string message, Exception exception)
-        {
-            WriteLog("ERROR", message, exception);
-        }
-
-        public void Fatal(string message, Exception exception)
-        {
-            WriteLog("FATAL", message, exception);
-        }
+        public void Debug(string message) => WriteLog("DEBUG", message);
+        public void Info(string message) => WriteLog("INFO", message);
+        public void Warn(string message) => WriteLog("WARN", message);
+        public void Error(string message) => WriteLog("ERROR", message);
+        public void Fatal(string message) => WriteLog("FATAL", message);
+        public void Debug(string message, Exception exception) => WriteLog("DEBUG", message, exception);
+        public void Info(string message, Exception exception) => WriteLog("INFO", message, exception);
+        public void Warn(string message, Exception exception) => WriteLog("WARN", message, exception);
+        public void Error(string message, Exception exception) => WriteLog("ERROR", message, exception);
+        public void Fatal(string message, Exception exception) => WriteLog("FATAL", message, exception);
 
         public void CleanupOldLogs()
         {

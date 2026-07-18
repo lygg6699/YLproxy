@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Text;
 using YLproxy.Models;
 using YLproxy.Utils;
@@ -29,18 +28,18 @@ public static class ConfigGenerator
         var runtimePath = GetRuntime3ProxyPath();
 
         sb.AppendLine("service");
-        sb.AppendLine(CultureInfo.InvariantCulture, $"log {runtimePath}\\logs\\3proxy-{proxy.Id}.log D");
-        sb.AppendLine(CultureInfo.InvariantCulture, "logformat \"- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T\"");
-        sb.AppendLine(CultureInfo.InvariantCulture, "auth iponly");
-        sb.AppendLine(CultureInfo.InvariantCulture, "allow *");
-        sb.AppendLine(CultureInfo.InvariantCulture, "internal 127.0.0.1");
-        sb.AppendLine(CultureInfo.InvariantCulture, "fakeresolve");
+        sb.AppendLine($"log {runtimePath}\\logs\\3proxy-{proxy.Id}.log D");
+        sb.AppendLine("logformat \"- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T\"");
+        sb.AppendLine("auth iponly");
+        sb.AppendLine("allow *");
+        sb.AppendLine("internal 127.0.0.1");
+        sb.AppendLine("fakeresolve");
 
         var parentCredentials = hasUsername ? $" {username} {password}" : string.Empty;
-        sb.AppendLine(CultureInfo.InvariantCulture, $"parent 1000 http {remoteHost} {proxy.RemotePort}{parentCredentials}");
-        sb.AppendLine(CultureInfo.InvariantCulture, $"proxy -a -p{proxy.LocalPort}");
+        sb.AppendLine($"parent 1000 http {remoteHost} {proxy.RemotePort}{parentCredentials}");
+        sb.AppendLine($"proxy -a -p{proxy.LocalPort}");
 
-        sb.AppendLine(CultureInfo.InvariantCulture, "flush");
+        sb.AppendLine("flush");
         return sb.ToString();
     }
 

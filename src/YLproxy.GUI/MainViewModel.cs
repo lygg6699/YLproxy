@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,8 +17,8 @@ using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
 using GlobalProxyConfig = YLproxy.Infrastructure.ProxyConfig;
 using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
 using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 using Timer = System.Threading.Timer;
-
 
 namespace YLproxy.GUI;
 
@@ -29,75 +31,97 @@ public sealed class MainViewModel : ViewModelBase
     private readonly GlobalProxyConfig _proxyConfig;
     private readonly GlobalThreeProxyConfig _threeProxyConfig;
 
+    // --- Host Info ---
     private string _computerName = string.Empty;
+    public string ComputerName { get => _computerName; set => SetProperty(ref _computerName, value); }
+
     private string _ipAddress = "";
+    public string IpAddress { get => _ipAddress; set => SetProperty(ref _ipAddress, value); }
+
     private string _networkStatus = "Unknown";
+    public string NetworkStatus { get => _networkStatus; set => SetProperty(ref _networkStatus, value); }
+
     private DateTime _now = DateTime.Now;
+    public DateTime Now { get => _now; set => SetProperty(ref _now, value); }
 
-    public string ComputerName
-    {
-        get => _computerName;
-        set => SetProperty(ref _computerName, value);
-    }
-
-    public string IpAddress
-    {
-        get => _ipAddress;
-        set => SetProperty(ref _ipAddress, value);
-    }
-
-    public string NetworkStatus
-    {
-        get => _networkStatus;
-        set => SetProperty(ref _networkStatus, value);
-    }
-
-    public DateTime Now
-    {
-        get => _now;
-        set => SetProperty(ref _now, value);
-    }
-
+    // --- Proxy Collections ---
     public ObservableCollection<ProxyItem> Proxies { get; } = new();
 
-    private readonly ObservableCollection<string> _logs = new();
-    public ObservableCollection<string> Logs => _logs;
+    private readonly ObservableCollection<ProxyItem> _filteredProxies = new();
+    public ObservableCollection<ProxyItem> FilteredProxies => _filteredProxies;
 
-    /// <summary>Alias for Logs. Used by MainView code-behind for collection-changed tracking.</summary>
-    public ObservableCollection<string> FilteredLogs => _logs;
-
-    /// <summary>Used by MainView code-behind for DataGrid multi-select.</summary>
     public List<ProxyItem> SelectedProxies { get; set; } = new();
 
+    // --- Log Collections ---
+    private readonly ObservableCollection<LogEntry> _logs = new();
+    private readonly ObservableCollection<LogEntry> _filteredLogs = new();
+    public ObservableCollection<LogEntry> FilteredLogs => _filteredLogs;
+
+    // --- Commands ---
     public RelayCommand AddCommand { get; }
+    public RelayCommand EditCommand { get; }
     public RelayCommand RemoveCommand { get; }
     public RelayCommand TestCommand { get; }
     public RelayCommand StartCommand { get; }
     public RelayCommand StopCommand { get; }
     public RelayCommand ClearLogCommand { get; }
+    public RelayCommand BatchStartCommand { get; }
+    public RelayCommand BatchStopCommand { get; }
+    public RelayCommand ExportCommand { get; }
+    public RelayCommand ImportCommand { get; }
+    public RelayCommand ClearSearchCommand { get; }
 
-    private bool _isTesting;
-    public bool IsTesting
+    // --- Search / Filter ---
+    private string _searchText = string.Empty;
+    public string SearchText
     {
-        get => _isTesting;
-        set => SetProperty(ref _isTesting, value);
+        get => _searchText;
+        set
+        {
+            SetProperty(ref _searchText, value, nameof(SearchText));
+            ApplyProxyFilter();
+        }
     }
+
+    // --- Log Level Filter ---
+    public List<string> LogLevels { get; } = new() { "全部", "Info", "Warn", "Error" };
+
+    private string _selectedLogLevel = "全部";
+    public string SelectedLogLevel
+    {
+        get => _selectedLogLevel;
+        set
+        {
+            SetProperty(ref _selectedLogLevel, value, nameof(SelectedLogLevel));
+            ApplyLogFilter();
+        }
+    }
+
+    // --- Status Message ---
+    private string _statusMessage = string.Empty;
+    public string StatusMessage
+    {
+        get => _statusMessage;
+        set => SetProperty(ref _statusMessage, value);
+    }
+
+    // --- Operation Guards ---
+    private bool _isTesting;
+    public bool IsTesting { get => _isTesting; set => SetProperty(ref _isTesting, value); }
 
     private bool _isStarting;
-    public bool IsStarting
-    {
-        get => _isStarting;
-        set => SetProperty(ref _isStarting, value);
-    }
+    public bool IsStarting { get => _isStarting; set => SetProperty(ref _isStarting, value); }
 
     private bool _isStopping;
-    public bool IsStopping
-    {
-        get => _isStopping;
-        set => SetProperty(ref _isStopping, value);
-    }
+    public bool IsStopping { get => _isStopping; set => SetProperty(ref _isStopping, value); }
 
-    // Dashboard properties
+    private bool _isExporting;
+    public bool IsExporting { get => _isExporting; set => SetProperty(ref _isExporting, value); }
+
+    private bool _isImporting;
+    public bool IsImporting { get => _isImporting; set => SetProperty(ref _isImporting, value); }
+
+    // --- Stats ---
     private int _totalCount;
     public int TotalCount { get => _totalCount; set => SetProperty(ref _totalCount, value); }
 
@@ -117,6 +141,7 @@ public sealed class MainViewModel : ViewModelBase
         set => SetProperty(ref _selectedProxy, value);
     }
 
+    // ================================================================
     public MainViewModel()
     {
         _settingsService = new GlobalConfigService();
@@ -128,17 +153,21 @@ public sealed class MainViewModel : ViewModelBase
         InitFromConfig();
         LoadHostInfo();
         RefreshStats();
-        AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (Phase 7 with MonitorService) ");
+        AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (Phase 8 — GUI Enhanced)");
 
         AddCommand = new RelayCommand(ShowAddWindow);
-        RemoveCommand = new RelayCommand(() => OnButtonClicked("Remove"));
-        TestCommand = new RelayCommand(() => OnButtonClicked("Test"));
-        StartCommand = new RelayCommand(StartSelectedProxy);
-        StopCommand = new RelayCommand(StopSelectedProxy);
-        ClearLogCommand = new RelayCommand(() => _logs.Clear());
+        EditCommand = new RelayCommand(ShowEditWindow, () => SelectedProxy is not null);
+        RemoveCommand = new RelayCommand(RemoveSelectedProxyAndPersist, () => SelectedProxy is not null);
+        TestCommand = new RelayCommand(() => _ = TestSelectedProxyAsync(), () => SelectedProxy is not null);
+        StartCommand = new RelayCommand(StartSelectedProxy, () => SelectedProxy is not null);
+        StopCommand = new RelayCommand(StopSelectedProxy, () => SelectedProxy is not null);
+        ClearLogCommand = new RelayCommand(() => { _logs.Clear(); _filteredLogs.Clear(); });
+        BatchStartCommand = new RelayCommand(BatchStart, () => SelectedProxies.Count > 0);
+        BatchStopCommand = new RelayCommand(BatchStop, () => SelectedProxies.Count > 0);
+        ExportCommand = new RelayCommand(ExportToJson);
+        ImportCommand = new RelayCommand(ImportFromJson);
+        ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
 
-        // Start the background monitor that checks 3proxy process health every 5 seconds
-        // with TCP health check every 30s and auto-restart with exponential backoff
         _monitorService = new MonitorService(
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
@@ -151,14 +180,45 @@ public sealed class MainViewModel : ViewModelBase
         _timer = new Timer(_ => Tick(), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
-    /// <summary>
-    /// Force-refresh DataGrid by re-inserting all items (since ProxyItem lacks INotifyPropertyChanged)
-    /// </summary>
-    private void RefreshDataGrid()
+    // ================================================================
+    // Filtering
+    // ================================================================
+    private void ApplyProxyFilter()
     {
-        // ProxyItem now implements INotifyPropertyChanged, so we don't need to recreate the collection.
-        // WPF DataGrid will automatically update when ProxyItem.Status changes.
+        _filteredProxies.Clear();
+        var query = string.IsNullOrWhiteSpace(_searchText)
+            ? Proxies
+            : Proxies.Where(p =>
+                (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (p.RemoteHost?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                p.RemotePort.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
+                (p.Username?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (p.Group?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                p.LocalPort.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase));
+
+        foreach (var p in query)
+            _filteredProxies.Add(p);
     }
+
+    private void ApplyLogFilter()
+    {
+        _filteredLogs.Clear();
+        IEnumerable<LogEntry> source = _selectedLogLevel switch
+        {
+            "Info" => _logs.Where(l => l.Level != LogLevel.Debug),
+            "Warn" => _logs.Where(l => l.Level is LogLevel.Warn or LogLevel.Error or LogLevel.Fatal),
+            "Error" => _logs.Where(l => l.Level is LogLevel.Error or LogLevel.Fatal),
+            _ => _logs,
+        };
+
+        foreach (var l in source)
+            _filteredLogs.Add(l);
+    }
+
+    // ================================================================
+    // Ticking
+    // ================================================================
+    private void RefreshDataGrid() { }
 
     private void Tick()
     {
@@ -174,9 +234,13 @@ public sealed class MainViewModel : ViewModelBase
         });
     }
 
+    // ================================================================
+    // Init & Config
+    // ================================================================
     private void InitFromConfig()
     {
         Proxies.Clear();
+        _filteredProxies.Clear();
         try
         {
             var configPath = GetConfigPath();
@@ -184,15 +248,12 @@ public sealed class MainViewModel : ViewModelBase
             var cfg = svc.Load();
 
             foreach (var p in cfg.Proxies)
-            {
                 Proxies.Add(p);
-            }
+
+            ApplyProxyFilter();
 
             if (Proxies.Count == 0)
-            {
-                // If config exists but empty, keep UI stable with an empty list.
                 AddLog($"[{DateTime.Now:HH:mm:ss}] config.json loaded: 0 proxies.");
-            }
         }
         catch (Exception ex)
         {
@@ -205,58 +266,162 @@ public sealed class MainViewModel : ViewModelBase
         return PathResolver.ResolvePath(_proxyConfig.DataDirectory, _proxyConfig.ConfigFileName);
     }
 
-
-
-    private void OnButtonClicked(string name)
+    // ================================================================
+    // Add / Edit Windows
+    // ================================================================
+    private void ShowAddWindow()
     {
-        switch (name)
-        {
-            case "Remove":
-                RemoveSelectedProxyAndPersist();
-                break;
-            case "Test":
-                _ = TestSelectedProxyAsync();
-                break;
-            default:
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Button clicked: {name}");
-                break;
-        }
-    }
-
-    private async Task TestSelectedProxyAsync()
-    {
-        if (IsTesting) return; // 防止重复点击
-        IsTesting = true;
         try
         {
-            if (SelectedProxy is null)
-            {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Test failed: no proxy selected");
-                return;
-            }
+            var configPath = GetConfigPath();
+            var vm = new ViewModels.AddProxyViewModel(
+                Proxies.ToList(), configPath,
+                _proxyConfig.PortRangeStart, _proxyConfig.PortRangeEnd);
 
-            var p = SelectedProxy;
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Testing proxy: {p.RemoteHost}:{p.RemotePort} ...");
-
-            var result = await YLproxy.Core.ProxyTester.TestAsync(
-                p.RemoteHost,
-                p.RemotePort,
-                string.IsNullOrWhiteSpace(p.Username) ? null : p.Username,
-                string.IsNullOrWhiteSpace(p.Password) ? null : p.Password);
-
-            if (result.Success)
+            vm.CloseAction = () => { };
+            var win = new Views.AddProxyWindow
             {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] 成功：延迟: {result.LatencyMs}ms");
-            }
-            else
+                Owner = Application.Current?.MainWindow,
+                DataContext = vm
+            };
+            vm.CloseAction = () => win.Dispatcher.BeginInvoke(new Action(() => win.DialogResult = true));
+            win.ShowDialog();
+
+            if (win.DialogResult == true)
             {
-                var err = string.IsNullOrWhiteSpace(result.Error) ? "连接失败" : result.Error;
-                AddLog($"[{DateTime.Now:HH:mm:ss}] 失败：{err}");
+                InitFromConfig();
+                RefreshStats();
             }
         }
         catch (Exception ex)
         {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Test failed: {ex.Message}");
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Add window failed: {ex.Message}");
+        }
+    }
+
+    private void ShowEditWindow()
+    {
+        var proxy = SelectedProxy;
+        if (proxy is null) return;
+
+        if (proxy.Status == ProxyStatus.Running)
+        {
+            SetStatus("Cannot edit a running proxy. Stop it first.");
+            return;
+        }
+
+        try
+        {
+            var configPath = GetConfigPath();
+            var vm = new ViewModels.AddProxyViewModel(
+                Proxies.ToList(), configPath,
+                _proxyConfig.PortRangeStart, _proxyConfig.PortRangeEnd,
+                editTarget: proxy);
+
+            vm.CloseAction = () => { };
+            var win = new Views.AddProxyWindow
+            {
+                Owner = Application.Current?.MainWindow,
+                DataContext = vm,
+                Title = "编辑代理"
+            };
+            vm.CloseAction = () => win.Dispatcher.BeginInvoke(new Action(() => win.DialogResult = true));
+            win.ShowDialog();
+
+            if (win.DialogResult == true)
+            {
+                InitFromConfig();
+                RefreshStats();
+            }
+        }
+        catch (Exception ex)
+        {
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Edit window failed: {ex.Message}");
+        }
+    }
+
+    // ================================================================
+    // Remove
+    // ================================================================
+    private void RemoveSelectedProxyAndPersist()
+    {
+        try
+        {
+            if (SelectedProxy is null)
+            {
+                SetStatus("Remove failed: no proxy selected");
+                return;
+            }
+
+            var proxy = SelectedProxy;
+
+            var result = MessageBox.Show(
+                $"确定要删除代理「{proxy.Name}」(ID: {proxy.Id}) 吗？",
+                "YLproxy — 删除确认",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes) return;
+
+            try { YLproxy.Proxy.ProxyProcessManager.Stop(proxy); }
+            catch { }
+
+            Proxies.Remove(proxy);
+            ApplyProxyFilter();
+
+            var configPath = GetConfigPath();
+            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
+            var cfg = svc.Load();
+            cfg.Proxies.RemoveAll(p => p.Id == proxy.Id);
+            svc.Save(cfg);
+
+            RefreshStats();
+            SetStatus($"Deleted: {proxy.Name}");
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Removed: {proxy.Name} (ID:{proxy.Id})");
+        }
+        catch (Exception ex)
+        {
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Remove failed: {ex.Message}");
+        }
+    }
+
+    // ================================================================
+    // Test
+    // ================================================================
+    private async Task TestSelectedProxyAsync()
+    {
+        if (IsTesting) return;
+        IsTesting = true;
+
+        try
+        {
+            if (SelectedProxy is null)
+            {
+                SetStatus("Test failed: no proxy selected");
+                IsTesting = false;
+                return;
+            }
+
+            var p = SelectedProxy;
+            SetStatus($"Testing {p.Name}...");
+
+            var (success, latency, error) = await ProxyTester.TestAsync(
+                p.RemoteHost, p.RemotePort, p.Username, p.Password);
+
+            if (success)
+            {
+                AddLog($"[{DateTime.Now:HH:mm:ss}] Test OK — {p.Name}: {latency}ms");
+                SetStatus($"{p.Name}: test passed ({latency}ms)");
+            }
+            else
+            {
+                AddLog($"[{DateTime.Now:HH:mm:ss}] Test FAILED — {p.Name}: {error}");
+                SetStatus($"{p.Name}: test failed — {error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Test exception: {ex.Message}");
+            SetStatus($"Test error: {ex.Message}");
         }
         finally
         {
@@ -264,30 +429,33 @@ public sealed class MainViewModel : ViewModelBase
         }
     }
 
+    // ================================================================
+    // Start / Stop (single)
+    // ================================================================
     private void StartSelectedProxy()
     {
-        if (IsStarting) return; // 防止重复点击
+        if (IsStarting) return;
         IsStarting = true;
+
         try
         {
             if (SelectedProxy is null)
             {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Start failed: no proxy selected");
+                SetStatus("Start failed: no proxy selected");
                 IsStarting = false;
                 return;
             }
 
             var p = SelectedProxy;
-
-            // Prevent UI blocking: start in background thread.
-            _ = System.Threading.Tasks.Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 try
                 {
                     p.Status = ProxyStatus.Running;
                     YLproxy.Proxy.ProxyProcessManager.Start(p);
                     Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Started proxy: {p.LocalHost}:{p.LocalPort} -> {p.RemoteHost}:{p.RemotePort}");
+                    AddLog($"[{DateTime.Now:HH:mm:ss}] Started: {p.LocalHost}:{p.LocalPort} -> {p.RemoteHost}:{p.RemotePort}");
+                    SetStatus($"{p.Name}: started on port {p.LocalPort}");
                 }
                 catch (Exception ex)
                 {
@@ -311,24 +479,26 @@ public sealed class MainViewModel : ViewModelBase
     {
         if (IsStopping) return;
         IsStopping = true;
+
         try
         {
             if (SelectedProxy is null)
             {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: no proxy selected");
+                SetStatus("Stop failed: no proxy selected");
                 IsStopping = false;
                 return;
             }
 
             var p = SelectedProxy;
-            _ = System.Threading.Tasks.Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 try
                 {
                     YLproxy.Proxy.ProxyProcessManager.Stop(p);
                     p.Status = ProxyStatus.Stopped;
                     Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Stopped proxy: {p.LocalHost}:{p.LocalPort}");
+                    AddLog($"[{DateTime.Now:HH:mm:ss}] Stopped: {p.LocalHost}:{p.LocalPort}");
+                    SetStatus($"{p.Name}: stopped");
                 }
                 catch (Exception ex)
                 {
@@ -348,13 +518,255 @@ public sealed class MainViewModel : ViewModelBase
         }
     }
 
-    /// <summary>
-    /// Safe restart wrapper used by MonitorService auto-restart callback.
-    /// Runs on thread-pool to avoid blocking the monitor tick.
-    /// </summary>
+    // ================================================================
+    // Batch Operations
+    // ================================================================
+    private void BatchStart()
+    {
+        if (IsStarting) return;
+        IsStarting = true;
+
+        var targets = SelectedProxies
+            .Where(p => p.Status != ProxyStatus.Running)
+            .ToList();
+
+        if (targets.Count == 0)
+        {
+            SetStatus("No stopped proxies selected for batch start.");
+            IsStarting = false;
+            return;
+        }
+
+        _ = Task.Run(() =>
+        {
+            var started = 0;
+            foreach (var p in targets)
+            {
+                try
+                {
+                    p.Status = ProxyStatus.Running;
+                    YLproxy.Proxy.ProxyProcessManager.Start(p);
+                    started++;
+                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch start: {p.Name} ({p.LocalPort})");
+                }
+                catch (Exception ex)
+                {
+                    p.Status = ProxyStatus.Failed;
+                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch start failed — {p.Name}: {ex.Message}");
+                }
+            }
+            Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
+            SetStatus($"Batch started: {started}/{targets.Count} proxies");
+            IsStarting = false;
+        });
+    }
+
+    private void BatchStop()
+    {
+        if (IsStopping) return;
+        IsStopping = true;
+
+        var targets = SelectedProxies
+            .Where(p => p.Status == ProxyStatus.Running)
+            .ToList();
+
+        if (targets.Count == 0)
+        {
+            SetStatus("No running proxies selected for batch stop.");
+            IsStopping = false;
+            return;
+        }
+
+        _ = Task.Run(() =>
+        {
+            var stopped = 0;
+            foreach (var p in targets)
+            {
+                try
+                {
+                    YLproxy.Proxy.ProxyProcessManager.Stop(p);
+                    p.Status = ProxyStatus.Stopped;
+                    stopped++;
+                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stop: {p.Name} ({p.LocalPort})");
+                }
+                catch (Exception ex)
+                {
+                    p.Status = ProxyStatus.Failed;
+                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stop failed — {p.Name}: {ex.Message}");
+                }
+            }
+            Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
+            SetStatus($"Batch stopped: {stopped}/{targets.Count} proxies");
+            IsStopping = false;
+        });
+    }
+
+    // ================================================================
+    // Import / Export
+    // ================================================================
+    private void ExportToJson()
+    {
+        if (IsExporting) return;
+        IsExporting = true;
+
+        try
+        {
+            // Use SaveFileDialog via Microsoft.Win32
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                DefaultExt = ".json",
+                FileName = $"ylproxy_export_{DateTime.Now:yyyyMMdd_HHmmss}.json"
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                IsExporting = false;
+                return;
+            }
+
+            var exportProxies = SelectedProxies.Count > 0
+                ? SelectedProxies
+                : Proxies.ToList();
+
+            var exportData = new
+            {
+                ExportedAt = DateTime.UtcNow.ToString("O"),
+                Count = exportProxies.Count,
+                Proxies = exportProxies.Select(p => new
+                {
+                    p.Name, p.RemoteHost, p.RemotePort,
+                    Username = string.IsNullOrWhiteSpace(p.Username) ? "" : "(exported)",
+                    Password = string.IsNullOrWhiteSpace(p.Password) ? "" : "(exported)",
+                    p.Group, p.LocalHost, p.LocalPort
+                })
+            };
+
+            var json = JsonSerializer.Serialize(exportData,
+                new JsonSerializerOptions { WriteIndented = true });
+
+            File.WriteAllText(dialog.FileName, json, System.Text.Encoding.UTF8);
+
+            SetStatus($"Exported {exportProxies.Count} proxies to {Path.GetFileName(dialog.FileName)}");
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Export: {exportProxies.Count} proxies → {Path.GetFileName(dialog.FileName)}");
+        }
+        catch (Exception ex)
+        {
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Export failed: {ex.Message}");
+        }
+        finally
+        {
+            IsExporting = false;
+        }
+    }
+
+    private void ImportFromJson()
+    {
+        if (IsImporting) return;
+        IsImporting = true;
+
+        try
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                IsImporting = false;
+                return;
+            }
+
+            var json = File.ReadAllText(dialog.FileName, System.Text.Encoding.UTF8);
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("Proxies", out var proxiesEl)
+                || proxiesEl.ValueKind != JsonValueKind.Array)
+            {
+                SetStatus("Invalid export file: missing 'Proxies' array.");
+                IsImporting = false;
+                return;
+            }
+
+            var configPath = GetConfigPath();
+            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
+            var cfg = svc.Load();
+
+            var maxId = cfg.Proxies.Count > 0 ? cfg.Proxies.Max(p => p.Id) : 0;
+            var usedPorts = new HashSet<int>(cfg.Proxies.Select(p => p.LocalPort));
+
+            var imported = 0;
+            foreach (var proxyEl in proxiesEl.EnumerateArray())
+            {
+                try
+                {
+                    var name = proxyEl.TryGetProperty("Name", out var n) ? n.GetString() ?? "" : "";
+                    if (string.IsNullOrWhiteSpace(name)) continue;
+
+                    var host = proxyEl.TryGetProperty("RemoteHost", out var rh) ? rh.GetString() ?? "" : "";
+                    var port = proxyEl.TryGetProperty("RemotePort", out var rp) ? rp.GetInt32() : 0;
+                    var group = proxyEl.TryGetProperty("Group", out var gr) ? gr.GetString() ?? "" : "";
+
+                    if (string.IsNullOrWhiteSpace(host) || port <= 0) continue;
+
+                    var localPort = _proxyConfig.PortRangeStart;
+                    while (usedPorts.Contains(localPort))
+                    {
+                        localPort++;
+                        if (localPort > _proxyConfig.PortRangeEnd) break;
+                    }
+
+                    if (localPort > _proxyConfig.PortRangeEnd) break;
+
+                    usedPorts.Add(localPort);
+                    maxId++;
+
+                    cfg.Proxies.Add(new ProxyItem
+                    {
+                        Id = maxId,
+                        Name = name,
+                        RemoteHost = host,
+                        RemotePort = port,
+                        Username = "",
+                        Password = "",
+                        Group = group,
+                        LocalHost = "127.0.0.1",
+                        LocalPort = localPort,
+                        Status = ProxyStatus.Stopped,
+                        CreateTime = DateTime.UtcNow
+                    });
+
+                    imported++;
+                }
+                catch { }
+            }
+
+            svc.Save(cfg);
+            InitFromConfig();
+            RefreshStats();
+
+            SetStatus($"Imported {imported} proxies from {Path.GetFileName(dialog.FileName)}");
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Import: {imported} proxies from {Path.GetFileName(dialog.FileName)}");
+        }
+        catch (Exception ex)
+        {
+            AddLog($"[{DateTime.Now:HH:mm:ss}] Import failed: {ex.Message}");
+            SetStatus($"Import failed: {ex.Message}");
+        }
+        finally
+        {
+            IsImporting = false;
+        }
+    }
+
+    // ================================================================
+    // Restart (MonitorService callback)
+    // ================================================================
     private void RestartProxySafe(ProxyItem proxy)
     {
-        _ = System.Threading.Tasks.Task.Run(() =>
+        _ = Task.Run(() =>
         {
             try
             {
@@ -370,117 +782,37 @@ public sealed class MainViewModel : ViewModelBase
         });
     }
 
-
-    private void ShowAddWindow()
-
-    {
-        try
-        {
-            var configPath = GetConfigPath();
-            var vm = new YLproxy.GUI.ViewModels.AddProxyViewModel(
-                Proxies.ToList(),
-                configPath,
-                _proxyConfig.PortRangeStart,
-                _proxyConfig.PortRangeEnd);
-            vm.CloseAction = () => { /* window will close from code-behind */ };
-
-            var win = new YLproxy.GUI.Views.AddProxyWindow
-            {
-                Owner = Application.Current?.MainWindow,
-                DataContext = vm
-            };
-
-            vm.CloseAction = () => win.Dispatcher.BeginInvoke(new Action(() => win.DialogResult = true));
-
-            win.ShowDialog();
-
-            // If confirmed, the ViewModel already persisted to config.
-            // Refresh UI list.
-            InitFromConfig();
-            RefreshStats();
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Add window failed: {ex.Message}");
-        }
-    }
-
-
-    private void RemoveSelectedProxyAndPersist()
-    {
-        try
-        {
-            if (SelectedProxy is null)
-            {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Remove failed: no proxy selected");
-                return;
-            }
-
-            var id = SelectedProxy.Id;
-
-            // 若正在运行，先停止对应 3proxy，避免孤儿进程
-            try
-            {
-                YLproxy.Proxy.ProxyProcessManager.Stop(SelectedProxy);
-            }
-            catch
-            {
-                // ignore
-            }
-
-            // 先更新 UI 列表（更直观）
-            Proxies.Remove(SelectedProxy);
-
-            var configPath = GetConfigPath();
-            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
-            var cfg = svc.Load();
-
-            var before = cfg.Proxies.Count;
-            cfg.Proxies.RemoveAll(p => p.Id == id);
-            var after = cfg.Proxies.Count;
-
-            svc.Save(cfg);
-
-            RefreshStats();
-
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Remove proxy persisted: configPath={configPath}, RemovedId={id}, ProxiesSaved={after} (before={before})");
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Remove proxy failed: {ex.Message}");
-        }
-    }
-
-
-    // Phase 4: hard-coded AddProxyAndPersist removed (now uses AddProxyWindow).
-
-
-
+    // ================================================================
+    // Logging (LogEntry-based)
+    // ================================================================
     private void AddLog(string message)
     {
-        Application.Current?.Dispatcher.BeginInvoke(() => _logs.Add(message));
+        var entry = LogEntry.FromRawString(message);
+        Application.Current?.Dispatcher.BeginInvoke(() =>
+        {
+            _logs.Add(entry);
+            _filteredLogs.Add(entry);
+        });
 
-        try
-        {
-            _logger.Info(message);
-        }
-        catch
-        {
-            // 文件写入失败不影响 GUI 显示
-        }
+        try { _logger.Info(message); }
+        catch { }
     }
 
+    private void SetStatus(string message)
+    {
+        Application.Current?.Dispatcher.BeginInvoke(() => StatusMessage = message);
+    }
+
+    // ================================================================
+    // Host Info
+    // ================================================================
     private void LoadHostInfo()
     {
         ComputerName = Environment.MachineName;
         NetworkStatus = GetNetworkStatus();
         IpAddress = YLproxy.Utils.NetworkUtil.GetBestLocalIp() ?? "";
         Now = DateTime.Now;
-
-        // LocalHost/LocalPort should come from config when present.
-        // If older/empty config is loaded, we keep the values as-is.
     }
-
 
     private static string GetNetworkStatus()
     {
@@ -511,10 +843,6 @@ public sealed class MainViewModel : ViewModelBase
         FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
     }
 
-    /// <summary>
-    /// Called by MonitorService when proxy status changes (e.g., Running→Failed),
-    /// so the config.json is persisted immediately rather than only on app exit.
-    /// </summary>
     private void PersistProxyState()
     {
         try
@@ -537,5 +865,3 @@ public sealed class MainViewModel : ViewModelBase
         }
     }
 }
-
-
