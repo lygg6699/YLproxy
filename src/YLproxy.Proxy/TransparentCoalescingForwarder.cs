@@ -177,9 +177,9 @@ public sealed class TransparentCoalescingForwarder : System.IDisposable
                 await clientStream.CopyToAsync(upstreamStream, token).ConfigureAwait(false);
                 await upstreamStream.FlushAsync(token).ConfigureAwait(false);
             }
-            catch
+            catch (Exception ex)
             {
-                // swallow: tests only assert upstream request bytes.
+                _logger.Warn($"TransparentCoalescingForwarder: client handling error: {ex.Message}");
             }
         }
     }

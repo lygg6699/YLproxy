@@ -21,7 +21,6 @@ public sealed class AesSecurityService : ISecurityService
     private readonly byte[] _key;
     private static readonly int NonceSize = 12; // 96-bit nonce for GCM
     private static readonly int TagSize = 16;  // 128-bit authentication tag
-    private static readonly ReaderWriterLockSlim _keyLock = new();
 
     /// <summary>
     /// Creates an AesSecurityService, loading or generating a key file at the specified path.

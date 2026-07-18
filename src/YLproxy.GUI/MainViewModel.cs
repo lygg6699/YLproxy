@@ -34,7 +34,6 @@ public sealed class MainViewModel : ViewModelBase
 
     private readonly Core.Abstractions.IProxyDataService _proxyDataService;
     private readonly Core.Abstractions.IProxyTester _proxyTester;
-    private readonly Core.Abstractions.IProxyRepository _proxyRepository;
     private readonly Proxy.Abstractions.IProxyProcessManager _proxyProcessManager;
 
     // --- Sub-ViewModels ---
@@ -112,13 +111,19 @@ public sealed class MainViewModel : ViewModelBase
         ILogger logger,
         GlobalConfigService settingsService,
         GlobalProxyConfig proxyConfig,
-        GlobalThreeProxyConfig threeProxyConfig)
+        GlobalThreeProxyConfig threeProxyConfig,
+        Core.Abstractions.IProxyDataService proxyDataService,
+        Core.Abstractions.IProxyTester proxyTester,
+        Proxy.Abstractions.IProxyProcessManager proxyProcessManager)
     {
         _logger = logger;
         _settingsService = settingsService;
         _proxyConfig = proxyConfig;
         _threeProxyConfig = threeProxyConfig;
-        YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig);
+        _proxyDataService = proxyDataService;
+        _proxyTester = proxyTester;
+        _proxyProcessManager = proxyProcessManager;
+        _proxyProcessManager.Configure(_threeProxyConfig);
 
         InitFromConfig();
         LoadHostInfo();
@@ -174,7 +179,17 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     // Ticking
     // ================================================================
-    private void RefreshDataGrid() { }
+    private int _proxiesVersion;
+
+    private void RefreshDataGrid()
+    {
+        Interlocked.Increment(ref _proxiesVersion);
+        // Force re-evaluation of filter + notify UI to refresh DataGrid
+        var current = SearchText;
+        SearchText = current; // trigger ApplyProxyFilter via the property setter
+        RaisePropertyChanged(nameof(FilteredProxies));
+        RaisePropertyChanged(nameof(Proxies));
+    }
 
     private void Tick()
     {
@@ -199,9 +214,7 @@ public sealed class MainViewModel : ViewModelBase
         _filteredProxies.Clear();
         try
         {
-            var configPath = GetConfigPath();
-            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
-            var cfg = svc.Load();
+            var cfg = _proxyDataService.Load();
 
             foreach (var p in cfg.Proxies)
                 Proxies.Add(p);
@@ -318,17 +331,15 @@ public sealed class MainViewModel : ViewModelBase
 
             if (result != MessageBoxResult.Yes) return;
 
-            try { YLproxy.Proxy.ProxyProcessManager.Stop(proxy); }
+            try { _proxyProcessManager.Stop(proxy); }
             catch { }
 
             Proxies.Remove(proxy);
             ApplyProxyFilter();
 
-            var configPath = GetConfigPath();
-            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
-            var cfg = svc.Load();
+            var cfg = _proxyDataService.Load();
             cfg.Proxies.RemoveAll(p => p.Id == proxy.Id);
-            svc.Save(cfg);
+            _proxyDataService.Save(cfg);
 
             RefreshStats();
             SetStatus($"Deleted: {proxy.Name}");
@@ -360,7 +371,7 @@ public sealed class MainViewModel : ViewModelBase
             var p = SelectedProxy;
             SetStatus($"Testing {p.Name}...");
 
-            var (success, latency, error) = await ProxyTester.TestAsync(
+            var (success, latency, error) = await _proxyTester.TestAsync(
                 p.RemoteHost, p.RemotePort, p.Username, p.Password);
 
             if (success)
@@ -408,7 +419,7 @@ public sealed class MainViewModel : ViewModelBase
                 try
                 {
                     p.Status = ProxyStatus.Running;
-                    YLproxy.Proxy.ProxyProcessManager.Start(p);
+                    _proxyProcessManager.Start(p);
                     Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Started: {p.LocalHost}:{p.LocalPort} -> {p.RemoteHost}:{p.RemotePort}");
                     SetStatus($"{p.Name}: started on port {p.LocalPort}");
@@ -450,7 +461,7 @@ public sealed class MainViewModel : ViewModelBase
             {
                 try
                 {
-                    YLproxy.Proxy.ProxyProcessManager.Stop(p);
+                    _proxyProcessManager.Stop(p);
                     p.Status = ProxyStatus.Stopped;
                     Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Stopped: {p.LocalHost}:{p.LocalPort}");
@@ -501,7 +512,7 @@ public sealed class MainViewModel : ViewModelBase
                 try
                 {
                     p.Status = ProxyStatus.Running;
-                    YLproxy.Proxy.ProxyProcessManager.Start(p);
+                    _proxyProcessManager.Start(p);
                     started++;
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Batch start: {p.Name} ({p.LocalPort})");
                 }
@@ -540,7 +551,7 @@ public sealed class MainViewModel : ViewModelBase
             {
                 try
                 {
-                    YLproxy.Proxy.ProxyProcessManager.Stop(p);
+                    _proxyProcessManager.Stop(p);
                     p.Status = ProxyStatus.Stopped;
                     stopped++;
                     AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stop: {p.Name} ({p.LocalPort})");
@@ -645,9 +656,7 @@ public sealed class MainViewModel : ViewModelBase
                 return;
             }
 
-            var configPath = GetConfigPath();
-            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
-            var cfg = svc.Load();
+            var cfg = _proxyDataService.Load();
 
             var maxId = cfg.Proxies.Count > 0 ? cfg.Proxies.Max(p => p.Id) : 0;
             var usedPorts = new HashSet<int>(cfg.Proxies.Select(p => p.LocalPort));
@@ -698,7 +707,7 @@ public sealed class MainViewModel : ViewModelBase
                 catch { }
             }
 
-            svc.Save(cfg);
+            _proxyDataService.Save(cfg);
             InitFromConfig();
             RefreshStats();
 
@@ -725,9 +734,9 @@ public sealed class MainViewModel : ViewModelBase
         {
             try
             {
-                YLproxy.Proxy.ProxyProcessManager.Stop(proxy);
+                _proxyProcessManager.Stop(proxy);
                 Thread.Sleep(500);
-                YLproxy.Proxy.ProxyProcessManager.Start(proxy);
+                _proxyProcessManager.Start(proxy);
             }
             catch (Exception ex)
             {
@@ -784,7 +793,7 @@ public sealed class MainViewModel : ViewModelBase
     {
         foreach (var proxy in Proxies.Where(p => p.Status == ProxyStatus.Running).ToList())
         {
-            try { YLproxy.Proxy.ProxyProcessManager.Stop(proxy); } catch { }
+            try { _proxyProcessManager.Stop(proxy); } catch { }
         }
         await Task.CompletedTask;
     }
@@ -801,9 +810,7 @@ public sealed class MainViewModel : ViewModelBase
     {
         try
         {
-            var configPath = GetConfigPath();
-            var svc = new YLproxy.Core.Config.ProxyDataService(configPath);
-            var cfg = svc.Load();
+            var cfg = _proxyDataService.Load();
             var proxyList = Proxies.ToList();
             foreach (var p in cfg.Proxies)
             {
@@ -811,7 +818,7 @@ public sealed class MainViewModel : ViewModelBase
                 if (live is not null)
                     p.Status = live.Status;
             }
-            svc.Save(cfg);
+            _proxyDataService.Save(cfg);
         }
         catch (Exception ex)
         {

@@ -7,7 +7,7 @@ using YLproxy.Utils;
 
 namespace YLproxy.Core.Data;
 
-public class SqliteProxyRepository : IDisposable
+public class SqliteProxyRepository : Abstractions.IProxyRepository
 {
     private readonly SqliteConnection _connection;
     private readonly ISecurityService _securityService;

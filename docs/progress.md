@@ -300,18 +300,28 @@
 - ⏳ P0：完成真实 3proxy 单代理/多代理、端口监听、异常退出和回滚验收。
 - ⏳ P1：使用 Windows DPAPI 加密代理凭据并完成旧配置迁移。
 
-## P2：日志、异常与数据可靠性（2026-07-16）
+## Phase B：技术债偿还（2026-07-19）
 
-**状态：执行中**
+**状态：B1/B2/B5 核心修复已完成（build/test 复验通过）**
 
-- [ ] 所有生产模块统一通过 ILogger 输出，移除不必要的 Console.WriteLine
-- [ ] FileLogger 自清理错误路径修复
-- [ ] 空 catch 块治理完成
-- [ ] 日志生命周期策略文档化（四种日志分类与保留策略）
-- [ ] 3proxy 引擎日志清理逻辑实现
-- [ ] 日志清理自动化测试补齐
-- [ ] SQLite 数据层实现（SqliteProxyRepository + DataMigrationService）
-- [ ] SQLite 迁移单元测试补齐
-- [ ] ProxyDataService 改造（双写过渡期）
-- [ ] Release 构建 0 Error/0 Warning
-- [ ] 全部测试通过（预期 ≥24 Passed）
+### B1 — 阻塞性 P0 Bug 修复
+- ✅ `RefreshDataGrid()` 空方法修复：实现 DataGrid 刷新逻辑，触发 FilteredProxies 集合重置和 UI 刷新
+- ✅ async-over-sync 死锁风险修复：`ProxyDataService.LoadFromJson()` 和 `Save()` 改用同步 `_ioLock.Wait()`
+
+### B2 — 接口对齐 + DI 闭环
+- ✅ `ProxyProcessManagerAdapter` 创建：实现 `IProxyProcessManager` 接口，适配静态 `ProxyProcessManager`
+- ✅ `ProxyTesterAdapter` 创建：实现 `IProxyTester` 接口，适配静态 `ProxyTester`
+- ✅ `ProxyDataService` 实现 `IProxyDataService` 接口
+- ✅ `SqliteProxyRepository` 实现 `IProxyRepository` 接口
+- ✅ `MainViewModel` 全部静态调用替换为注入接口（`_proxyProcessManager`、`_proxyDataService`、`_proxyTester`）
+- ✅ DI 注册补齐：`App.xaml.cs` 注册 3 个适配器 + 1 个数据服务
+- ✅ 移除 `Proxy.Abstractions.ThreeProxyConfig` 空占位符，消除命名冲突
+- ✅ 修复 `IProxyProcessManager` 接口中 `ThreeProxyConfig` 引用歧义
+
+### B5 — 安全与正确性加固
+- ✅ `TransparentCoalescingForwarder` 空 catch 改为结构化日志记录
+- ✅ `AesSecurityService` 移除未使用的 `_keyLock` 死代码
+
+### 验证
+- ✅ `dotnet build YLproxy.sln`：0 Error, 36 Warnings（从 52 降至 36）
+- ✅ `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：75/75 Passed

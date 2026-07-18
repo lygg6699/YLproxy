@@ -1,12 +1,10 @@
-using YLproxy.Infrastructure;
 using YLproxy.Models;
 
 namespace YLproxy.Proxy.Abstractions;
 
-
 public interface IProxyProcessManager
 {
-    void Configure(ThreeProxyConfig settings);
+    void Configure(Infrastructure.ThreeProxyConfig settings);
 
     void Ensure3ProxyDependencies();
 
@@ -16,4 +14,3 @@ public interface IProxyProcessManager
 
     void Stop(ProxyItem proxy);
 }
-

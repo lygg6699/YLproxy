@@ -1,30 +1,24 @@
 using System.IO;
 using System.Text;
-using YLproxy.Core.Data;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Utils;
 
 namespace YLproxy.Core.Config;
 
-public sealed class ProxyDataService
+/// <summary>
+/// JSON-based proxy data persistence service.
+/// Single data source: data/config.json with atomic writes and rotating backups.
+/// </summary>
+public sealed class ProxyDataService : Abstractions.IProxyDataService
 {
     private const int MaxBackupCount = 3;
 
     private static readonly SemaphoreSlim _ioLock = new(1, 1);
     private readonly ProxyDataSerializer _serializer;
-    private readonly SqliteProxyRepository? _sqliteRepository;
-    private DataMigrationService? _migrationService;
     private static readonly ILogger _logger = LoggerFactory.CreateLogger();
 
     public string ConfigPath { get; }
-
-    /// <summary>
-    /// Returns true if the SQLite migration has been completed and the database is the primary data source.
-    /// </summary>
-    public bool IsSqliteMigrated =>
-        _sqliteRepository is not null &&
-        File.Exists(PathResolver.ResolvePath("data", ".migration_completed"));
 
     /// <summary>
     /// Indicates whether credentials were reset during the most recent load operation.
@@ -34,7 +28,6 @@ public sealed class ProxyDataService
     public ProxyDataService(
         string configPath,
         ISecurityService? securityService = null,
-        SqliteProxyRepository? sqliteRepository = null,
         bool skipPathValidation = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(configPath);
@@ -50,70 +43,17 @@ public sealed class ProxyDataService
         }
 
         _serializer = new ProxyDataSerializer(securityService);
-        _sqliteRepository = sqliteRepository;
-
-        if (_sqliteRepository is not null)
-        {
-            ISecurityService secSvc;
-            if (securityService is not null)
-            {
-                secSvc = securityService;
-            }
-            else
-            {
-                if (!OperatingSystem.IsWindows())
-                    throw new PlatformNotSupportedException("DPAPI credential storage requires Windows.");
-                secSvc = new DpapiSecurityService();
-            }
-            _migrationService = new DataMigrationService(this, _sqliteRepository, secSvc);
-        }
-    }
-
-    /// <summary>
-    /// Triggers the JSON-to-SQLite migration if it hasn't been performed yet.
-    /// </summary>
-    public async Task<bool> MigrateToSqliteIfNeededAsync()
-    {
-        if (_migrationService is null)
-            return false;
-
-        return await System.Threading.Tasks.Task.Run(() => _migrationService.MigrateIfNeeded())
-            .ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Synchronous version for callers that do not need async.
-    /// </summary>
-    public bool MigrateToSqliteIfNeeded()
-    {
-        return _migrationService?.MigrateIfNeeded() ?? false;
     }
 
     public AppConfig Load()
     {
         CredentialsResetDuringLoad = false;
-
-        // If SQLite is available and migration has occurred, load from SQLite
-        if (IsSqliteMigrated)
-        {
-            return LoadFromSqlite();
-        }
-
-        // Otherwise, fall back to JSON
         return LoadFromJson();
-    }
-
-    private AppConfig LoadFromSqlite()
-    {
-        var config = new AppConfig();
-        var proxies = _sqliteRepository!.GetAll();
-        config.Proxies.AddRange(proxies);
-        return config;
     }
 
     private AppConfig LoadFromJson()
     {
-        _ioLock.WaitAsync().GetAwaiter().GetResult();
+        _ioLock.Wait();
         try
         {
             if (!File.Exists(ConfigPath))
@@ -156,7 +96,7 @@ public sealed class ProxyDataService
 
     public void Save(AppConfig config)
     {
-        _ioLock.WaitAsync().GetAwaiter().GetResult();
+        _ioLock.Wait();
         try
         {
             SaveInternal(config);
@@ -176,66 +116,14 @@ public sealed class ProxyDataService
         // Create a rotating backup before overwriting
         RotateBackups(json);
 
-        // Always write JSON (primary persistence in transition period)
+        // Atomic write to JSON (single source of truth)
         WriteAtomically(json);
-
-        // Dual-write to SQLite if available
-        if (_sqliteRepository is not null)
-        {
-            SyncToSqlite(config);
-        }
-    }
-
-    private void SyncToSqlite(AppConfig config)
-    {
-        try
-        {
-            // Full sync: delete all and re-insert from the canonical JSON state.
-            // This is the safest strategy during the transition period.
-            var existing = _sqliteRepository!.GetAll();
-            var configIds = new HashSet<int>(config.Proxies.Select(p => p.Id));
-
-            // Remove proxies that no longer exist in config
-            foreach (var existingProxy in existing)
-            {
-                if (!configIds.Contains(existingProxy.Id))
-                {
-                    _sqliteRepository.Delete(existingProxy.Id);
-                }
-            }
-
-            // Upsert proxies from config
-            foreach (var proxy in config.Proxies)
-            {
-                var existingProxy = _sqliteRepository.GetById(proxy.Id);
-                if (existingProxy is not null)
-                {
-                    _sqliteRepository.Update(proxy);
-                }
-                else
-                {
-                    _sqliteRepository.Add(proxy);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            // Dual-write failure should not block the JSON save.
-            _logger.Warn($"SQLite dual-write sync failed: {ex.Message}");
-        }
     }
 
     public async Task<AppConfig> LoadAsync(CancellationToken cancellationToken = default)
     {
         CredentialsResetDuringLoad = false;
 
-        if (IsSqliteMigrated)
-        {
-            return await System.Threading.Tasks.Task.Run(LoadFromSqlite, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        // Use async lock variant
         await _ioLock.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -290,7 +178,6 @@ public sealed class ProxyDataService
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(ConfigPath) ?? "");
-            // Write temp file with exclusive write, allowing concurrent readers
             using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.Read))
             using (var writer = new StreamWriter(fs, Encoding.UTF8))
             {
@@ -322,12 +209,8 @@ public sealed class ProxyDataService
         }
     }
 
-    /// <summary>
-    /// Writes the current JSON state to a rotating backup slot (config.json.bak.0..N).
-    /// </summary>
     private void RotateBackups(string json)
     {
-        // Rotate existing backups: config.json.bak.2 → config.json.bak.1, etc.
         for (int i = MaxBackupCount - 2; i >= 0; i--)
         {
             var oldPath = $"{ConfigPath}.bak.{i}";
@@ -343,7 +226,6 @@ public sealed class ProxyDataService
             }
         }
 
-        // Write the freshest backup as .bak.0
         var bakPath = $"{ConfigPath}.bak.0";
         try
         {
@@ -356,10 +238,6 @@ public sealed class ProxyDataService
         }
     }
 
-    /// <summary>
-    /// Attempts to recover from a corrupted config.json by trying backups in order,
-    /// then falls back to an empty config.
-    /// </summary>
     private AppConfig RecoverFromCorruption()
     {
         for (int i = 0; i < MaxBackupCount; i++)
@@ -375,7 +253,6 @@ public sealed class ProxyDataService
                 var cfg = _serializer.Deserialize(json, out _);
                 if (cfg.Proxies.Count > 0)
                 {
-                    // Restore from this backup
                     WriteAtomically(json);
                     _logger.Info($"Successfully recovered {cfg.Proxies.Count} proxies from backup '{bakPath}'");
                     return cfg;

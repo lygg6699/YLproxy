@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using YLproxy.Core.PreFlight;
 using YLproxy.Infrastructure;
+using YLproxy.Utils;
 using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
 using GlobalProxyConfig = YLproxy.Infrastructure.ProxyConfig;
 using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
@@ -84,10 +85,8 @@ public partial class App : Application
             _logger.Warn($"Failed to configure auto-start: {ex.Message}");
         }
 
-        // Build DI container (Phase A1/A2: startup chain closure + abstraction wiring)
+        // Build DI container (Phase B2: interface alignment + startup chain closure)
         var services = new ServiceCollection();
-
-
 
         // Logging
         services.AddSingleton<ILogger>(_ => _logger!);
@@ -103,7 +102,6 @@ public partial class App : Application
         services.AddSingleton<GlobalConfigService>(sp => sp.GetRequiredService<AppSettingsService>());
         services.AddSingleton<GlobalProxyConfig>(sp =>
         {
-            var cfg = sp.GetRequiredService<AppSettingsService>().GetConfig();
             return sp.GetRequiredService<AppSettingsService>().GetSection<GlobalProxyConfig>("Proxy");
         });
         services.AddSingleton<GlobalThreeProxyConfig>(sp =>
@@ -111,11 +109,20 @@ public partial class App : Application
             return sp.GetRequiredService<AppSettingsService>().GetSection<GlobalThreeProxyConfig>("ThreeProxy");
         });
 
+        // Core abstractions → adapters
+        services.AddSingleton<Proxy.Abstractions.IProxyProcessManager, Proxy.ProxyProcessManagerAdapter>();
+        services.AddSingleton<Core.Abstractions.IProxyTester, Core.ProxyTesterAdapter>();
+        services.AddSingleton<Core.Abstractions.IProxyDataService>(sp =>
+        {
+            var cfg = sp.GetRequiredService<GlobalProxyConfig>();
+            var configPath = PathResolver.ResolvePath(cfg.DataDirectory, cfg.ConfigFileName);
+            return new Core.Config.ProxyDataService(configPath);
+        });
+
         // Main VM
         services.AddTransient<MainViewModel>();
 
         var provider = services.BuildServiceProvider();
-        ServiceLocator.SetProvider(provider);
 
         // Manual startup window creation (since StartupUri removed)
         var vm = provider.GetRequiredService<MainViewModel>();

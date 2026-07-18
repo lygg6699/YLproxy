@@ -1,6 +1,4 @@
-namespace YLproxy.Proxy.Abstractions;
-
-// Placeholder to satisfy older refactor attempts; not used in build.
-// (Kept empty intentionally.)
-public sealed class ThreeProxyConfig { }
+// Intentionally empty: ThreeProxyConfig is defined in YLproxy.Infrastructure.
+// This file exists to prevent accidental namespace-level conflicts.
+// The real type used throughout the codebase is Infrastructure.ThreeProxyConfig.
 
