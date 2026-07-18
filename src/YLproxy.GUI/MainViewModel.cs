@@ -142,12 +142,16 @@ public sealed class MainViewModel : ViewModelBase
     }
 
     // ================================================================
-    public MainViewModel()
+    public MainViewModel(
+        ILogger logger,
+        GlobalConfigService settingsService,
+        GlobalProxyConfig proxyConfig,
+        GlobalThreeProxyConfig threeProxyConfig)
     {
-        _settingsService = new GlobalConfigService();
-        _logger = LoggerFactory.CreateLogger();
-        _proxyConfig = _settingsService.GetSection<GlobalProxyConfig>("Proxy");
-        _threeProxyConfig = _settingsService.GetSection<GlobalThreeProxyConfig>("ThreeProxy");
+        _logger = logger;
+        _settingsService = settingsService;
+        _proxyConfig = proxyConfig;
+        _threeProxyConfig = threeProxyConfig;
         YLproxy.Proxy.ProxyProcessManager.Configure(_threeProxyConfig);
 
         InitFromConfig();
@@ -156,6 +160,7 @@ public sealed class MainViewModel : ViewModelBase
         AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (Phase 8 — GUI Enhanced)");
 
         AddCommand = new RelayCommand(ShowAddWindow);
+
         EditCommand = new RelayCommand(ShowEditWindow, () => SelectedProxy is not null);
         RemoveCommand = new RelayCommand(RemoveSelectedProxyAndPersist, () => SelectedProxy is not null);
         TestCommand = new RelayCommand(() => _ = TestSelectedProxyAsync(), () => SelectedProxy is not null);

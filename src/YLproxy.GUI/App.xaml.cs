@@ -6,6 +6,9 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using YLproxy.Core.PreFlight;
 using YLproxy.Infrastructure;
+using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
+using GlobalProxyConfig = YLproxy.Infrastructure.ProxyConfig;
+using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -81,10 +84,43 @@ public partial class App : Application
             _logger.Warn($"Failed to configure auto-start: {ex.Message}");
         }
 
+        // Build DI container (Phase A1: startup chain closure)
+        var services = new ServiceCollection();
+
+
+        // Logging
+        services.AddSingleton<ILogger>(_ => _logger!);
+
+        // AppSettings
+        services.AddSingleton(_ =>
+        {
+            var svc = new AppSettingsService(settingsPath);
+            return svc;
+        });
+
+        // Config sections
+        services.AddSingleton<GlobalConfigService>(sp => sp.GetRequiredService<AppSettingsService>());
+        services.AddSingleton<GlobalProxyConfig>(sp =>
+        {
+            var cfg = sp.GetRequiredService<AppSettingsService>().GetConfig();
+            return sp.GetRequiredService<AppSettingsService>().GetSection<GlobalProxyConfig>("Proxy");
+        });
+        services.AddSingleton<GlobalThreeProxyConfig>(sp =>
+        {
+            return sp.GetRequiredService<AppSettingsService>().GetSection<GlobalThreeProxyConfig>("ThreeProxy");
+        });
+
+        // Main VM
+        services.AddTransient<MainViewModel>();
+
+        var provider = services.BuildServiceProvider();
+        ServiceLocator.SetProvider(provider);
+
         // Manual startup window creation (since StartupUri removed)
         var vm = provider.GetRequiredService<MainViewModel>();
         var win = new MainWindow { DataContext = vm };
         win.Show();
+
 
     }
 

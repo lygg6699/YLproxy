@@ -7,6 +7,15 @@
 
 ## 1. Phase A 执行计划（按可编译/可测试顺序推进）
 
+### Step A1 复验与证据（已完成）
+- 代码变更：
+  - `src/YLproxy.GUI/App.xaml.cs`：补齐 DI 容器构建与 provider 初始化；注册 `MainViewModel` 并通过 DI 创建窗口。
+  - `src/YLproxy.GUI/MainViewModel.cs`：`MainViewModel()` 无参构造迁移为带注入构造。
+- 验证命令与结果：
+  - `dotnet build YLproxy.sln`：Build succeeded（warning 不阻断）。
+  - `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
+
 ### Step A1. MainWindow / ViewModel 创建链路走 DI（启动链闭合）
 - 修改：`src/YLproxy.GUI/App.xaml.cs`
   - DI 注册：补齐 `MainViewModel` 所需的依赖（至少需要：ILogger、AppSettingsService、ProxyConfig、ThreeProxyConfig）。
