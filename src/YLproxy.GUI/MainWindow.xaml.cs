@@ -15,10 +15,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new MainViewModel();
         InitializeTrayIcon();
         InitializeKeyboardShortcuts();
     }
+
 
     private void InitializeKeyboardShortcuts()
     {

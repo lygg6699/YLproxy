@@ -32,8 +32,13 @@ namespace YLproxy.Infrastructure
         /// <summary>
         /// Wraps a synchronous function with try-catch, logging and returning a default on failure.
         /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <param name="logger">Logger used for error reporting.</param>
+        /// <param name="context">Logical context string.</param>
+        /// <param name="defaultValue">Returned when function invocation fails.</param>
         /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
         public static T? TryCatch<T>(Func<T> func, ILogger logger, string context = "", T? defaultValue = default, object? data = null)
+
         {
             try
             {
@@ -49,8 +54,12 @@ namespace YLproxy.Infrastructure
         /// <summary>
         /// Wraps a synchronous action with try-catch and logging.
         /// </summary>
+        /// <param name="action">Action to invoke.</param>
+        /// <param name="logger">Logger used for error reporting.</param>
+        /// <param name="context">Logical context string.</param>
         /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
         public static void TryCatch(Action action, ILogger logger, string context = "", object? data = null)
+
         {
             try
             {
@@ -65,8 +74,13 @@ namespace YLproxy.Infrastructure
         /// <summary>
         /// Wraps an async function with try-catch, logging and returning a default on failure.
         /// </summary>
+        /// <param name="func">Async function to invoke.</param>
+        /// <param name="logger">Logger used for error reporting.</param>
+        /// <param name="context">Logical context string.</param>
+        /// <param name="defaultValue">Returned when invocation fails.</param>
         /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
         public static async Task<T?> TryCatchAsync<T>(Func<Task<T>> func, ILogger logger, string context = "", T? defaultValue = default, object? data = null)
+
         {
             try
             {
@@ -82,8 +96,12 @@ namespace YLproxy.Infrastructure
         /// <summary>
         /// Wraps an async action with try-catch and logging.
         /// </summary>
+        /// <param name="func">Async action to invoke.</param>
+        /// <param name="logger">Logger used for error reporting.</param>
+        /// <param name="context">Logical context string.</param>
         /// <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
         public static async Task TryCatchAsync(Func<Task> func, ILogger logger, string context = "", object? data = null)
+
         {
             try
             {
