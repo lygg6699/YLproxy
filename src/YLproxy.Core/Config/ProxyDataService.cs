@@ -172,6 +172,22 @@ public sealed class ProxyDataService : Abstractions.IProxyDataService
         return System.Threading.Tasks.Task.Run(() => Save(config ?? new AppConfig()), cancellationToken);
     }
 
+    public bool MigrateToSqliteIfNeeded()
+    {
+        // This service is JSON-based, so SQLite migration is not applicable
+        // Return false to indicate no migration was performed
+        return false;
+    }
+
+    public Task<bool> MigrateToSqliteIfNeededAsync()
+    {
+        // This service is JSON-based, so SQLite migration is not applicable
+        // Return false to indicate no migration was performed
+        return Task.FromResult(false);
+    }
+
+    public bool IsSqliteMigrated => false;
+
     private void WriteAtomically(string json)
     {
         var tempPath = GetTemporaryPath();

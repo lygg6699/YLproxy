@@ -19,5 +19,7 @@ public interface IProxyDataService
     bool MigrateToSqliteIfNeeded();
 
     Task<bool> MigrateToSqliteIfNeededAsync();
+
+    bool IsSqliteMigrated { get; }
 }
 

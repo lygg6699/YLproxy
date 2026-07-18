@@ -331,6 +331,7 @@ public sealed class MainViewModel : ViewModelBase
 
             if (result != MessageBoxResult.Yes) return;
 
+            // Attempt to stop the proxy, but continue with removal even if stopping fails
             try { _proxyProcessManager.Stop(proxy); }
             catch { }
 
@@ -704,6 +705,7 @@ public sealed class MainViewModel : ViewModelBase
 
                     imported++;
                 }
+                // Skip invalid proxy entries and continue with the next one
                 catch { }
             }
 
@@ -759,6 +761,7 @@ public sealed class MainViewModel : ViewModelBase
 
         try { _logger.Info(message); }
         catch { }
+        // Ignore logging failures to prevent logging issues from crashing the application
     }
 
     private void SetStatus(string message)
@@ -791,6 +794,7 @@ public sealed class MainViewModel : ViewModelBase
 
     public async Task ShutdownAsync()
     {
+        // Attempt to stop each proxy, but continue shutdown even if stopping fails
         foreach (var proxy in Proxies.Where(p => p.Status == ProxyStatus.Running).ToList())
         {
             try { _proxyProcessManager.Stop(proxy); } catch { }
