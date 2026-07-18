@@ -110,14 +110,13 @@ YLproxy/
 ├── logs/                            # —————— 日志目录（运行时生成） ——————
 │
 ├── docs/                            # —————— 项目文档 ——————
-│   ├── acceptance/                  #   验收记录
-│   ├── archive/                     #   历史文档
-│   ├── development-deployment-outline/ # 设计与部署方案
-│   ├── changelog.md                 #   变更日志
-│   ├── deployment.md                #   部署记录
-│   ├── progress.md                  #   开发进度追踪
-│   ├── task-tracking.md             #   任务跟踪
-│   └── migration-report-20260714.md #   迁移报告
+│   ├── INDEX.md                     #   文档中心入口
+│   ├── pending/                     #   待执行任务和计划
+│   ├── incomplete/                  #   待完善领域和规划
+│   ├── deployed/                    #   已完成部署和发布
+│   ├── issues/                      #   已知问题和缺陷
+│   ├── risks/                       #   风险评估和缓解措施
+│   └── development/                 #   开发指南和参考文档
 │
 ├── tests/                           # —————— 测试代码 ——————
 │   ├── YLproxy.Tests.csproj         #   测试项目

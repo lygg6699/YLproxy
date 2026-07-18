@@ -185,7 +185,7 @@
 **新开发者**
 1. [快速开始](development/00-快速开始.md)
 2. [开发路线图](incomplete/01-开发路线图.md)
-3. [环境配置](development/05-开发指南/)
+3. [环境配置](development/05-开发指南/环境配置.md)
 
 **项目经理**
 1. [完整债务分析](issues/comprehensive-debt-analysis-20260719.md)
@@ -202,7 +202,6 @@
 **架构设计**
 - [架构分析报告](incomplete/architecture-analysis-report-20260716.md)
 - [SQLite 架构设计](incomplete/sqlite-schema-design.md)
-- [架构设计文档](incomplete/03-架构设计/)
 
 **技术债**
 - [完整债务分析](issues/comprehensive-debt-analysis-20260719.md)
@@ -213,7 +212,6 @@
 - [部署摘要](deployed/deployment-summary-20260717.md)
 - [部署文档](deployed/deployment.md)
 - [DPAPI 迁移策略](deployed/dpapi-migration-strategy.md)
-- [运维部署文档](deployed/06-运维部署/)
 
 **测试验收**
 - [验收清单](pending/acceptance-checklist.md)
@@ -254,3 +252,15 @@
 ---
 
 *最后更新：2026-07-19 | 维护方：YLproxy 开发团队*
+
+---
+
+## 📝 文档完善记录
+
+**2026-07-19 文档重组与完善:**
+- ✅ 重组文档目录结构（pending/incomplete/deployed/issues/risks/development）
+- ✅ 更新开发路线图（添加 Phase A/B/C 状态）
+- ✅ 完善架构分析报告（添加完成状态）
+- ✅ 完善 SQLite schema 设计（添加决策状态）
+- ✅ 完善架构设计文档（添加实现状态）
+- ✅ 创建文档中心入口（INDEX.md + README.md）

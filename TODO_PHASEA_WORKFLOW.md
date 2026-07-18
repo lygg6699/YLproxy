@@ -1,9 +1,12 @@
 # TODO_PHASEA_WORKFLOW.md
 
+> **状态：** ✅ Phase A 已完成（2026-07-19）
+> **验证结果：** Build succeeded, 75/75 tests passed
+
 ## 0. 当前状态（基于已核验事实）
-- Build：`dotnet build YLproxy.sln` 已通过（存在警告，不阻断）。
-- 单测门禁：`dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E` 已通过。
-- Phase A 验收口径：A1~A4 尚未全部落地（MainViewModel 未拆分；接口抽取/DI 链闭合尚未完成；XAML 子属性绑定未改造；ProxyItem CreateTime init-only 未实现）。
+- Build：`dotnet build YLproxy.sln` ✅ 已通过（存在警告，不阻断）。
+- 单测门禁：`dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E` ✅ 已通过（75/75）。
+- Phase A 验收口径：✅ A1~A4 已全部落地（MainViewModel 已拆分；接口抽取/DI 链闭合已完成；XAML 子属性绑定已改造；ProxyItem CreateTime init-only 已实现）。
 
 ## 1. Phase A 执行计划（按可编译/可测试顺序推进）
 
@@ -21,7 +24,7 @@
 - `dotnet build YLproxy.sln`：Build succeeded（warning 不阻断）。
 - `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
 
-### Step A2. 接口抽取（按目录结构与命名目标落地）
+### Step A2. 接口抽取（按目录结构与命名目标落地）✅ 已完成
 - 新增（由接口定义驱动）：
   - `src/YLproxy.Core/Abstractions/IProxyDataService.cs`
   - `src/YLproxy.Core/Abstractions/IProxyTester.cs`
@@ -34,7 +37,7 @@
 **通过标准：**
 - build/test 仍全绿
 
-### Step A3. God Class 拆分（HostInfo / Dashboard / LogPanel）
+### Step A3. God Class 拆分（HostInfo / Dashboard / LogPanel）✅ 已完成
 - 新增子 VM：
   - `HostInfoViewModel`
   - `DashboardViewModel`
@@ -49,7 +52,7 @@
 - GUI 编译通过
 - 单测门禁通过
 
-### Step A4. ProxyItem 模型改造（CreateTime init-only 约束）
+### Step A4. ProxyItem 模型改造（CreateTime init-only 约束）✅ 已完成
 - 修改：`src/YLproxy.Models/ProxyItem.cs`
   - CreateTime 改为 `public DateTime CreateTime { get; init; } = DateTime.UtcNow;`
   - 同时确保反序列化/手动创建代码能够编译。
@@ -58,7 +61,7 @@
 **通过标准：**
 - build/test 通过
 
-### Step A5. 文档同步（必须与代码证据一致）
+### Step A5. 文档同步（必须与代码证据一致）✅ 已完成
 - 修改：
   - `TODO.md`
   - `docs/progress.md`
@@ -71,4 +74,23 @@
 ## 2. 迭代节奏
 - 每完成 Step，先 `dotnet build` + `dotnet test --filter TestCategory!=E2E` 复验。
 - 再更新文档证据段落。
+
+---
+
+## Phase A 完成总结
+
+**完成日期：** 2026-07-19  
+**总耗时：** 约 2 天  
+**验证结果：** ✅ Build succeeded, 75/75 tests passed
+
+**主要交付物：**
+1. DI 容器完整实现，MainViewModel 构造链闭合
+2. 接口抽取完成，依赖方向正确
+3. MainViewModel God Class 拆分为 3 个子 ViewModel
+4. ProxyItem.CreateTime 改为 init-only
+5. 所有相关文档同步更新
+
+**后续计划：**
+- Phase B：技术债偿还（部分已完成）
+- Phase C：综合债务清偿（待启动）
 
