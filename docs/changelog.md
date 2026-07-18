@@ -1,3 +1,24 @@
+## Phase A3：子 ViewModel 组合模式（2026-07-19）
+
+### 变更
+- `src/YLproxy.GUI/MainViewModel.cs`：引入 `HostInfoViewModel`、`DashboardViewModel`、`LogPanelViewModel` 三个子 ViewModel 作为协调器属性，移除内联的 12 个重复属性。
+- `src/YLproxy.GUI/Views/MainView.xaml.cs`：`CollectionChanged` 订阅从 `_subscribedVm.FilteredLogs` 改为 `_subscribedVm.LogPanel.FilteredLogs`。
+- `src/YLproxy.GUI/Views/MainView.xaml`：修复 Button 缺少 `/>` 的 XAML 语法错误。
+- `src/YLproxy.GUI/ViewModels/LogPanelViewModel.cs`：修复 `SetProperty` 返回 `void` 编译错误。
+
+### 验证
+- `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+- `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
+## Phase A4：ProxyItem.CreateTime init-only 化（2026-07-19）
+
+### 变更
+- `src/YLproxy.Models/ProxyItem.cs`：`CreateTime { get; set; }` → `CreateTime { get; init; }`，防止创建后篡改。
+
+### 验证
+- `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+- `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
 ## Phase A2：接口抽取（AppSettings/IProxy... 接口契约对齐）（2026-07-18）
 
 ### 变更

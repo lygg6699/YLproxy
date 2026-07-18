@@ -36,7 +36,7 @@ public sealed class ProxyItem : INotifyPropertyChanged
         }
     }
 
-    public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+    public DateTime CreateTime { get; init; } = DateTime.UtcNow;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

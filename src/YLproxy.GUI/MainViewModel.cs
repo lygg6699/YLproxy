@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using YLproxy.Core;
+using YLproxy.GUI.ViewModels;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Utils;
@@ -36,19 +37,10 @@ public sealed class MainViewModel : ViewModelBase
     private readonly Core.Abstractions.IProxyRepository _proxyRepository;
     private readonly Proxy.Abstractions.IProxyProcessManager _proxyProcessManager;
 
-
-    // --- Host Info ---
-    private string _computerName = string.Empty;
-    public string ComputerName { get => _computerName; set => SetProperty(ref _computerName, value); }
-
-    private string _ipAddress = "";
-    public string IpAddress { get => _ipAddress; set => SetProperty(ref _ipAddress, value); }
-
-    private string _networkStatus = "Unknown";
-    public string NetworkStatus { get => _networkStatus; set => SetProperty(ref _networkStatus, value); }
-
-    private DateTime _now = DateTime.Now;
-    public DateTime Now { get => _now; set => SetProperty(ref _now, value); }
+    // --- Sub-ViewModels ---
+    public HostInfoViewModel HostInfo { get; } = new();
+    public DashboardViewModel Dashboard { get; } = new();
+    public LogPanelViewModel LogPanel { get; } = new();
 
     // --- Proxy Collections ---
     public ObservableCollection<ProxyItem> Proxies { get; } = new();
@@ -57,11 +49,6 @@ public sealed class MainViewModel : ViewModelBase
     public ObservableCollection<ProxyItem> FilteredProxies => _filteredProxies;
 
     public List<ProxyItem> SelectedProxies { get; set; } = new();
-
-    // --- Log Collections ---
-    private readonly ObservableCollection<LogEntry> _logs = new();
-    private readonly ObservableCollection<LogEntry> _filteredLogs = new();
-    public ObservableCollection<LogEntry> FilteredLogs => _filteredLogs;
 
     // --- Commands ---
     public RelayCommand AddCommand { get; }
@@ -89,20 +76,6 @@ public sealed class MainViewModel : ViewModelBase
         }
     }
 
-    // --- Log Level Filter ---
-    public List<string> LogLevels { get; } = new() { "全部", "Info", "Warn", "Error" };
-
-    private string _selectedLogLevel = "全部";
-    public string SelectedLogLevel
-    {
-        get => _selectedLogLevel;
-        set
-        {
-            SetProperty(ref _selectedLogLevel, value, nameof(SelectedLogLevel));
-            ApplyLogFilter();
-        }
-    }
-
     // --- Status Message ---
     private string _statusMessage = string.Empty;
     public string StatusMessage
@@ -126,19 +99,6 @@ public sealed class MainViewModel : ViewModelBase
 
     private bool _isImporting;
     public bool IsImporting { get => _isImporting; set => SetProperty(ref _isImporting, value); }
-
-    // --- Stats ---
-    private int _totalCount;
-    public int TotalCount { get => _totalCount; set => SetProperty(ref _totalCount, value); }
-
-    private int _runningCount;
-    public int RunningCount { get => _runningCount; set => SetProperty(ref _runningCount, value); }
-
-    private int _stoppedCount;
-    public int StoppedCount { get => _stoppedCount; set => SetProperty(ref _stoppedCount, value); }
-
-    private int _failedCount;
-    public int FailedCount { get => _failedCount; set => SetProperty(ref _failedCount, value); }
 
     private ProxyItem? _selectedProxy;
     public ProxyItem? SelectedProxy
@@ -172,7 +132,7 @@ public sealed class MainViewModel : ViewModelBase
         TestCommand = new RelayCommand(() => _ = TestSelectedProxyAsync(), () => SelectedProxy is not null);
         StartCommand = new RelayCommand(StartSelectedProxy, () => SelectedProxy is not null);
         StopCommand = new RelayCommand(StopSelectedProxy, () => SelectedProxy is not null);
-        ClearLogCommand = new RelayCommand(() => { _logs.Clear(); _filteredLogs.Clear(); });
+        ClearLogCommand = new RelayCommand(() => LogPanel.ClearLogCommand.Execute(null));
         BatchStartCommand = new RelayCommand(BatchStart, () => SelectedProxies.Count > 0);
         BatchStopCommand = new RelayCommand(BatchStop, () => SelectedProxies.Count > 0);
         ExportCommand = new RelayCommand(ExportToJson);
@@ -211,21 +171,6 @@ public sealed class MainViewModel : ViewModelBase
             _filteredProxies.Add(p);
     }
 
-    private void ApplyLogFilter()
-    {
-        _filteredLogs.Clear();
-        IEnumerable<LogEntry> source = _selectedLogLevel switch
-        {
-            "Info" => _logs.Where(l => l.Level != LogLevel.Debug),
-            "Warn" => _logs.Where(l => l.Level is LogLevel.Warn or LogLevel.Error or LogLevel.Fatal),
-            "Error" => _logs.Where(l => l.Level is LogLevel.Error or LogLevel.Fatal),
-            _ => _logs,
-        };
-
-        foreach (var l in source)
-            _filteredLogs.Add(l);
-    }
-
     // ================================================================
     // Ticking
     // ================================================================
@@ -239,9 +184,9 @@ public sealed class MainViewModel : ViewModelBase
 
         Application.Current?.Dispatcher.BeginInvoke(() =>
         {
-            Now = now;
-            NetworkStatus = netStatus;
-            if (!string.IsNullOrWhiteSpace(ip)) IpAddress = ip;
+            HostInfo.Now = now;
+            HostInfo.NetworkStatus = netStatus;
+            if (!string.IsNullOrWhiteSpace(ip)) HostInfo.IpAddress = ip;
         });
     }
 
@@ -285,7 +230,7 @@ public sealed class MainViewModel : ViewModelBase
         try
         {
             var configPath = GetConfigPath();
-            var vm = new ViewModels.AddProxyViewModel(
+            var vm = new AddProxyViewModel(
                 Proxies.ToList(), configPath,
                 _proxyConfig.PortRangeStart, _proxyConfig.PortRangeEnd);
 
@@ -324,7 +269,7 @@ public sealed class MainViewModel : ViewModelBase
         try
         {
             var configPath = GetConfigPath();
-            var vm = new ViewModels.AddProxyViewModel(
+            var vm = new AddProxyViewModel(
                 Proxies.ToList(), configPath,
                 _proxyConfig.PortRangeStart, _proxyConfig.PortRangeEnd,
                 editTarget: proxy);
@@ -622,7 +567,6 @@ public sealed class MainViewModel : ViewModelBase
 
         try
         {
-            // Use SaveFileDialog via Microsoft.Win32
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
@@ -801,8 +745,7 @@ public sealed class MainViewModel : ViewModelBase
         var entry = LogEntry.FromRawString(message);
         Application.Current?.Dispatcher.BeginInvoke(() =>
         {
-            _logs.Add(entry);
-            _filteredLogs.Add(entry);
+            LogPanel.AddRawLog(message);
         });
 
         try { _logger.Info(message); }
@@ -819,10 +762,10 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private void LoadHostInfo()
     {
-        ComputerName = Environment.MachineName;
-        NetworkStatus = GetNetworkStatus();
-        IpAddress = YLproxy.Utils.NetworkUtil.GetBestLocalIp() ?? "";
-        Now = DateTime.Now;
+        HostInfo.ComputerName = Environment.MachineName;
+        HostInfo.NetworkStatus = GetNetworkStatus();
+        HostInfo.IpAddress = YLproxy.Utils.NetworkUtil.GetBestLocalIp() ?? "";
+        HostInfo.Now = DateTime.Now;
     }
 
     private static string GetNetworkStatus()
@@ -848,10 +791,10 @@ public sealed class MainViewModel : ViewModelBase
 
     private void RefreshStats()
     {
-        TotalCount = Proxies.Count;
-        RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
-        StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
-        FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
+        Dashboard.TotalCount = Proxies.Count;
+        Dashboard.RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
+        Dashboard.StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
+        Dashboard.FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
     }
 
     private void PersistProxyState()

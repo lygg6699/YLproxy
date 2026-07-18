@@ -1,3 +1,27 @@
+## Phase A3：子 ViewModel 组合模式（2026-07-19）
+
+**状态：已完成（build/test 复验通过）**
+
+- [x] `MainViewModel` 引入 `HostInfoViewModel`、`DashboardViewModel`、`LogPanelViewModel` 三个子 ViewModel 作为协调器属性。
+- [x] 移除内联的 HostInfo/Dashboard/Log 重复属性（`_logs`、`_filteredLogs`、`ComputerName`、`IpAddress`、`NetworkStatus`、`Now`、`TotalCount`、`RunningCount`、`StoppedCount`、`FailedCount`、`LogLevels`、`SelectedLogLevel`）。
+- [x] `MainView.xaml.cs` 的 `CollectionChanged` 订阅从 `_subscribedVm.FilteredLogs` 改为 `_subscribedVm.LogPanel.FilteredLogs`。
+- [x] `ClearLogCommand` 委托到 `LogPanel.ClearLogCommand`。
+- [x] 修复 `MainView.xaml` Button 缺少 `/>` 的 XAML 语法错误。
+- [x] 修复 `LogPanelViewModel.SetProperty` 返回 `void` 导致 `if (SetProperty(...))` 编译错误。
+- [x] 验证复验：
+  - `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+  - `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
+## Phase A4：ProxyItem.CreateTime init-only 化（2026-07-19）
+
+**状态：已完成（build/test 复验通过）**
+
+- [x] `src/YLproxy.Models/ProxyItem.cs`：`CreateTime { get; set; }` → `CreateTime { get; init; }`。
+- [x] 全代码仓扫描确认无 `obj.CreateTime = value` 赋值语法（仅对象初始化器使用），无破坏点。
+- [x] 验证复验：
+  - `dotnet build YLproxy.sln`：Build succeeded（warnings 不阻断）。
+  - `dotnet test tests/YLproxy.Tests.csproj --filter TestCategory!=E2E`：total 75, failed 0, succeeded 75。
+
 ## Phase A1：DI 注册 + MainViewModel 构造链闭合（2026-07-18）
 
 **状态：已完成（build/test 复验通过）**

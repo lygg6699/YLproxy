@@ -22,12 +22,12 @@ public partial class MainView : UserControl
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (_subscribedVm is not null)
-            _subscribedVm.FilteredLogs.CollectionChanged -= OnFilteredLogsChanged;
+            _subscribedVm.LogPanel.FilteredLogs.CollectionChanged -= OnFilteredLogsChanged;
 
         _subscribedVm = e.NewValue as MainViewModel;
 
         if (_subscribedVm is not null)
-            _subscribedVm.FilteredLogs.CollectionChanged += OnFilteredLogsChanged;
+            _subscribedVm.LogPanel.FilteredLogs.CollectionChanged += OnFilteredLogsChanged;
     }
 
     private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
