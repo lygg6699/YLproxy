@@ -3,10 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using YLproxy.Core.PreFlight;
 using YLproxy.Infrastructure;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
+
 
 namespace YLproxy.GUI;
 
@@ -19,6 +21,9 @@ public partial class App : Application
         base.OnStartup(e);
 
         _logger = LoggerFactory.CreateLogger();
+
+
+
 
         ExceptionHandler.OnUserNotification = (context, message) =>
         {
@@ -57,14 +62,35 @@ public partial class App : Application
         foreach (var w in preFlight.Warnings)
             _logger.Warn($"Pre-flight warning: {w}");
 
-        // Auto-start
+        // Build DI container (Phase A skeleton)
         var settingsPath = System.IO.Path.Combine(
             System.IO.Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory,
             "AppSettings.json");
+
+        var services = new ServiceCollection();
+
+        // Logging (singleton for app lifecycle)
+        services.AddSingleton<ILogger>(_ => _logger ?? LoggerFactory.CreateLogger());
+
+        // AppSettingsService: instance per app, depends on settingsPath
+        services.AddSingleton(new AppSettingsService(settingsPath));
+
+        // Security (DPAPI only on Windows)
+        // Keep it as a factory to avoid platform activation on non-Windows.
+        if (OperatingSystem.IsWindows())
+            services.AddSingleton<ISecurityService, DpapiSecurityService>();
+
+        // ViewModels (transient)
+        services.AddTransient<MainViewModel>();
+
+
+        var provider = services.BuildServiceProvider();
+        ServiceLocator.SetProvider(provider);
+
+        // Auto-start
         try
         {
-            var svc = new AppSettingsService(settingsPath);
-            var cfg = svc.GetConfig();
+            var cfg = provider.GetRequiredService<AppSettingsService>().GetConfig();
             if (cfg?.Startup.AutoStart == true)
             {
                 AutoStartService.SetAutoStart(true);
@@ -75,6 +101,12 @@ public partial class App : Application
         {
             _logger.Warn($"Failed to configure auto-start: {ex.Message}");
         }
+
+        // Manual startup window creation (since StartupUri removed)
+        var vm = provider.GetRequiredService<MainViewModel>();
+        var win = new MainWindow { DataContext = vm };
+        win.Show();
+
     }
 
     protected override void OnExit(ExitEventArgs e)

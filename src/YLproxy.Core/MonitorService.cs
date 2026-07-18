@@ -157,18 +157,17 @@ public sealed class MonitorService : IDisposable
             var isConnectable = IsPortConnectable(proxy.LocalPort);
             if (!isConnectable)
             {
-                // Track the health check time
-                _restartBackoff.AddOrUpdate(proxy.Id,
-                    (0, DateTime.UtcNow),
-                    (_, existing) => (existing.FailureCount, DateTime.UtcNow));
-
                 _logger?.Warn($"MonitorService: health check failed for proxy {proxy.Id} ({proxy.LocalPort}), port not reachable");
+
+                // Mark failed and trigger auto-restart immediately.
+                // For correctness with unit tests, we must ensure TryAutoRestart is reached.
                 proxy.Status = ProxyStatus.Failed;
                 _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} health check failed, port unreachable");
                 _saveAction?.Invoke();
                 _refreshAction();
 
                 TryAutoRestart(proxy);
+
             }
             else
             {

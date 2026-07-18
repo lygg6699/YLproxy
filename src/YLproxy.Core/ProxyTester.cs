@@ -116,13 +116,14 @@ public static class ProxyTester
         return (false, 0, lastError ?? "连接失败（已重试）");
     }
 
-    private static HttpMessageHandler CreateDefaultHandler(string host, int port, string? username, string? password)
+    private static HttpClientHandler CreateDefaultHandler(string host, int port, string? username, string? password)
     {
         var handler = new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
             AllowAutoRedirect = true,
         };
+
 
         handler.Proxy = new WebProxy($"http://{host}:{port}");
         handler.UseProxy = true;
