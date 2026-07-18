@@ -6,7 +6,7 @@
   <ItemGroup>
     <!-- 基础设施相关 -->
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.0" />
-    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
+    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.10" />
 
     <!-- DI (for GUI App ServiceCollection) -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
