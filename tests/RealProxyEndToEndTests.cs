@@ -117,11 +117,17 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             var cfgDir = PathResolver.ResolvePath("runtime", "3proxy", "cfg");
             if (Directory.Exists(cfgDir))
                 foreach (var f in Directory.GetFiles(cfgDir, "*.cfg"))
-                    try { File.Delete(f); } catch { }
+                    try { File.Delete(f); } catch (Exception ex)
+                    {
+                        // Ignore errors deleting individual config files
+                    }
         }
         catch { }
 
-        try { Directory.Delete(_tempDir, true); } catch { }
+        try { Directory.Delete(_tempDir, true); } catch (Exception ex)
+        {
+            // Ignore errors during temp directory cleanup
+        }
 
         _client?.Dispose();
     }
