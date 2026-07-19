@@ -54,7 +54,10 @@ public sealed class ApiIntegrationTests : IAsyncLifetime
         if (_server is not null)
             await _server.StopAsync();
 
-        try { Directory.Delete(_tempDir, true); } catch { }
+        try { Directory.Delete(_tempDir, true); } catch (Exception ex)
+        {
+            // Ignore cleanup errors during test cleanup
+        }
     }
 
     private HttpClient CreateClient()

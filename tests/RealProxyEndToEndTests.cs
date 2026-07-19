@@ -103,8 +103,10 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
                 ProxyProcessManager.Stop(new ProxyItem { Id = id });
                 await _client!.DeleteAsync($"/api/proxies/{id}");
             }
-            catch { }
-        }
+            catch (Exception ex)
+            {
+                // Ignore errors during server startup - we'll check if server is null later
+            }
 
         if (_server is not null)
             await _server.StopAsync();
