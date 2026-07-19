@@ -63,7 +63,8 @@ $workspace = Get-Content -Raw -LiteralPath $WorkspaceFile | ConvertFrom-Json
 $folders = @($workspace.folders)
 Assert-Condition ($folders.Count -eq 1) 'The workspace must contain exactly one folder.'
 
-$workspaceProjectPath = [IO.Path]::GetFullPath((Join-Path $workspaceRoot ([string]$folders[0].path)))
+$workspaceFileDir = Split-Path -Parent $WorkspaceFile
+$workspaceProjectPath = [IO.Path]::GetFullPath((Join-Path $workspaceFileDir ([string]$folders[0].path)))
 Assert-Condition ($workspaceProjectPath -ieq $projectRoot) 'The workspace folder must point to the YLproxy project root.'
 
 $tasks = @($workspace.tasks.tasks)
