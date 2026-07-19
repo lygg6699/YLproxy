@@ -1,3 +1,21 @@
+## Phase C1 P0 补丁：CI quality-gate 修复 + 分析器告警清偿（2026-07-19）
+
+### 变更
+- **分析器告警（`-warnaserror`）真修，不再宽泛抑制：** 修复 CA1305（`int.ToString` 指定 `CultureInfo.InvariantCulture`）、CA1512（`ArgumentOutOfRangeException.ThrowIf*`）、CA1869（缓存 `JsonSerializerOptions` 静态实例）、CA1507（`"Proxies"` 提取为具名常量）、CA1001（`MainViewModel`/`MainWindow`/`AppSettingsService`/`ApiServer` 及相关测试实现 `IDisposable`）、CS0168（测试 catch 未用 `ex`）。
+- **`Directory.Build.props`：** 将上游合入的宽泛 `NoWarn`（CA1805;CA1512;CA1716;CA1869;CA1311;CA1304;CA1305;CA1001;CA1000）收敛为**仅** `CA1716`，并移至无条件 PropertyGroup 使 Debug/Release `-warnaserror` 均生效。CA1716 针对跨语言公共库的保留字命名（`Error`/`Stop`），YLproxy 为内部 App 接口、规则不适用，故作用域抑制并注释说明；其余告警均在代码中修复。
+- **CI：** `global.json` `rollForward` 对齐 `latestPatch`（与 `scripts/validate-workspace.ps1` 校验一致）；`scripts/validate-workspace.ps1` 工作区路径解析取上游修复版（相对 workspace 文件目录解析，兼容根目录 `ci.code-workspace`）。
+- 合入 `origin/main`（含 PR #17 配置对齐），冲突按 JSON-only 决策与本补丁口径解决。
+
+### 验证
+- `dotnet build YLproxy.sln --configuration Debug -warnaserror`：Build succeeded，0 Warning，0 Error。
+- `dotnet build YLproxy.sln --configuration Release -warnaserror`：Build succeeded，0 Warning，0 Error。
+- `dotnet test tests/YLproxy.Tests.csproj --configuration Debug --filter "Category=Unit"`：Passed 10，Failed 0。
+- SDK：本地 10.0.204（band-200，符合 `global.json` latestPatch 特性带）。
+
+### 遗留 / 后续
+- CA1716 若日后 YLproxy 演进为对外公共库，应改为重命名 `Error`/`Stop` 成员而非抑制。
+- `AddProxyViewModel` 编辑模式自身端口误判为「已占用」的**既存** Bug 仍未修（未授权，独立处理）。
+
 ## Phase C1 P0 债务清偿（2026-07-19）
 
 ### 变更
