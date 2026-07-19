@@ -27,10 +27,5 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <!-- tests project: exclude console runner Program.cs to avoid multiple entry points -->
-  <ItemGroup>
-    <Compile Remove="Program.cs" />
-  </ItemGroup>
-
 </Project>
 

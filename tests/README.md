@@ -2,56 +2,39 @@
 
 ## 目录简介
 
-测试应用目录，包含用于验证核心功能的控制台测试程序。主要用于手动验证后台服务和监控功能的正确性。
+测试项目目录，基于 xUnit，包含核心功能的单元测试与集成测试。
 
 ## 主要文件/子目录说明
 
-### Program.cs
-控制台测试程序：
-- 实现 Task 7.8 - Proxy Process Crash Detection Test
-- 创建测试代理并启动对应的 3proxy 进程
-- 初始化 MonitorService 并设置 5 秒监控间隔
-- 手动终止 3proxy 进程以模拟崩溃场景
-- 监控并记录状态更新时间以验证 5 秒检测要求
-- 提供详细的时间线输出和测试结果判断
+测试按功能划分为多个测试类（如 `ProxyDataServiceTests`、`MonitorServiceTests`、
+`ProxyTesterTests`、`SecurityServiceTests`、`ApiIntegrationTests`、`ProxyIntegrationTests`
+等）。单元测试标注 `Trait("Category", "Unit")`，CI 默认只运行 `Category=Unit`。
+
+> 说明：原先的手动控制台崩溃检测脚本 `Program.cs` 已删除。该脚本中硬编码了真实上游
+> 代理凭据（安全风险），且已被 xUnit 中的 `MonitorServiceTests` / `LoggingAndMonitorTests`
+> 覆盖同类场景，故不再保留。
 
 ## 使用说明
 
-用于验证核心功能：
-1. 编译并运行 YLproxy.Test 项目
-2. 测试程序会自动创建两个测试代理并启动它们
-3. 等待初始监控周期完成后，手动终止 3proxy 进程
-4. 观察测试输出以确认：
-   - 杀死时间 (T0)
-   - 状态更新时间 (T1)
-   - 检测延迟 (T1 - T0) 是否 ≤ 5 秒
-5. 测试完成后自动清理测试配置
+```powershell
+# 运行全部单元测试
+dotnet test tests/YLproxy.Tests.csproj --filter "Category=Unit"
+
+# 运行全部测试（含集成测试，需 3proxy runtime 就绪）
+dotnet test tests/YLproxy.Tests.csproj
+```
 
 ## 注意事项
 
-1. **测试覆盖率需提升**：
-   - 目前仅包含进程崩溃检测测试
-   - 建议添加单元测试覆盖：
-   - ProxyDataService 的 JSON 序列化/反序列化
-     - ProxyTester 的各种成功和失败场景
-     - ConfigGenerator 的配置生成逻辑
-     - ProxyProcessManager 的路径解析和依赖检查
-     - MainViewModel 的命令和状态管理
+1. **测试隔离**：测试使用占位/私网地址（如 `127.0.0.1`、`10.0.0.x`）与占位凭据，
+   禁止在测试中写入任何真实上游代理凭据。
 
-2. **手动测试依赖**：
-   - 当前测试需要手动终止进程来模拟崩溃
-   - 生产环境考虑使用模拟框架或更自动化的测试方法
-   - 测试依赖于实际的 3proxy 可执行文件存在
-
-3. **测试隔离**：
-   - 测试使用硬编码的测试代理配置
-   - 测试完成后会清理配置文件
-   - 建议使用临时目录或内存存储以避免影响主配置
+2. **集成测试依赖**：部分集成/端到端测试依赖实际的 3proxy 可执行文件存在，未纳入
+   CI 默认 `Category=Unit` 门禁。
 
 ## 后续计划
 
-- 迁移到正式的单元测试框架（如 xUnit、NUnit 或 MSTest）
-- 添加覆盖所有核心类的单元测试
+- 提升核心类的单元测试覆盖率
+- 将集成/端到端测试纳入分层 CI 门禁
 - 实现自动化的 UI 测试（使用 WinAppDriver 或类似工具）
 - 添加性能和压力测试
-- 考虑添加集成测试验证端到端流程
