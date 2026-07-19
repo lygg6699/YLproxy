@@ -15,12 +15,6 @@
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <SatelliteResourceLanguages>en-US;zh-CN</SatelliteResourceLanguages>
-    <NoWarn>$(NoWarn);CS1591;NU1903</NoWarn>
-    <!--
-      说明：本项目要求 Release/CI 可构建。由于 sqlite 依赖曾触发 NU1903，
-      本地进一步使用 SQLitePCLRaw.lib.e_sqlite3 显式版本覆盖进行根因修复。
-      NoWarn 仅作为兜底，避免构建链被阻断。
-    -->
-
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 </Project>

@@ -124,21 +124,6 @@ public sealed class ProxyDataServiceTests
     }
 
     [Fact]
-    public void IsSqliteMigrated_WithoutSqliteRepository_ReturnsFalse()
-    {
-        var path = GetTempConfigPath();
-        try
-        {
-            var svc = new ProxyDataService(path, skipPathValidation: true);
-            Assert.False(svc.IsSqliteMigrated);
-        }
-        finally
-        {
-            try { File.Delete(path); } catch { }
-        }
-    }
-
-    [Fact]
     public void CredentialsResetDuringLoad_DefaultsToFalse()
     {
         var path = GetTempConfigPath();
@@ -146,37 +131,6 @@ public sealed class ProxyDataServiceTests
         {
             var svc = new ProxyDataService(path, skipPathValidation: true);
             Assert.False(svc.CredentialsResetDuringLoad);
-        }
-        finally
-        {
-            try { File.Delete(path); } catch { }
-        }
-    }
-
-    [Fact]
-    public async Task MigrateToSqliteIfNeededAsync_WithoutRepository_ReturnsFalse()
-    {
-        var path = GetTempConfigPath();
-        try
-        {
-            var svc = new ProxyDataService(path, skipPathValidation: true);
-            var result = await svc.MigrateToSqliteIfNeededAsync();
-            Assert.False(result);
-        }
-        finally
-        {
-            try { File.Delete(path); } catch { }
-        }
-    }
-
-    [Fact]
-    public void MigrateToSqliteIfNeeded_WithoutRepository_ReturnsFalse()
-    {
-        var path = GetTempConfigPath();
-        try
-        {
-            var svc = new ProxyDataService(path, skipPathValidation: true);
-            Assert.False(svc.MigrateToSqliteIfNeeded());
         }
         finally
         {
