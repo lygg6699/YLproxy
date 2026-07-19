@@ -326,7 +326,15 @@ dotnet test tests/YLproxy.Tests.csproj
 # 发布为单文件
 dotnet publish src/YLproxy.GUI -c Release -r win-x64 --self-contained true
 
+### DevContainer / Codespaces 说明
+
+本仓库的 `.devcontainer/devcontainer.json` 面向 Codespaces：容器中用于 **还原/编译/运行单元测试**（WPF GUI 仅能在 Windows 上运行）。
+
+- **端口转发**：`forwardPorts` 设置为 **9100**（YLproxy API）与 **9001**（本地代理起始端口）。
+- **HTTPS 开发证书**：明确关闭 `DOTNET_GENERATE_ASPNET_CERTIFICATE`（当前不生成 ASP.NET Core 开发证书）。如未来需要 HTTPS，可在 devcontainer 中开启并同步对外端口策略。
+
 ### 终端乱码规避（Windows）
 
 若终端出现异常中文乱码串，表示命令输出编码与终端解码不一致。  
 本仓库已在 `.vscode/settings.json` 中固定 `DOTNET_CLI_UI_LANGUAGE=en-US`，建议在 VS Code 终端内执行 dotnet 命令。
+
