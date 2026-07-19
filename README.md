@@ -50,7 +50,8 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 - 支持多代理配置管理与独立启停
 - 后台进程监控，代理异常自动感知
 - 清晰的图形界面，零命令行操作
-- （远期）支持 REST API 远程管理与 SQLite 持久化
+- 持久化采用本地 JSON（`data/config.json`，DPAPI 加密凭据）；经评估**不引入 SQLite**
+- REST API 远程管理：代码已存在于 `src/YLproxy.Api`（Kestrel + Bearer Token + Swagger），但**默认未启用/未接入 GUI 启动链**，属预留能力
 
 ---
 
@@ -59,11 +60,11 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 | 项目     | 值                              |
 | -------- | ------------------------------- |
 | 操作系统 | Windows 10 / Windows 11（x64）  |
-| 运行时   | .NET 10.0 SDK / Runtime（SDK 基线 10.0.301） |
+| 运行时   | .NET 10.0 SDK / Runtime（SDK 基线以 `global.json` 为准：10.0.200，rollForward=latestMinor） |
 | 代理引擎 | 3proxy 0.9.7（由 `scripts/prepare-runtime.ps1` 准备） |
 | 开发工具 | Visual Studio 2022+ / VS Code    |
-| 版本     | 0.2.0（Phase 7）                |
-| 最后更新 | 2026-07-15                      |
+| 版本     | 0.2.0                           |
+| 最后更新 | 2026-07-19                      |
 
 ---
 
@@ -72,7 +73,9 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 YLproxy/
 ├── .agent                # 第一必读文件，规则与文件放置约束
 ├── AppSettings.json                 # 全局运行配置（根目录唯一配置入口）
-├── global.json                       # .NET SDK 版本约束（10.0.301）
+├── global.json                       # .NET SDK 版本约束（10.0.200, rollForward=latestMinor）
+├── Directory.Build.props             # 全局编译属性（Nullable/分析器/Release 门禁）
+├── Directory.Packages.props          # 中央包版本管理
 ├── YLproxy.sln                       # 唯一解决方案入口
 ├── .github/                         # GitHub Copilot/Agent 配置
 ├── .vscode/                         # VS Code 调试、任务与编辑器配置
@@ -81,14 +84,16 @@ YLproxy/
 │   ├── YLproxy.Models/              # 数据模型层：ProxyItem、ProxyStatus、代理数据模型
 │   ├── YLproxy.Utils/               # 通用工具层：PathResolver 等路径/基础工具
 │   ├── YLproxy.Core/                # 核心业务逻辑层
-│   │   ├── Config/ProxyDataService.cs #   data/config.json 加载/保存
+│   │   ├── Config/ProxyDataService.cs #   data/config.json 加载/保存（JSON 持久化主链）
 │   │   ├── ProxyTester.cs           #   代理连通性测试（HTTP 请求 + 延迟测量）
 │   │   └── MonitorService.cs        #   按 AppSettings 轮询监控代理进程状态
 │   ├── YLproxy.Infrastructure/      # 全局配置与日志基础设施
-│   ├── YLproxy.Proxy/               # 3proxy 集成层
+│   ├── YLproxy.Proxy/               # 代理转发层
 │   │   ├── ConfigGenerator.cs       #   动态生成 3proxy .cfg 配置文件
-│   │   ├── ProxyProcessManager.cs   #   3proxy 进程启动/停止/状态检测
+│   │   ├── ProxyProcessManager.cs   #   转发路径分流 + 3proxy 进程启停/状态检测
+│   │   ├── ManagedProxyForwarder.cs #   .NET 本地转发器（处理认证上游 407/CONNECT）
 │   │   └── ProxyRuntimeConfiguration.cs # 运行目录/DLL 配置桥接
+│   ├── YLproxy.Api/                 # REST API（Kestrel + Bearer Token + Swagger，默认未启用）
 │   └── YLproxy.GUI/                 # WPF 图形界面层（MVVM 架构）
 │       ├── MainWindow.xaml          #   主窗口
 │       ├── ViewModelBase.cs         #   MVVM ViewModel 基类（INotifyPropertyChanged）

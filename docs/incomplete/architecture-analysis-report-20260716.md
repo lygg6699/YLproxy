@@ -5,6 +5,14 @@
 **分析目的：** 通过参考成熟开源代理管理项目的架构设计，为 YLproxy 制定架构优化方案  
 **报告状态：** ✅ 分析完成，部分优化方案已实施（DPAPI 加密、DI 重构），待实施部分已纳入 Phase C
 
+> **⚠️ 2026-07-19 事实校正（本报告为 2026-07-16 快照，以下结论以最新代码为准）：**
+> - **持久化：** 本报告将 SQLite 列为"待建/优化方向"。项目已决策 **方案 A：JSON-only**，
+>   未接线的 SQLite 层（`SqliteProxyRepository`/`DataMigrationService`/`IProxyRepository`）已删除。
+> - **MainViewModel 拆分：** 仅完成展示层拆分（HostInfo/Dashboard/LogPanel），主 ViewModel 仍约 832 行，
+>   协调器瘦身仍待进行（对应 TODO B4），不应视为"God Class 已消除"。
+> - **Job Object 孤儿进程防护：** 代码中尚无实现（无 `CreateJobObject`/`AssignProcessToJobObject`），
+>   仅完成 CI 加固，相关"已完成"表述已在 TODO 中更正。
+
 ---
 
 ## 目录

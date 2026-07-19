@@ -3,9 +3,11 @@
 **文档版本：** 1.0  
 **创建日期：** 2026-07-16  
 **最后更新：** 2026-07-19  
-**用途：** 执行师 1 实现 `SqliteProxyRepository.cs` 和 `DataMigrationService.cs` 的权威参考  
+**用途：** 历史 SQLite 方案设计参考（已作废）  
 **前置阅读：** `docs/architecture-analysis-report-20260716.md`  
-**决策状态：** 🟡 待决策 - 当前使用 JSON 存储，本方案为备用方案，需在 Phase C1.1 中决策是否实施
+**决策状态：** ⛔ 已作废（2026-07-19）——项目已决策采用 **方案 A：JSON-only 持久化**（Phase B3/C1.1）。
+未接线的 SQLite 实现（`SqliteProxyRepository.cs` / `DataMigrationService.cs` / `IProxyRepository.cs`）
+及相关依赖已从代码库删除。本文档仅作历史存档，如未来需重新引入 SQLite 再行评估。
 
 ---
 

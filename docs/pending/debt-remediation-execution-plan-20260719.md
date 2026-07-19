@@ -26,7 +26,12 @@
 
 **优先级:** 🔴 P0  
 **工时:** 4-8h (取决于方案选择)  
-**风险:** 高
+**风险:** 高  
+**状态:** ✅ 已完成（2026-07-19）——采用**方案 A（JSON-only）**。已删除
+`SqliteProxyRepository.cs` / `DataMigrationService.cs` / `IProxyRepository.cs` /
+`tests/SqliteMigrationTests.cs`，移除 `ProxyDataService` 与 `IProxyDataService` 中的
+`MigrateToSqliteIfNeeded*` / `IsSqliteMigrated`，并清理 `Microsoft.Data.Sqlite` /
+`SQLitePCLRaw` 包引用与 `NU1903` NoWarn 兜底。
 
 #### 决策流程
 

@@ -2,6 +2,10 @@
 
 > **状态：** ✅ Phase A 已完成（2026-07-19）
 > **验证结果：** Build succeeded, 75/75 tests passed
+>
+> **⚠️ 事实校正（2026-07-19）：** 下文"MainViewModel 已拆分 / 降为协调器"表述过度——
+> 仅抽出 HostInfo/Dashboard/LogPanel 三个纯展示子 VM，主 ViewModel 仍约 832 行，协调器瘦身在 Phase B4 继续。
+> 另："75/75 tests passed" 为 Phase A 时点的历史记录；当前 CI 默认门禁只运行 `Category=Unit` 子集。
 
 ## 0. 当前状态（基于已核验事实）
 - Build：`dotnet build YLproxy.sln` ✅ 已通过（存在警告，不阻断）。

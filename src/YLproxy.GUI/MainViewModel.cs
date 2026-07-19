@@ -128,7 +128,7 @@ public sealed class MainViewModel : ViewModelBase
         InitFromConfig();
         LoadHostInfo();
         RefreshStats();
-        AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (Phase 8 — GUI Enhanced)");
+        AddLog($"[{DateTime.Now:HH:mm:ss}] Application started. (YLproxy v0.2.0)");
 
         AddCommand = new RelayCommand(ShowAddWindow);
 
