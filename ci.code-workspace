@@ -1,9 +1,20 @@
 {
   "folders": [
     {
-      "path": "YLproxy"
+      "path": "."
     }
   ],
+  "settings": {
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+    "dotnet.defaultSolution": "YLproxy.sln",
+    "terminal.integrated.env.windows": {
+      "DOTNET_CLI_UI_LANGUAGE": "en-US"
+    },
+    "terminal.integrated.env.linux": {
+      "DOTNET_CLI_UI_LANGUAGE": "en-US"
+    }
+  },
   "tasks": {
     "version": "2.0.0",
     "tasks": [
@@ -13,8 +24,10 @@
         "command": "pwsh",
         "args": [
           "-NoProfile",
-          "-Command",
-          "./scripts/validate-workspace.ps1"
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/validate-workspace.ps1"
         ],
         "group": "test",
         "problemMatcher": []
@@ -24,7 +37,8 @@
         "type": "shell",
         "command": "dotnet",
         "args": [
-          "restore"
+          "restore",
+          "YLproxy.sln"
         ],
         "group": "build",
         "problemMatcher": "$msCompile"
@@ -35,7 +49,11 @@
         "command": "dotnet",
         "args": [
           "build",
-          "--no-restore"
+          "YLproxy.sln",
+          "--configuration",
+          "Debug",
+          "--no-restore",
+          "-warnaserror"
         ],
         "group": "build",
         "problemMatcher": "$msCompile"
@@ -46,9 +64,11 @@
         "command": "dotnet",
         "args": [
           "build",
+          "YLproxy.sln",
           "--configuration",
           "Release",
-          "--no-restore"
+          "--no-restore",
+          "-warnaserror"
         ],
         "group": "build",
         "problemMatcher": "$msCompile"
@@ -59,6 +79,7 @@
         "command": "dotnet",
         "args": [
           "test",
+          "tests/YLproxy.Tests.csproj",
           "--configuration",
           "Release",
           "--no-build"
@@ -86,8 +107,10 @@
         "command": "pwsh",
         "args": [
           "-NoProfile",
-          "-Command",
-          "./scripts/full-check.ps1",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/full-check.ps1",
           "-SkipSmokeTest"
         ],
         "group": "test",
@@ -99,8 +122,10 @@
         "command": "pwsh",
         "args": [
           "-NoProfile",
-          "-Command",
-          "./scripts/full-check.ps1"
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/full-check.ps1"
         ],
         "group": "test",
         "problemMatcher": []
@@ -110,7 +135,8 @@
         "type": "shell",
         "command": "dotnet",
         "args": [
-          "clean"
+          "clean",
+          "YLproxy.sln"
         ],
         "group": "build",
         "problemMatcher": []
@@ -124,7 +150,11 @@
         "name": "YLproxy GUI (Debug)",
         "type": "coreclr",
         "request": "launch",
-        "program": "${workspaceFolder}/src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.dll"
+        "preLaunchTask": "YLproxy: Build",
+        "program": "${workspaceFolder}/src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.dll",
+        "cwd": "${workspaceFolder}",
+        "console": "internalConsole",
+        "stopAtEntry": false
       }
     ]
   }

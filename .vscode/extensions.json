@@ -6,8 +6,10 @@
     "github.vscode-pull-request-github",
     "davidanson.vscode-markdownlint",
     "ms-vscode.powershell",
+    "ms-dotnettools.csdevkit",
     "ms-dotnettools.csharp",
     "ms-dotnettools.vscode-dotnet-runtime",
+    "editorconfig.editorconfig",
     "ms-vscode.test-adapter-converter"
   ]
 }
