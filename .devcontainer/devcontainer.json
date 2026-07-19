@@ -1,25 +1,129 @@
+// YLproxy —— GitHub Codespaces / Dev Containers 开发容器配置
+// ---------------------------------------------------------------------------
+// 说明（重要，先读）：
+//   YLproxy 的 GUI 层（src/YLproxy.GUI）是 WPF（net10.0-windows），只能在
+//   Windows 上「运行」。Codespaces 运行在 Linux 容器中，因此本配置的定位是：
+//     · 可以「还原 / 编译整个解决方案」（WPF 项目借助 EnableWindowsTargeting
+//       在 Linux 上参与编译，但不能启动界面）；
+//     · 可以「运行单元测试」（xUnit，跨平台）；
+//     · 可以开发 / 编译跨平台项目：Api / Core / Models / Utils / Proxy /
+//       Infrastructure（均为 net10.0）。
+//   3proxy 引擎为 Windows x64 二进制（scripts/prepare-runtime.ps1 下载），
+//   在 Linux 容器内无法运行，故不在容器创建阶段准备，仅保留脚本供 Windows 使用。
+// ---------------------------------------------------------------------------
 {
-  "name": "YLproxy Dev",
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "YLproxy Dev (.NET 10 · Codespaces)",
+
+  // 基础镜像：官方 .NET 10 SDK（Debian/bookworm）。
+  // 已内置 ASP.NET Core 共享框架（供 YLproxy.Api 使用）。
+  // 镜像提供最新的 10.0.x SDK，可满足 global.json（version 10.0.200,
+  // rollForward=latestMinor）的约束。
   "image": "mcr.microsoft.com/dotnet/sdk:10.0",
-  "features": {
-    "ghcr.io/devcontainers/features/powershell:1": {}
+
+  // Codespaces 建议使用的机器规格（可按需调整）。
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "32gb"
   },
+
+  // Dev Container Features：在基础镜像上叠加常用工具。
+  "features": {
+    // 创建非 root 的 vscode 用户、安装常用 CLI、zsh 等（Codespaces 最佳实践）。
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": true,
+      "username": "vscode",
+      "userUid": "automatic",
+      "userGid": "automatic",
+      "upgradePackages": true
+    },
+    // PowerShell（pwsh）：仓库脚本（scripts/*.ps1）与文档命令均使用 pwsh。
+    "ghcr.io/devcontainers/features/powershell:1": {},
+    // GitHub CLI：便于在 Codespaces 内操作 PR / Issue。
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // Git 最新版。
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  // 以非 root 用户进入容器。
+  "remoteUser": "vscode",
+
+  // 容器内环境变量：统一输出为英文，避免 Windows/终端编码不一致导致的中文乱码；
+  // 关闭首启横幅与遥测。
+  "remoteEnv": {
+    "DOTNET_CLI_UI_LANGUAGE": "en-US",
+    "DOTNET_NOLOGO": "true",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+    "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false"
+  },
+
+  // 端口转发：
+  //   9100  —— 内置 API 服务端口（AppSettings.json → Api.Port，Kestrel 监听回环）
+  //   9001  —— 代理端口区间起始（AppSettings.json → Proxy.PortRangeStart）
+  // 注：API 通常由 WPF GUI 托管启动，Linux 容器内不会自动运行；此处仅为方便
+  //     在 Codespaces 内手动/编写宿主程序调试 API 时使用。
+  "forwardPorts": [9100, 9001],
+  "portsAttributes": {
+    "9100": {
+      "label": "YLproxy API",
+      "onAutoForward": "notify"
+    },
+    "9001": {
+      "label": "YLproxy Local Proxy (起始端口)",
+      "onAutoForward": "silent"
+    }
+  },
+
+  // 编辑器（VS Code / Codespaces）个性化。
   "customizations": {
     "vscode": {
+      // 推荐扩展（合并 .vscode/extensions.json 与 C# 开发套件）。
       "extensions": [
         "ms-dotnettools.csdevkit",
         "ms-dotnettools.csharp",
-        "editorconfig.editorconfig"
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "editorconfig.editorconfig",
+        "ms-vscode.powershell",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "github.codespaces",
+        "davidanson.vscode-markdownlint",
+        "ms-ceintl.vscode-language-pack-zh-hans"
       ],
+      // 与仓库 .vscode/settings.json 保持一致的关键设置。
       "settings": {
         "files.encoding": "utf8",
         "files.autoGuessEncoding": false,
+        "dotnet.defaultSolution": "YLproxy.sln",
+        "omnisharp.useModernNet": true,
+        "omnisharp.enableEditorConfigSupport": true,
+        "omnisharp.useCustomNetFormat": false,
+        "csharp.format.enable": false,
+        "markdown.validate.enabled": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.env.linux": {
           "DOTNET_CLI_UI_LANGUAGE": "en-US"
         }
       }
     }
   },
-  "postCreateCommand": "dotnet restore YLproxy.sln",
-  "remoteUser": "root"
+
+  // 容器创建时（仅一次）：还原依赖。放在 onCreate 便于利用缓存层。
+  "onCreateCommand": "dotnet restore YLproxy.sln",
+
+  // 每次创建后：准备隔离测试数据（与 CI 一致）并编译整个解决方案，
+  // 便于进入即可运行测试。
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // 附加/恢复容器后打印快速上手提示。
+  "postAttachCommand": {
+    "welcome": "echo 'YLproxy Codespace 就绪：dotnet build YLproxy.sln | dotnet test tests/YLproxy.Tests.csproj --filter Category=Unit （WPF GUI 仅能在 Windows 运行）'"
+  },
+
+  // 等待到 postCreate 完成再标记环境就绪。
+  "waitFor": "postCreateCommand"
 }
