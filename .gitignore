@@ -3,6 +3,12 @@ bin/
 obj/
 build/publish/
 reports/
+*.binlog
+build_stdout.txt
+tests/TestResults/
+**/TestResults/
+# stray hand-generated 3proxy test config (dev leftover)
+/test_3proxy.cfg
 
 # IDE
 .vs/
@@ -17,11 +23,6 @@ runtime/3proxy/logs/
 data/*
 !data/README.md
 !data/config.example.json
-
-# SQLite database (user data, generated at runtime)
-data/ylproxy.db
-data/.migration_completed
-data/*.migration.bak
 
 logs/*
 !logs/README.md
