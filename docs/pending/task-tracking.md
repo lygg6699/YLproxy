@@ -1,3 +1,16 @@
+## Phase C1 P0 债务清偿（2026-07-19）
+
+**状态：已完成（build + Category=Unit 复验通过）**
+
+- [x] 任务1：删除 `tests/Program.cs`（硬编码真实凭据）+ 同步 `tests/YLproxy.Tests.csproj`、`tests/README.md`。
+- [x] 任务2：方案 A（JSON-only）删除未接线 SQLite 层、迁移兼容 API、SQLite 包引用与 NU1903 兜底。
+- [x] 任务3：文档纠偏（B5 未实现 / A3 部分完成 / B3 已决策 / README 目录树与 SDK 版本口径）。
+- [x] 任务4：停止跟踪 `build.binlog`/`build_stdout.txt`/`tests/TestResults/`/`test_3proxy.cfg` + 加固 `.gitignore`。
+- [x] 验证：`dotnet build YLproxy.sln` 0 Error/36 Warning；`--filter "Category=Unit"` Passed 10/Failed 0。
+- [ ] （后续）实现 Job Object 孤儿进程防护（B5-new）。
+- [ ] （后续）MainViewModel 协调器继续瘦身（B4）。
+- [ ] （人工）在服务商侧轮换已泄露的上游代理凭据。
+
 ## Phase A3：子 ViewModel 组合模式（2026-07-19）
 
 **状态：已完成（build/test 复验通过）**

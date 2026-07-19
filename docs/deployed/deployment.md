@@ -1,3 +1,9 @@
+> **⚠️ 2026-07-19 事实校正：** 下方"P2 SQLite 数据层部署"记录已作废。该 SQLite 层从未接入
+> 应用启动链（App DI 始终只构造 JSON `ProxyDataService`）。项目已决策 **方案 A：JSON-only**，
+> 相关代码（`SqliteProxyRepository`/`DataMigrationService`/`IProxyRepository`）、`Microsoft.Data.Sqlite`
+> 依赖及迁移测试均已删除。持久化以 `data/config.json`（DPAPI 加密凭据）为唯一路径，
+> 不存在 `data/ylproxy.db`。以下段落仅作历史存档。
+
 ## P2 SQLite 数据层部署（2026-07-16）
 
 **部署状态：** 执行中

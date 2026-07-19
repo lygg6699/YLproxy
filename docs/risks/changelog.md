@@ -1,3 +1,21 @@
+## Phase C1 P0 债务清偿（2026-07-19）
+
+### 变更
+- **安全：** 删除 `tests/Program.cs`（已排除编译的手动控制台脚本），其中硬编码了真实上游代理主机与明文账号/密码；同步移除 `tests/YLproxy.Tests.csproj` 的 `<Compile Remove="Program.cs" />`，重写 `tests/README.md`。
+- **持久化决策（方案 A：JSON-only）：** 删除未接线的 SQLite 层 `SqliteProxyRepository.cs` / `DataMigrationService.cs` / `IProxyRepository.cs` / `tests/SqliteMigrationTests.cs`；移除 `IProxyDataService`/`ProxyDataService` 的 `MigrateToSqliteIfNeeded*`、`IsSqliteMigrated` 及对应测试；清理 `Microsoft.Data.Sqlite`/`SQLitePCLRaw` 包引用与 `Directory.Build.props` 的 `NU1903` NoWarn 兜底。
+- **文档纠偏：** 更正 `TODO.md`（B5 Job Object 未实现、A3 拆分部分完成、B3 已决策）、`TODO_PHASEA*.md`、`README.md`（目录树补 `YLproxy.Api`/`ManagedProxyForwarder`、SDK 基线对齐 `global.json` 10.0.200、去除 Phase 7/8 口径漂移）、`docs/incomplete/*`、`docs/pending/debt-remediation-execution-plan-20260719.md`（C1.1 完成）。
+- **工程卫生：** 从 git 跟踪移除 `build.binlog`、`build_stdout.txt`、`tests/TestResults/`、`test_3proxy.cfg`，加固 `.gitignore`。
+
+### 验证
+- `dotnet build YLproxy.sln`：Build succeeded，0 Error，36 Warning（均为基线既存 CA 警告）。
+- `dotnet test tests/YLproxy.Tests.csproj --filter "Category=Unit"`：Passed 10，Failed 0（CI 默认门禁子集）。
+- `dotnet build YLproxy.sln -c Release -warnaserror`：本地 SDK 10.0.302 下暴露 1 处**既存** CA1507（`MainViewModel.cs:652`，JSON 属性名字符串，nameof 不适用），非本次改动引入；`global.json` 锁定的 CI SDK（10.0.200）不报此项。
+
+### 遗留 / 后续
+- ⚠️ 泄露的上游代理账号/密码需**人工在服务商侧轮换**（无法在仓内完成）。
+- Job Object 孤儿进程防护未实现，已列为独立后续任务（TODO B5-new）。
+- MainViewModel 协调器瘦身待续（TODO B4）。
+
 ## Phase A3：子 ViewModel 组合模式（2026-07-19）
 
 ### 变更
