@@ -166,7 +166,10 @@ public sealed class ProxyIntegrationTests
             if (client.ConnectAsync(IPAddress.Loopback, port).Wait(timeout))
                 return true;
         }
-        catch { }
+        catch (Exception ex)
+        {
+            // Log connection failure but continue to return false
+        }
         return false;
     }
 }
