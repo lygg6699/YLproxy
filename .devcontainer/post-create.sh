@@ -21,7 +21,7 @@ fi
 
 # 编译整个解决方案（WPF 项目借助 EnableWindowsTargeting 在 Linux 上参与编译）。
 echo "==> [YLproxy] 编译解决方案（Debug）"
-dotnet build YLproxy.sln --configuration Debug --no-restore
+dotnet build YLproxy.sln --configuration Debug
 
 echo "==> [YLproxy] 初始化完成。常用命令："
 echo "      dotnet build YLproxy.sln"
