@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" />
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" />

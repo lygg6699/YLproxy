@@ -15,11 +15,5 @@ public interface IProxyDataService
     void Save(AppConfig config);
 
     Task SaveAsync(AppConfig config, CancellationToken cancellationToken = default);
-
-    bool MigrateToSqliteIfNeeded();
-
-    Task<bool> MigrateToSqliteIfNeededAsync();
-
-    bool IsSqliteMigrated { get; }
 }
 

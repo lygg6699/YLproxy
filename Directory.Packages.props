@@ -5,22 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- 基础设施相关 -->
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.0" />
     <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
 
     <!-- DI (for GUI App ServiceCollection) -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
 
-
-    <!-- SQLitePCLRaw / e_sqlite3 安全覆盖（修复 NU1903） -->
-    <!--
-      目标：避免解析回退到 SQLitePCLRaw.lib.e_sqlite3 = 2.1.11（已知高严重漏洞）。
-      建议升级到已修复漏洞的安全版本，并确保与 SQLitePCLRaw 依赖链一致。
-    -->
-    <PackageVersion Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
-    <PackageVersion Include="SQLitePCLRaw.core" Version="2.1.12" />
-    <PackageVersion Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.12" />
-    <PackageVersion Include="SQLitePCLRaw.provider.sqlite3" Version="2.1.12" />
 
     <!-- 测试相关 -->
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />

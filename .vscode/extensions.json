@@ -8,7 +8,8 @@
     "ms-vscode.powershell",
     "ms-dotnettools.csharp",
     "ms-dotnettools.vscode-dotnet-runtime",
-    "ms-vscode.test-adapter-converter"
+    "ms-vscode.test-adapter-converter",
+    "ollama.ollama"
   ]
 }
 

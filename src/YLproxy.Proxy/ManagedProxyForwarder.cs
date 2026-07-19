@@ -177,7 +177,10 @@ public sealed class ManagedProxyForwarder : IDisposable
                         name.Equals("Proxy-Connection", StringComparison.OrdinalIgnoreCase))
                         continue;
                     try { request.Headers.TryAddWithoutValidation(name, line[(colon + 1)..].Trim()); }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        _logger.Warn($"Failed to add header {name}: {ex.Message}");
+                    }
                 }
 
                 // 如果有 body，写入
@@ -297,13 +300,22 @@ public sealed class ManagedProxyForwarder : IDisposable
     private static async Task WriteError(NetworkStream stream, int code, string msg)
     {
         var resp = Encoding.ASCII.GetBytes($"HTTP/1.1 {code} {msg}\r\nContent-Length: 0\r\n\r\n");
-        try { await stream.WriteAsync(resp).ConfigureAwait(false); } catch { }
+        try { await stream.WriteAsync(resp).ConfigureAwait(false); } catch (Exception ex)
+        {
+            _logger.Warn($"Failed to write error response: {ex.Message}");
+        }
     }
 
     public void Stop()
     {
-        try { _cts.Cancel(); } catch { }
-        try { _listener.Stop(); } catch { }
+        try { _cts.Cancel(); } catch (Exception ex)
+        {
+            _logger.Warn($"Failed to cancel cancellation token source: {ex.Message}");
+        }
+        try { _listener.Stop(); } catch (Exception ex)
+        {
+            _logger.Warn($"Failed to stop listener: {ex.Message}");
+        }
     }
 
     public bool IsListening

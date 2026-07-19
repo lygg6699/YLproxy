@@ -333,7 +333,10 @@ public sealed class MainViewModel : ViewModelBase
 
             // Attempt to stop the proxy, but continue with removal even if stopping fails
             try { _proxyProcessManager.Stop(proxy); }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Failed to stop proxy {proxy.Id} during removal: {ex.Message}");
+            }
 
             Proxies.Remove(proxy);
             ApplyProxyFilter();
@@ -706,7 +709,10 @@ public sealed class MainViewModel : ViewModelBase
                     imported++;
                 }
                 // Skip invalid proxy entries and continue with the next one
-                catch { }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Skipping invalid proxy entry during import: {ex.Message}");
+                }
             }
 
             _proxyDataService.Save(cfg);
@@ -760,7 +766,12 @@ public sealed class MainViewModel : ViewModelBase
         });
 
         try { _logger.Info(message); }
-        catch { }
+        catch (Exception ex)
+        {
+            // Ignore logging failures to prevent logging issues from crashing the application
+            // But we should at least debug output in case of logging failure
+            System.Diagnostics.Debug.WriteLine($"Logging failed: {ex.Message}");
+        }
         // Ignore logging failures to prevent logging issues from crashing the application
     }
 
@@ -797,7 +808,10 @@ public sealed class MainViewModel : ViewModelBase
         // Attempt to stop each proxy, but continue shutdown even if stopping fails
         foreach (var proxy in Proxies.Where(p => p.Status == ProxyStatus.Running).ToList())
         {
-            try { _proxyProcessManager.Stop(proxy); } catch { }
+            try { _proxyProcessManager.Stop(proxy); } catch (Exception ex)
+            {
+                _logger.Warn($"Failed to stop proxy {proxy.Id} during shutdown: {ex.Message}");
+            }
         }
         await Task.CompletedTask;
     }

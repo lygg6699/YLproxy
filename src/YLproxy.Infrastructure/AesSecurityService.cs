@@ -80,7 +80,10 @@ public sealed class AesSecurityService : ISecurityService
         {
             // On some platforms Replace/Move may fail; fallback to copy
             File.Copy(tempPath, path, overwrite: true);
-            try { File.Delete(tempPath); } catch { }
+            try { File.Delete(tempPath); } catch (Exception ex)
+            {
+                _logger.Warn($"Failed to delete temporary file {tempPath}: {ex.Message}");
+            }
         }
 
         return key;

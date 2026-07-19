@@ -137,7 +137,10 @@ namespace YLproxy.Infrastructure
                 }
                 finally
                 {
-                    try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { }
+                    try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch (Exception ex)
+                    {
+                        _logger.Warn($"Failed to delete temporary file {tempPath}: {ex.Message}");
+                    }
                 }
             }
             catch (Exception ex)
