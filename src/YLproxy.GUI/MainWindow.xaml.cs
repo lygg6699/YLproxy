@@ -8,7 +8,7 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace YLproxy.GUI;
 
-public partial class MainWindow : Window
+public sealed partial class MainWindow : Window, IDisposable
 {
     private System.Windows.Forms.NotifyIcon? _notifyIcon;
 
@@ -87,7 +87,7 @@ public partial class MainWindow : Window
         {
             if (DataContext is MainViewModel vm)
                 await vm.ShutdownAsync();
-            _notifyIcon?.Dispose();
+            Dispose();
             Application.Current.Shutdown();
         }
     }
@@ -101,7 +101,13 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        _notifyIcon?.Dispose();
+        Dispose();
         base.OnClosed(e);
+    }
+
+    public void Dispose()
+    {
+        _notifyIcon?.Dispose();
+        _notifyIcon = null;
     }
 }

@@ -21,7 +21,7 @@ namespace YLproxy.Tests;
 /// 端到端验收测试：5 个真实第三方 HTTP 代理，完整链路验证。结果来自功能真正执行后的动态反馈。
 /// </summary>
 [SupportedOSPlatform("windows")]
-public sealed class RealProxyEndToEndTests : IAsyncLifetime
+public sealed class RealProxyEndToEndTests : IAsyncLifetime, IDisposable
 {
     private const int ApiPort = 9102;
     private const string ApiToken = "e2e-real-proxy-test-token";
@@ -103,7 +103,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
                 ProxyProcessManager.Stop(new ProxyItem { Id = id });
                 await _client!.DeleteAsync($"/api/proxies/{id}");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Ignore errors during server startup - we'll check if server is null later
             }
@@ -118,19 +118,25 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             var cfgDir = PathResolver.ResolvePath("runtime", "3proxy", "cfg");
             if (Directory.Exists(cfgDir))
                 foreach (var f in Directory.GetFiles(cfgDir, "*.cfg"))
-                    try { File.Delete(f); } catch (Exception ex)
+                    try { File.Delete(f); } catch (Exception)
                     {
                         // Ignore errors deleting individual config files
                     }
         }
         catch { }
 
-        try { Directory.Delete(_tempDir, true); } catch (Exception ex)
+        try { Directory.Delete(_tempDir, true); } catch (Exception)
         {
             // Ignore errors during temp directory cleanup
         }
 
         _client?.Dispose();
+    }
+
+    public void Dispose()
+    {
+        _client?.Dispose();
+        _server?.Dispose();
     }
 
     [Fact]

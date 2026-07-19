@@ -20,8 +20,8 @@ namespace YLproxy.Infrastructure
         public static void Execute(Action action, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
         {
             ArgumentNullException.ThrowIfNull(action);
-            if (maxAttempts < 1) throw new ArgumentOutOfRangeException(nameof(maxAttempts));
-            if (delayMs < 0) throw new ArgumentOutOfRangeException(nameof(delayMs));
+            ArgumentOutOfRangeException.ThrowIfLessThan(maxAttempts, 1);
+            ArgumentOutOfRangeException.ThrowIfNegative(delayMs);
 
             var exceptions = new System.Collections.Generic.List<Exception>();
 
@@ -52,8 +52,8 @@ namespace YLproxy.Infrastructure
         public static T Execute<T>(Func<T> func, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
         {
             ArgumentNullException.ThrowIfNull(func);
-            if (maxAttempts < 1) throw new ArgumentOutOfRangeException(nameof(maxAttempts));
-            if (delayMs < 0) throw new ArgumentOutOfRangeException(nameof(delayMs));
+            ArgumentOutOfRangeException.ThrowIfLessThan(maxAttempts, 1);
+            ArgumentOutOfRangeException.ThrowIfNegative(delayMs);
 
             var exceptions = new System.Collections.Generic.List<Exception>();
 
@@ -83,8 +83,8 @@ namespace YLproxy.Infrastructure
         public static async Task ExecuteAsync(Func<Task> action, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
         {
             ArgumentNullException.ThrowIfNull(action);
-            if (maxAttempts < 1) throw new ArgumentOutOfRangeException(nameof(maxAttempts));
-            if (delayMs < 0) throw new ArgumentOutOfRangeException(nameof(delayMs));
+            ArgumentOutOfRangeException.ThrowIfLessThan(maxAttempts, 1);
+            ArgumentOutOfRangeException.ThrowIfNegative(delayMs);
 
             var exceptions = new System.Collections.Generic.List<Exception>();
 
@@ -115,8 +115,8 @@ namespace YLproxy.Infrastructure
         public static async Task<T> ExecuteAsync<T>(Func<Task<T>> func, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
         {
             ArgumentNullException.ThrowIfNull(func);
-            if (maxAttempts < 1) throw new ArgumentOutOfRangeException(nameof(maxAttempts));
-            if (delayMs < 0) throw new ArgumentOutOfRangeException(nameof(delayMs));
+            ArgumentOutOfRangeException.ThrowIfLessThan(maxAttempts, 1);
+            ArgumentOutOfRangeException.ThrowIfNegative(delayMs);
 
             var exceptions = new System.Collections.Generic.List<Exception>();
 

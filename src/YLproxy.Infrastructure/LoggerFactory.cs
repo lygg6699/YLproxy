@@ -7,6 +7,7 @@ namespace YLproxy.Infrastructure
     {
         private static ILogger? _logger;
         private static readonly object _lock = new object();
+        private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
         public static ILogger CreateLogger()
         {
@@ -28,9 +29,8 @@ namespace YLproxy.Infrastructure
                         using var doc = JsonDocument.Parse(json);
                         if (doc.RootElement.TryGetProperty("Logging", out var loggingEl))
                         {
-                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                             var config = JsonSerializer.Deserialize<LoggingConfig>(
-                                loggingEl.GetRawText(), options);
+                                loggingEl.GetRawText(), JsonOptions);
                             if (config is not null)
                             {
                                 _logger = new FileLogger(

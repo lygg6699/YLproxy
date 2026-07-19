@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,8 +24,11 @@ using Timer = System.Threading.Timer;
 
 namespace YLproxy.GUI;
 
-public sealed class MainViewModel : ViewModelBase
+public sealed class MainViewModel : ViewModelBase, IDisposable
 {
+    private const string ExportProxiesKey = "Proxies";
+    private static readonly JsonSerializerOptions ExportJsonOptions = new() { WriteIndented = true };
+
     private readonly Timer _timer;
     private readonly MonitorService _monitorService;
     private readonly GlobalConfigService _settingsService;
@@ -167,10 +171,10 @@ public sealed class MainViewModel : ViewModelBase
             : Proxies.Where(p =>
                 (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                 (p.RemoteHost?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                p.RemotePort.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
+                p.RemotePort.ToString(CultureInfo.InvariantCulture).Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
                 (p.Username?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                 (p.Group?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                p.LocalPort.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase));
+                p.LocalPort.ToString(CultureInfo.InvariantCulture).Contains(_searchText, StringComparison.OrdinalIgnoreCase));
 
         foreach (var p in query)
             _filteredProxies.Add(p);
@@ -609,8 +613,7 @@ public sealed class MainViewModel : ViewModelBase
                 })
             };
 
-            var json = JsonSerializer.Serialize(exportData,
-                new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(exportData, ExportJsonOptions);
 
             File.WriteAllText(dialog.FileName, json, System.Text.Encoding.UTF8);
 
@@ -649,7 +652,7 @@ public sealed class MainViewModel : ViewModelBase
             var json = File.ReadAllText(dialog.FileName, System.Text.Encoding.UTF8);
             using var doc = JsonDocument.Parse(json);
 
-            if (!doc.RootElement.TryGetProperty("Proxies", out var proxiesEl)
+            if (!doc.RootElement.TryGetProperty(ExportProxiesKey, out var proxiesEl)
                 || proxiesEl.ValueKind != JsonValueKind.Array)
             {
                 SetStatus("Invalid export file: missing 'Proxies' array.");
@@ -808,6 +811,12 @@ public sealed class MainViewModel : ViewModelBase
         Dashboard.RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
         Dashboard.StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
         Dashboard.FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+        _monitorService.Dispose();
     }
 
     private void PersistProxyState()

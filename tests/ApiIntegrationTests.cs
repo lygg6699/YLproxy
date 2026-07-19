@@ -6,7 +6,7 @@ using YLproxy.Infrastructure;
 
 namespace YLproxy.Tests;
 
-public sealed class ApiIntegrationTests : IAsyncLifetime
+public sealed class ApiIntegrationTests : IAsyncLifetime, IDisposable
 {
     private readonly string _tempDir;
     private readonly string _configPath;
@@ -54,10 +54,15 @@ public sealed class ApiIntegrationTests : IAsyncLifetime
         if (_server is not null)
             await _server.StopAsync();
 
-        try { Directory.Delete(_tempDir, true); } catch (Exception ex)
+        try { Directory.Delete(_tempDir, true); } catch (Exception)
         {
             // Ignore cleanup errors during test cleanup
         }
+    }
+
+    public void Dispose()
+    {
+        _server?.Dispose();
     }
 
     private HttpClient CreateClient()

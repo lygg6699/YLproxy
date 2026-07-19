@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using YLproxy.Core.Config;
@@ -126,12 +127,12 @@ public sealed class AddProxyViewModel : ViewModelBase
             _currentId = editTarget.Id;
             _name = editTarget.Name;
             _remoteHost = editTarget.RemoteHost;
-            _remotePortText = editTarget.RemotePort.ToString();
+            _remotePortText = editTarget.RemotePort.ToString(CultureInfo.InvariantCulture);
             _username = editTarget.Username ?? "";
             _password = editTarget.Password ?? "";
             _group = editTarget.Group ?? "";
             _isAutoPort = false;
-            _localPortText = editTarget.LocalPort.ToString();
+            _localPortText = editTarget.LocalPort.ToString(CultureInfo.InvariantCulture);
         }
         else
         {

@@ -11,8 +11,10 @@ using YLproxy.Infrastructure.Abstractions;
 namespace YLproxy.Infrastructure
 {
 
-    public class AppSettingsService : IAppSettingsService
+    public sealed class AppSettingsService : IAppSettingsService, IDisposable
     {
+
+        private static readonly JsonSerializerOptions IndentedJsonOptions = new() { WriteIndented = true };
 
         private readonly string _configFilePath;
         private AppSettingsConfig _config = new AppSettingsConfig();
@@ -121,7 +123,7 @@ namespace YLproxy.Infrastructure
         {
             try
             {
-                var json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
+                var json = JsonSerializer.Serialize(_config, IndentedJsonOptions);
                 var tempPath = _configFilePath + "." + Guid.NewGuid().ToString("N") + ".tmp";
                 try
                 {
@@ -154,6 +156,14 @@ namespace YLproxy.Infrastructure
         private void OnConfigRenamed(object sender, RenamedEventArgs e)
         {
             LoadConfig();
+        }
+
+        public void Dispose()
+        {
+            _watcher.Changed -= OnConfigChanged;
+            _watcher.Created -= OnConfigChanged;
+            _watcher.Renamed -= OnConfigRenamed;
+            _watcher.Dispose();
         }
 
         private static void Validate(AppSettingsConfig config)

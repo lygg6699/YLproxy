@@ -33,7 +33,7 @@ public sealed class ProxyDataServiceTests
         }
         finally
         {
-            try { File.Delete(path); } catch (Exception ex)
+            try { File.Delete(path); } catch (Exception)
             {
                 // Ignore cleanup errors during test operations
             }
@@ -55,7 +55,7 @@ public sealed class ProxyDataServiceTests
         }
         finally
         {
-            try { File.Delete(path); } catch (Exception ex)
+            try { File.Delete(path); } catch (Exception)
             {
                 // Ignore cleanup errors during test operations
             }
@@ -104,7 +104,7 @@ public sealed class ProxyDataServiceTests
         }
         finally
         {
-            try { File.Delete(path); } catch (Exception ex)
+            try { File.Delete(path); } catch (Exception)
             {
                 // Ignore cleanup errors during test operations
             }
@@ -143,7 +143,7 @@ public sealed class ProxyDataServiceTests
         }
         finally
         {
-            try { File.Delete(path); } catch (Exception ex)
+            try { File.Delete(path); } catch (Exception)
             {
                 // Ignore cleanup errors during test operations
             }
@@ -161,7 +161,7 @@ public sealed class ProxyDataServiceTests
         }
         finally
         {
-            try { File.Delete(path); } catch (Exception ex)
+            try { File.Delete(path); } catch (Exception)
             {
                 // Ignore cleanup errors during test operations
             }

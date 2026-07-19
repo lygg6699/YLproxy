@@ -7,7 +7,7 @@ using YLproxy.Utils;
 
 namespace YLproxy.Api;
 
-public sealed class ApiServer
+public sealed class ApiServer : IDisposable
 {
     private readonly string _configPath;
     private readonly ProxyConfig _proxyConfig;
@@ -130,5 +130,10 @@ public sealed class ApiServer
         try { await (_runTask ?? Task.CompletedTask); } catch (OperationCanceledException) { }
 
         _logger.Info("API server stopped.");
+    }
+
+    public void Dispose()
+    {
+        _cts?.Dispose();
     }
 }
