@@ -41,3 +41,24 @@
 - `docs/pending/task-tracking.md`
 - `docs/incomplete/01-开发路线图.md`
 
+---
+
+## 下一步优先级（2026-07-19 现状核查后）
+
+> 现状快照见 `docs/development/progress.md` 顶部「真实落地现状快照」。
+
+**P0 — 安全（需尽快）**
+- [ ] 人工在服务商侧**轮换**已泄露的上游代理凭据（git 历史仍含旧值，仓内无法完成）。
+- [ ] 评估清理 git 历史中的凭据（如 `git filter-repo`；影响协作者，需决策）。
+
+**P1 — 正确性/稳定性**
+- [ ] 修复既存 Bug：`AddProxyViewModel` 编辑模式将代理**自身**本地端口误判为"已占用"，导致改端口保存失败。
+- [ ] B5-new：实现 Job Object 孤儿进程防护（`CreateJobObject`/`AssignProcessToJobObject`），避免 GUI 崩溃后 `3proxy` 子进程成孤儿。
+- [ ] 降低生成 `3proxy` cfg 的明文上游凭据暴露面（运行期最小化/及时清理）。
+
+**P2 — 工程整洁（决策后执行）**
+- [ ] 死代码去留决策并清理：`TransparentCoalescingForwarder`、`AesSecurityService`、重复的 `AutoStartService`（Core vs Core.PreFlight）。
+- [ ] `YLproxy.Api`：明确"删除 / 保留为预留 / 接入 GUI 启动链"三选一（当前编译进但运行时从不启动）。
+- [ ] B4：`MainViewModel`（约 841 行）协调器继续瘦身，拆出命令/启停/批量/导入导出/监控接线。
+- [ ] P2 日志治理：`ProxyProcessManager` 等 Console→ILogger、空 catch 治理（见 `docs/pending/task-tracking.md`）。
+

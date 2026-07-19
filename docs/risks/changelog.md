@@ -1,3 +1,13 @@
+## 文档纠偏：真实落地现状核查（2026-07-19）
+
+### 变更
+- 按「代码即真相」重新核查当前分支（含最新 main），在 `docs/development/progress.md` 顶部新增权威**「真实落地现状快照」**：区分 ✅ 已落地 / 👻 幽灵未接线（`YLproxy.Api`、`TransparentCoalescingForwarder`、`AesSecurityService`、重复 `AutoStartService`）/ ⛔ 未实现（Job Object 孤儿进程防护）/ 🟡 部分完成（`MainViewModel` 约 841 行）/ ⚠️ 安全遗留。
+- 更正 `progress.md` 与 `docs/pending/task-tracking.md` 中易误读为"✅ 已完成"的 Job Object 条目；作废 P2 中的 SQLite 子项（Phase C1 已定 JSON-only）；作废 B2 记录里的 `SqliteProxyRepository` 条目。
+- `TODO.md` 新增「下一步优先级」清单（P0 凭据轮换/历史清理、P1 编辑端口 Bug + Job Object 防护 + cfg 明文最小化、P2 死代码清理 + API 去留决策 + MainViewModel 瘦身 + 日志治理）。
+
+### 说明
+- 纯文档纠偏，不改动任何生产代码/构建/CI。
+
 ## Phase C1 P0 补丁：CI quality-gate 修复 + 分析器告警清偿（2026-07-19）
 
 ### 变更

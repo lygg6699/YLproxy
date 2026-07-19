@@ -65,15 +65,17 @@
 - [x] 新增单元测试 `ForwarderShouldInjectAuthHeaderEvenIfIncomingRequestHasNoAuth` 验证该修复方案。
 - [x] 更新 docs/progress.md 和 docs/task-tracking.md 详细记录 Phase 2.5 修复方案与验证结果。
 
-## Job Object 孤儿进程防护与 CI 加固（2026-07-15）
+## CI 加固（+ Job Object 仅规划，未实现）（2026-07-15）
 
-**任务：** 加固 GitHub Actions CI 工作流，隔离物理网络依赖测试，并新增 Job Object 孤儿进程防护追踪
+**任务：** 加固 GitHub Actions CI 工作流，隔离物理网络依赖测试，并追踪 Job Object 孤儿进程防护
 
-**状态：✅ 已完成**
+**状态：CI 加固 ✅ 已完成；Job Object 防护 ⛔ 未实现（仅规划）**
+
+> 更正：此前标题为"✅ 已完成"易误读为 Job Object 已落地。实际代码中无任何 JobObject API，见 `docs/development/progress.md` 顶部现状快照。落地任务见 B5-new。
 
 - [x] 编辑 `.github/workflows/ci.yml`，在 `dotnet test` 步骤中通过 `--filter` 隔离依赖物理网络/DPAPI 的集成测试。
 - [x] 确保 CI 流程中包含 `dotnet build` Debug/Release 且开启警告转错误（`-warnaserror`）门禁。
-- [x] 规划并追踪 Job Object 孤儿进程防护机制。
+- [ ] 实现 Job Object 孤儿进程防护（**未实现**，后续任务 B5-new）。
 
 ## GitHub Actions 云端质量门禁（2026-07-15）
 
@@ -203,9 +205,11 @@
 
 ## P2 日志、异常与数据可靠性（2026-07-16）
 
-**任务：** 统一 ILogger 输出、治理异常处理、SQLite 数据层实现
+**任务：** 统一 ILogger 输出、治理异常处理（SQLite 相关子项已作废）
 
-**状态：执行中**
+**状态：部分执行中；第 8~10 项已作废**
+
+> 更正：Phase C1 已定 JSON-only（方案 A），SQLite 层删除，故下列 SQLite 相关子项作废。
 
 - [ ] 1. ProxyProcessManager 接入 ILogger（33 处 Console 清理）
 - [ ] 2. AppSettingsService 接入 ILogger（5 处）
@@ -214,9 +218,9 @@
 - [ ] 5. 空 catch 块治理
 - [ ] 6. 日志生命周期文档更新 + 3proxy 引擎日志清理
 - [ ] 7. 测试补齐（预期 ≥7 个新测试）
-- [ ] 8. SQLite 数据层实现
-- [ ] 9. SQLite 迁移单元测试
-- [ ] 10. ProxyDataService 改造
+- [~] ~~8. SQLite 数据层实现~~（作废：JSON-only）
+- [~] ~~9. SQLite 迁移单元测试~~（作废：JSON-only）
+- [~] ~~10. ProxyDataService SQLite 改造~~（作废：JSON-only）
 - [ ] 11. 安装脚本与部署工具（install-service.ps1 等）
 - [ ] 12. docs/progress.md / docs/task-tracking.md / docs/deployment.md / docs/changelog.md 同步
 ## 独立 VS Code 工作区配置（2026-07-15）

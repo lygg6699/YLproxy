@@ -7,6 +7,43 @@
 
 ---
 
+## 真实落地现状快照（2026-07-19，按代码核查）
+
+> 本节为「代码即真相」的权威现状，若与下方历史条目冲突，以本节为准。核查基于当前分支代码（含最新 main）。
+
+### ✅ 已落地（已接线、随 GUI 启动即生效）
+
+- **启动链**：`App.OnStartup` → `PreFlightChecker.Run()`（启动前检查）→ 构建 DI 容器（`ServiceCollection`）→ `MainViewModel` → `MainWindow.Show()`（见 `src/YLproxy.GUI/App.xaml.cs`）。
+- **DI 注册（实际生效）**：`ILogger`、`AppSettingsService`、`ProxyConfig`/`ThreeProxyConfig` 配置段、`IProxyProcessManager`→`ProxyProcessManagerAdapter`、`IProxyTester`→`ProxyTesterAdapter`、`IProxyDataService`→`ProxyDataService`（JSON）、`MainViewModel`。
+- **持久化（JSON-only）**：`ProxyDataService` 读写 `data/config.json`；凭据用 Windows DPAPI（`CurrentUser`）加密，`dpapi:v1:` 前缀。**SQLite 层已删除，不存在。**
+- **转发链路**：`ProxyProcessManager` —— 有凭据且上游非本地 → 优先 `ManagedProxyForwarder`（.NET，正确处理 407 挑战-响应）；否则或其失败时回退 → 外部 `3proxy.exe`（`ConfigGenerator` 生成 cfg，`parent http` + `fakeresolve`）。
+- **监控/自愈**：`MainViewModel` 实例化 `MonitorService`（Timer 每 5s + TCP 端口健康检查 + 指数退避自动重启，默认最多 5 次）。
+- **自启动**：`YLproxy.Core.PreFlight.AutoStartService` 按 `AppSettings.Startup.AutoStart` 注册到 Windows 启动项。
+- **质量门禁**：CI `quality-gate` 绿（workspace 校验 + Debug/Release `-warnaserror` + `Category=Unit`）；全部分析器告警已在代码中修复，仅 `CA1716` 作用域抑制（内部接口，规则不适用）。
+
+### 👻 幽灵/未接线（能编译，但运行时 GUI 从不调用）
+
+- **`YLproxy.Api`（REST/Kestrel/Swagger/Bearer）**：GUI 工程引用它，但 `App.xaml.cs` **从不** `new ApiServer()`/启动它；仅被集成测试驱动。属预留能力。
+- **`TransparentCoalescingForwarder`**：除自身单元测试外无任何引用，已被 `ManagedProxyForwarder` 取代 → **死代码**。
+- **`AesSecurityService`**：无任何引用（实际加密走 DPAPI `ProtectedData`）→ **死代码**。
+- **`AutoStartService` 重复**：`YLproxy.Core` 与 `YLproxy.Core.PreFlight` 各有一份同名类，仅 PreFlight 版被使用 → 重复/死代码。
+
+### ⛔ 未实现（文档历史条目曾误标"已完成"）
+
+- **Job Object 孤儿进程防护**：代码中无 `CreateJobObject`/`AssignProcessToJobObject`；GUI 崩溃时 `3proxy` 子进程可能成为孤儿（仅在"删除代理"时显式停止进程）。
+
+### 🟡 部分完成
+
+- **`MainViewModel` 瘦身**：仍约 841 行；仅抽出 `HostInfo`/`Dashboard`/`LogPanel` 三个纯展示子 VM，命令/启停/批量/导入导出/监控接线仍集中在协调器。
+
+### ⚠️ 安全/正确性遗留
+
+- 已泄露的上游代理凭据仍在 git 历史 → **需人工在服务商侧轮换**。
+- 生成的 `3proxy` cfg 在运行期仍写明文上游凭据（运行时安全债）。
+- **既存 Bug**（非本次引入）：`AddProxyViewModel` 编辑模式把代理自身本地端口误判为"已占用"，导致改端口保存失败。
+
+---
+
 ## Phase C1 P0 债务清偿（2026-07-19）
 
 **状态：已完成（build + Category=Unit 复验通过）**
@@ -71,13 +108,15 @@
 - ✅ 增强 `TransparentCoalescingForwarder` 的认证头注入逻辑，确保在无认证头、已有认证头等各种场景下均能正确、安全地注入上游代理凭据。
 - ✅ 新增单元测试 `ForwarderShouldInjectAuthHeaderEvenIfIncomingRequestHasNoAuth` 验证该修复方案的正确性。
 
-## Job Object 孤儿进程防护与 CI 加固（2026-07-15）
+## CI 加固（+ Job Object 仅规划，未实现）（2026-07-15）
 
-**状态：✅ 已完成**
+**状态：CI 加固 ✅ 已完成；Job Object 孤儿进程防护 ⛔ 未实现（仅规划/追踪）**
+
+> 更正：此前该条目标题为"✅ 已完成"，易被误读为 Job Object 已落地。实际代码中无任何 `CreateJobObject`/`AssignProcessToJobObject`，见顶部「真实落地现状快照」。
 
 - ✅ 编辑 `.github/workflows/ci.yml`，在 `dotnet test` 步骤中通过 `--filter` 隔离依赖物理网络/DPAPI 的集成测试。
 - ✅ 确保 CI 流程中包含 `dotnet build` Debug/Release 且开启警告转错误（`-warnaserror`）门禁。
-- ✅ 规划并追踪 Job Object 孤儿进程防护机制。
+- ⛔ Job Object 孤儿进程防护：仅规划/追踪，**尚未实现**（后续任务 B5-new）。
 
 ## GitHub Actions 云端质量门禁（2026-07-15）
 
@@ -334,7 +373,7 @@
 - ✅ `ProxyProcessManagerAdapter` 创建：实现 `IProxyProcessManager` 接口，适配静态 `ProxyProcessManager`
 - ✅ `ProxyTesterAdapter` 创建：实现 `IProxyTester` 接口，适配静态 `ProxyTester`
 - ✅ `ProxyDataService` 实现 `IProxyDataService` 接口
-- ✅ `SqliteProxyRepository` 实现 `IProxyRepository` 接口
+- ~~`SqliteProxyRepository` 实现 `IProxyRepository` 接口~~（已作废：Phase C1 采方案 A JSON-only，SQLite 层已删除）
 - ✅ `MainViewModel` 全部静态调用替换为注入接口（`_proxyProcessManager`、`_proxyDataService`、`_proxyTester`）
 - ✅ DI 注册补齐：`App.xaml.cs` 注册 3 个适配器 + 1 个数据服务
 - ✅ 移除 `Proxy.Abstractions.ThreeProxyConfig` 空占位符，消除命名冲突
