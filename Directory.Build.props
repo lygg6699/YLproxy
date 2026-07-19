@@ -5,11 +5,15 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- CA1716: identifiers Error/Stop collide with reserved words in other CLR
+         languages. This rule targets public cross-language libraries; YLproxy's
+         interfaces are internal to the application, so the rule is not applicable.
+         All other analyzer warnings are fixed in code, not suppressed. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>$(NoWarn);CA1805;CA1512;CA1716;CA1869;CA1311;CA1304;CA1305;CA1869;CA1001;CA1000</NoWarn>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
