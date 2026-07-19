@@ -63,7 +63,12 @@ $workspace = Get-Content -Raw -LiteralPath $WorkspaceFile | ConvertFrom-Json
 $folders = @($workspace.folders)
 Assert-Condition ($folders.Count -eq 1) 'The workspace must contain exactly one folder.'
 
-$workspaceProjectPath = [IO.Path]::GetFullPath((Join-Path $workspaceRoot ([string]$folders[0].path)))
+# Resolve the workspace folder relative to the directory that actually contains
+# the workspace file, so both layouts validate correctly:
+#   * ci.code-workspace living at the repository root (folder path ".")
+#   * YLproxy.code-workspace living beside the repository (folder path "YLproxy")
+$workspaceFileDirectory = Split-Path -Parent $WorkspaceFile
+$workspaceProjectPath = [IO.Path]::GetFullPath((Join-Path $workspaceFileDirectory ([string]$folders[0].path)))
 Assert-Condition ($workspaceProjectPath -ieq $projectRoot) 'The workspace folder must point to the YLproxy project root.'
 
 $tasks = @($workspace.tasks.tasks)
@@ -99,7 +104,8 @@ Assert-Condition ([string]$guiLaunch.program -like '*src/YLproxy.GUI/bin/Debug/n
 $globalSettings = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'global.json') | ConvertFrom-Json
 $expectedSdk = [string]$globalSettings.sdk.version
 Assert-Condition (-not [string]::IsNullOrWhiteSpace($expectedSdk)) 'global.json does not define an SDK version.'
-Assert-Condition ([string]$globalSettings.sdk.rollForward -eq 'latestPatch') 'global.json must use latestPatch roll-forward policy.'
+$rollForward = [string]$globalSettings.sdk.rollForward
+Assert-Condition ($rollForward -in @('latestMinor', 'latestPatch')) 'global.json must use a latestMinor or latestPatch roll-forward policy.'
 
 $settings = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'AppSettings.json') | ConvertFrom-Json
 $runtimeDirectory = ([string]$settings.ThreeProxy.RuntimeDirectory).Replace('/', '\')
@@ -133,12 +139,18 @@ try {
 $expectedSdkParts = $expectedSdk -split '\.'
 $actualSdkParts = $actualSdk -split '\.'
 Assert-Condition ($expectedSdkParts.Count -eq 3 -and $actualSdkParts.Count -eq 3) 'The active .NET SDK version format is invalid.'
-$expectedFeatureBand = [int]$expectedSdkParts[2] - ([int]$expectedSdkParts[2] % 100)
-$actualFeatureBand = [int]$actualSdkParts[2] - ([int]$actualSdkParts[2] % 100)
-$sdkMatchesPolicy = $actualSdkParts[0] -eq $expectedSdkParts[0] -and
-    $actualSdkParts[1] -eq $expectedSdkParts[1] -and
-    $actualFeatureBand -eq $expectedFeatureBand
-Assert-Condition $sdkMatchesPolicy "The active .NET SDK ($actualSdk) is outside global.json latestPatch feature band ($expectedSdk)."
+
+$sameMajorMinor = ($actualSdkParts[0] -eq $expectedSdkParts[0]) -and ($actualSdkParts[1] -eq $expectedSdkParts[1])
+if ($rollForward -eq 'latestPatch') {
+    # latestPatch: stay inside the pinned feature band, only newer patches allowed.
+    $expectedFeatureBand = [int]$expectedSdkParts[2] - ([int]$expectedSdkParts[2] % 100)
+    $actualFeatureBand = [int]$actualSdkParts[2] - ([int]$actualSdkParts[2] % 100)
+    $sdkMatchesPolicy = $sameMajorMinor -and ($actualFeatureBand -eq $expectedFeatureBand) -and ([int]$actualSdkParts[2] -ge [int]$expectedSdkParts[2])
+} else {
+    # latestMinor: same major.minor, any newer feature band/patch at or above the baseline.
+    $sdkMatchesPolicy = $sameMajorMinor -and ([int]$actualSdkParts[2] -ge [int]$expectedSdkParts[2])
+}
+Assert-Condition $sdkMatchesPolicy "The active .NET SDK ($actualSdk) does not satisfy global.json $rollForward policy (baseline $expectedSdk)."
 
 Write-Output 'Workspace and environment validation passed.'
 Write-Output "Project root: $projectRoot"
