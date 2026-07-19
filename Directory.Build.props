@@ -5,22 +5,24 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+    <!--
+      统一 Debug/Release 分析器门禁：以下抑制在所有配置下一致生效，
+      使 Debug 构建的 -warnaserror 与 Release 的 TreatWarningsAsErrors 判定同一组规则，
+      避免同一份代码在两种配置下门禁不一致（此前这些抑制仅在 Release 生效）。
+      NU1903 为兜底：sqlite 依赖曾触发该审计告警，根因已通过显式覆盖 SQLitePCLRaw.lib.e_sqlite3 版本处理。
+    -->
+    <NoWarn>$(NoWarn);CA1000;CA1001;CA1304;CA1305;CA1311;CA1507;CA1512;CA1716;CA1805;CA1869;NU1903</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>$(NoWarn);CA1805;CA1512;CA1716;CA1869;CA1311;CA1304;CA1305;CA1869;CA1001;CA1000</NoWarn>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <SatelliteResourceLanguages>en-US;zh-CN</SatelliteResourceLanguages>
-    <NoWarn>$(NoWarn);CS1591;NU1903</NoWarn>
-    <!--
-      说明：本项目要求 Release/CI 可构建。由于 sqlite 依赖曾触发 NU1903，
-      本地进一步使用 SQLitePCLRaw.lib.e_sqlite3 显式版本覆盖进行根因修复。
-      NoWarn 仅作为兜底，避免构建链被阻断。
-    -->
-
+    <!-- CS1591 仅在 Release 生成 XML 文档时才会出现，故随 GenerateDocumentationFile 一并抑制。 -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 </Project>

@@ -103,10 +103,11 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
                 ProxyProcessManager.Stop(new ProxyItem { Id = id });
                 await _client!.DeleteAsync($"/api/proxies/{id}");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Ignore errors during server startup - we'll check if server is null later
+                // Ignore errors while tearing down individual proxies
             }
+        }
 
         if (_server is not null)
             await _server.StopAsync();
@@ -117,14 +118,14 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             var cfgDir = PathResolver.ResolvePath("runtime", "3proxy", "cfg");
             if (Directory.Exists(cfgDir))
                 foreach (var f in Directory.GetFiles(cfgDir, "*.cfg"))
-                    try { File.Delete(f); } catch (Exception ex)
+                    try { File.Delete(f); } catch (Exception)
                     {
                         // Ignore errors deleting individual config files
                     }
         }
         catch { }
 
-        try { Directory.Delete(_tempDir, true); } catch (Exception ex)
+        try { Directory.Delete(_tempDir, true); } catch (Exception)
         {
             // Ignore errors during temp directory cleanup
         }
