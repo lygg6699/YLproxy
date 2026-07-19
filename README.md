@@ -60,7 +60,7 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 | 项目     | 值                              |
 | -------- | ------------------------------- |
 | 操作系统 | Windows 10 / Windows 11（x64）  |
-| 运行时   | .NET 10.0 SDK / Runtime（SDK 基线以 `global.json` 为准：10.0.200，rollForward=latestMinor） |
+| 运行时   | .NET 10.0 SDK / Runtime（SDK 基线以 `global.json` 为准：10.0.200，rollForward=latestPatch） |
 | 代理引擎 | 3proxy 0.9.7（由 `scripts/prepare-runtime.ps1` 准备） |
 | 开发工具 | Visual Studio 2022+ / VS Code    |
 | 版本     | 0.2.0                           |
@@ -73,7 +73,7 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 YLproxy/
 ├── .agent                # 第一必读文件，规则与文件放置约束
 ├── AppSettings.json                 # 全局运行配置（根目录唯一配置入口）
-├── global.json                       # .NET SDK 版本约束（10.0.200, rollForward=latestMinor）
+├── global.json                       # .NET SDK 版本约束（10.0.200, rollForward=latestPatch）
 ├── Directory.Build.props             # 全局编译属性（Nullable/分析器/Release 门禁）
 ├── Directory.Packages.props          # 中央包版本管理
 ├── YLproxy.sln                       # 唯一解决方案入口

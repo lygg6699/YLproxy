@@ -88,8 +88,9 @@
     {
       "label": "dotnet: full-check (scripts/full-check.ps1)",
       "type": "process",
-      "command": "powershell",
+      "command": "pwsh",
       "args": [
+        "-NoProfile",
         "-ExecutionPolicy",
         "Bypass",
         "-File",

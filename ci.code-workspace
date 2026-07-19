@@ -1,0 +1,161 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+    "dotnet.defaultSolution": "YLproxy.sln",
+    "terminal.integrated.env.windows": {
+      "DOTNET_CLI_UI_LANGUAGE": "en-US"
+    },
+    "terminal.integrated.env.linux": {
+      "DOTNET_CLI_UI_LANGUAGE": "en-US"
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "YLproxy: Validate Environment",
+        "type": "shell",
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/validate-workspace.ps1"
+        ],
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "YLproxy: Restore",
+        "type": "shell",
+        "command": "dotnet",
+        "args": [
+          "restore",
+          "YLproxy.sln"
+        ],
+        "group": "build",
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "YLproxy: Build",
+        "type": "shell",
+        "command": "dotnet",
+        "args": [
+          "build",
+          "YLproxy.sln",
+          "--configuration",
+          "Debug",
+          "--no-restore",
+          "-warnaserror"
+        ],
+        "group": "build",
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "YLproxy: Build Release",
+        "type": "shell",
+        "command": "dotnet",
+        "args": [
+          "build",
+          "YLproxy.sln",
+          "--configuration",
+          "Release",
+          "--no-restore",
+          "-warnaserror"
+        ],
+        "group": "build",
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "YLproxy: Test",
+        "type": "shell",
+        "command": "dotnet",
+        "args": [
+          "test",
+          "tests/YLproxy.Tests.csproj",
+          "--configuration",
+          "Release",
+          "--no-build"
+        ],
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "YLproxy: Run GUI",
+        "type": "shell",
+        "command": "dotnet",
+        "args": [
+          "run",
+          "--project",
+          "src/YLproxy.GUI/YLproxy.GUI.csproj",
+          "--configuration",
+          "Debug"
+        ],
+        "group": "none",
+        "problemMatcher": []
+      },
+      {
+        "label": "YLproxy: Full Check",
+        "type": "shell",
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/full-check.ps1",
+          "-SkipSmokeTest"
+        ],
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "YLproxy: Full Check with Smoke Test",
+        "type": "shell",
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/full-check.ps1"
+        ],
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "YLproxy: Clean",
+        "type": "shell",
+        "command": "dotnet",
+        "args": [
+          "clean",
+          "YLproxy.sln"
+        ],
+        "group": "build",
+        "problemMatcher": []
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "YLproxy GUI (Debug)",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "YLproxy: Build",
+        "program": "${workspaceFolder}/src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.dll",
+        "cwd": "${workspaceFolder}",
+        "console": "internalConsole",
+        "stopAtEntry": false
+      }
+    ]
+  }
+}

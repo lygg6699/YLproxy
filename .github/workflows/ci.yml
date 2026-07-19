@@ -52,49 +52,6 @@ jobs:
         shell: pwsh
         run: dotnet restore YLproxy.sln
 
-      - name: Generate CI workspace manifest
-        shell: pwsh
-        run: |
-          $projectRoot = (Get-Location).Path
-          $workspaceFile = Join-Path $projectRoot 'ci.code-workspace'
-
-          $tasks = @(
-              @{ label = 'YLproxy: Validate Environment'; args = @() }
-              @{ label = 'YLproxy: Restore'; args = @() }
-              @{ label = 'YLproxy: Build'; args = @() }
-              @{ label = 'YLproxy: Build Release'; args = @() }
-              @{ label = 'YLproxy: Test'; args = @() }
-              @{ label = 'YLproxy: Run GUI'; args = @() }
-              @{ label = 'YLproxy: Full Check'; args = @('-SkipSmokeTest') }
-              @{ label = 'YLproxy: Full Check with Smoke Test'; args = @() }
-              @{ label = 'YLproxy: Clean'; args = @() }
-          )
-
-          $workspace = @{
-              folders = @(
-                  @{ path = '.' }
-              )
-              settings = @{}
-              tasks = @{
-                  version = '2.0.0'
-                  tasks = $tasks
-              }
-              launch = @{
-                  version = '0.2.0'
-                  configurations = @(
-                      @{
-                          name = 'YLproxy GUI (Debug)'
-                          type = 'coreclr'
-                          request = 'launch'
-                          program = '${workspaceFolder}/src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.dll'
-                      }
-                  )
-              }
-          }
-
-          $workspace | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $workspaceFile -Encoding utf8NoBOM
-          Write-Host "CI workspace manifest created at $workspaceFile"
-
       - name: Validate workspace and runtime
         shell: pwsh
         run: ./scripts/validate-workspace.ps1 -WorkspaceFile ./ci.code-workspace
