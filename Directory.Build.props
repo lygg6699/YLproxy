@@ -8,7 +8,9 @@
     <!-- CA1716: identifiers Error/Stop collide with reserved words in other CLR
          languages. This rule targets public cross-language libraries; YLproxy's
          interfaces are internal to the application, so the rule is not applicable.
-         All other analyzer warnings are fixed in code, not suppressed. -->
+         Applies to all configurations so Debug -warnaserror and Release
+         TreatWarningsAsErrors judge the same rule set. All other analyzer
+         warnings are fixed in code, not suppressed. -->
     <NoWarn>$(NoWarn);CA1716</NoWarn>
   </PropertyGroup>
 
@@ -19,6 +21,7 @@
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <SatelliteResourceLanguages>en-US;zh-CN</SatelliteResourceLanguages>
+    <!-- CS1591 仅在 Release 生成 XML 文档时才会出现，故随 GenerateDocumentationFile 一并抑制。 -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 </Project>

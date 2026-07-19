@@ -54,3 +54,10 @@ runtime/3proxy/cfg/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Kubeconfig with real credentials (keep only the .example template)
+deploy/kubeconfig.yaml
+kubeconfig
+kubeconfig.yaml
+*.kubeconfig
+!deploy/kubeconfig.example.yaml

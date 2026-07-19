@@ -105,7 +105,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime, IDisposable
             }
             catch (Exception)
             {
-                // Ignore errors during server startup - we'll check if server is null later
+                // Ignore errors while tearing down individual proxies
             }
         }
 
