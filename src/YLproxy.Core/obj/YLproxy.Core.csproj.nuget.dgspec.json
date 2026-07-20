@@ -1,21 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj": {}
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj": {}
   },
   "projects": {
-    "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
         "projectName": "YLproxy.Core",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Core/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\obj\\",
         "projectStyle": "PackageReference",
-        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -28,17 +27,17 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -62,15 +61,6 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "centralPackageVersions": {
-            "coverlet.collector": "6.0.4",
-            "Microsoft.Extensions.DependencyInjection": "9.0.0",
-            "Microsoft.NET.Test.Sdk": "17.14.1",
-            "Swashbuckle.AspNetCore": "7.3.1",
-            "System.Security.Cryptography.ProtectedData": "10.0.0",
-            "xunit": "2.9.3",
-            "xunit.runner.visualstudio": "3.1.4"
-          },
           "imports": [
             "net461",
             "net462",
@@ -82,18 +72,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -371,18 +355,17 @@
         }
       }
     },
-    "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
         "projectName": "YLproxy.Infrastructure",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -395,11 +378,11 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -426,18 +409,8 @@
           "dependencies": {
             "System.Security.Cryptography.ProtectedData": {
               "target": "Package",
-              "version": "[10.0.0, )",
-              "versionCentrallyManaged": true
+              "version": "[9.0.0, )"
             }
-          },
-          "centralPackageVersions": {
-            "coverlet.collector": "6.0.4",
-            "Microsoft.Extensions.DependencyInjection": "9.0.0",
-            "Microsoft.NET.Test.Sdk": "17.14.1",
-            "Swashbuckle.AspNetCore": "7.3.1",
-            "System.Security.Cryptography.ProtectedData": "10.0.0",
-            "xunit": "2.9.3",
-            "xunit.runner.visualstudio": "3.1.4"
           },
           "imports": [
             "net461",
@@ -450,18 +423,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -739,18 +706,17 @@
         }
       }
     },
-    "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
         "projectName": "YLproxy.Models",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Models/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\obj\\",
         "projectStyle": "PackageReference",
-        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -784,15 +750,6 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "centralPackageVersions": {
-            "coverlet.collector": "6.0.4",
-            "Microsoft.Extensions.DependencyInjection": "9.0.0",
-            "Microsoft.NET.Test.Sdk": "17.14.1",
-            "Swashbuckle.AspNetCore": "7.3.1",
-            "System.Security.Cryptography.ProtectedData": "10.0.0",
-            "xunit": "2.9.3",
-            "xunit.runner.visualstudio": "3.1.4"
-          },
           "imports": [
             "net461",
             "net462",
@@ -804,18 +761,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -1093,18 +1044,17 @@
         }
       }
     },
-    "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
         "projectName": "YLproxy.Proxy",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Proxy/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\obj\\",
         "projectStyle": "PackageReference",
-        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -1117,14 +1067,14 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -1148,15 +1098,6 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "centralPackageVersions": {
-            "coverlet.collector": "6.0.4",
-            "Microsoft.Extensions.DependencyInjection": "9.0.0",
-            "Microsoft.NET.Test.Sdk": "17.14.1",
-            "Swashbuckle.AspNetCore": "7.3.1",
-            "System.Security.Cryptography.ProtectedData": "10.0.0",
-            "xunit": "2.9.3",
-            "xunit.runner.visualstudio": "3.1.4"
-          },
           "imports": [
             "net461",
             "net462",
@@ -1168,18 +1109,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -1457,18 +1392,17 @@
         }
       }
     },
-    "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
         "projectName": "YLproxy.Utils",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Utils/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\obj\\",
         "projectStyle": "PackageReference",
-        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -1502,15 +1436,6 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "centralPackageVersions": {
-            "coverlet.collector": "6.0.4",
-            "Microsoft.Extensions.DependencyInjection": "9.0.0",
-            "Microsoft.NET.Test.Sdk": "17.14.1",
-            "Swashbuckle.AspNetCore": "7.3.1",
-            "System.Security.Cryptography.ProtectedData": "10.0.0",
-            "xunit": "2.9.3",
-            "xunit.runner.visualstudio": "3.1.4"
-          },
           "imports": [
             "net461",
             "net462",
@@ -1522,18 +1447,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

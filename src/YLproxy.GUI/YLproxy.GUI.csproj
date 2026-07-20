@@ -2,22 +2,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YLproxy.Api\YLproxy.Api.csproj" />
-    <ProjectReference Include="..\YLproxy.Core\YLproxy.Core.csproj" />
     <ProjectReference Include="..\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\AppSettings.json"
-          Link="AppSettings.json"
-          CopyToOutputDirectory="PreserveNewest"
-          CopyToPublishDirectory="PreserveNewest" />
+    <None Include="..\..\AppSettings.json" Link="AppSettings.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\..\runtime\3proxy\bin64\**"
-            Link="runtime\3proxy\bin64\%(RecursiveDir)%(Filename)%(Extension)"
-            CopyToOutputDirectory="PreserveNewest"
-            CopyToPublishDirectory="PreserveNewest" />
+      <None Include="..\..\runtime\3proxy\bin64\**" Link="runtime\3proxy\bin64\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 
   <PropertyGroup>

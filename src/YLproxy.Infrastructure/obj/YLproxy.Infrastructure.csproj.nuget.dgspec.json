@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj": {}
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {}
   },
   "projects": {
-    "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
         "projectName": "YLproxy.Infrastructure",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -27,11 +27,11 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
-                "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj"
+              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -58,7 +58,7 @@
           "dependencies": {
             "System.Security.Cryptography.ProtectedData": {
               "target": "Package",
-              "version": "(, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [
@@ -72,18 +72,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -361,17 +355,17 @@
         }
       }
     },
-    "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
         "projectName": "YLproxy.Models",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Models/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -416,18 +410,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -705,17 +693,17 @@
         }
       }
     },
-    "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
+    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj",
+        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
         "projectName": "YLproxy.Utils",
-        "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspaces/YLproxy/src/YLproxy.Utils/obj/",
+        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
+        "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -760,18 +748,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[10.0.10, 10.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

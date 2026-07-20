@@ -31,7 +31,7 @@ public static class ProxyTester
     /// Allows tests to inject a custom HttpMessageHandler.
     /// When set, the normal HttpClientHandler / proxy configuration is bypassed.
     /// </summary>
-    internal static Func<HttpMessageHandler>? HttpMessageHandlerFactory { get; set; }
+    public static Func<HttpMessageHandler>? HttpMessageHandlerFactory { get; set; }
 
     /// <summary>
     /// Allows tests or callers to replace the default logger.

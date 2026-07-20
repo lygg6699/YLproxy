@@ -13,13 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YLproxy.Core\YLproxy.Core.csproj" />
     <ProjectReference Include="..\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" />
     <ProjectReference Include="..\YLproxy.Models\YLproxy.Models.csproj" />
+    <ProjectReference Include="..\YLproxy.Proxy\YLproxy.Proxy.csproj" />
   </ItemGroup>
 
 </Project>

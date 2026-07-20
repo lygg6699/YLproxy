@@ -146,7 +146,7 @@ public sealed class ManagedProxyForwarder : IDisposable
 
                 if (methodUrl.Length < 2)
                 {
-                    await WriteError(clientStream, 400, "Bad Request");
+                    await this.WriteError(clientStream, 400, "Bad Request");
                     return;
                 }
 
@@ -297,7 +297,7 @@ public sealed class ManagedProxyForwarder : IDisposable
         return sb.ToString();
     }
 
-    private static async Task WriteError(NetworkStream stream, int code, string msg)
+    private async Task WriteError(NetworkStream stream, int code, string msg)
     {
         var resp = Encoding.ASCII.GetBytes($"HTTP/1.1 {code} {msg}\r\nContent-Length: 0\r\n\r\n");
         try { await stream.WriteAsync(resp).ConfigureAwait(false); }

@@ -1,0 +1,427 @@
+[2026-07-16 06:19:39] [INFO] 检查开始
+[2026-07-16 06:19:39] [INFO] 清理项目
+Build started 2026/7/16 6:19:39.
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" on node 1 (Clean target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (3) on node 2 (Clean target(s)).
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.xml".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj" (4) on node 7 (Clean target(s)).
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.deps.json".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.GeneratedMSBuildEditorConfig.editorconfig".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfoInputs.cache".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.pdb".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfo.cs".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.xml".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.csproj.CoreCompileInputs.cache".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.dll".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Models.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\refint\YLproxy.Utils.dll".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Proxy.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.xml".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Utils.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.pdb".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\ref\YLproxy.Utils.dll".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Infrastructure.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Utils.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Proxy.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.GeneratedMSBuildEditorConfig.editorconfig".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (5) on node 3 (Clean target(s)).
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.deps.json".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.AssemblyInfoInputs.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.AssemblyInfo.cs".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.csproj.CoreCompileInputs.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.xml".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy..C850C749.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\refint\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.xml".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (6) on node 4 (Clean target(s)).
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.deps.json".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\ref\YLproxy.Core.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Infrastructure.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Models.pdb".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Models.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.pdb".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Utils.pdb".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.xml".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Utils.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.pdb".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.AssemblyReference.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.xml".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.GeneratedMSBuildEditorConfig.editorconfig".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.AssemblyReference.cache".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfoInputs.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfo.cs".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfoInputs.cache".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.CoreCompileInputs.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfo.cs".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.CoreCompileInputs.cache".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy..CE186318.Up2Date".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.xml".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy..A32E2790.Up2Date".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\refint\YLproxy.Proxy.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.pdb".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\refint\YLproxy.Infrastructure.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\ref\YLproxy.Proxy.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\ref\YLproxy.Infrastructure.dll".
+     3>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (Clean target(s)).
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\tests\YLproxy.Tests.csproj" (2) on node 1 (Clean target(s)).
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\.msCoverageSourceRootsMapping_YLproxy.Tests".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\CoverletSourceRootsMapping_YLproxy.Tests".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\testhost.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.abstractions.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\testhost.exe".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.runner.visualstudio.testadapter.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.runtimeconfig.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.CoreUtilities.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.PlatformAbstractions.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.CommunicationUtilities.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.CrossPlatEngine.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.Utilities.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.VisualStudio.TestPlatform.Common.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Newtonsoft.Json.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\System.Security.Cryptography.ProtectedData.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.assert.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.execution.dotnet.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Utils.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Core.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Proxy.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Infrastructure.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy..5EC4ABFD.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\refint\YLproxy.Tests.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.genruntimeconfig.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\ref\YLproxy.Tests.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (7) on node 5 (Clean target(s)).
+     7>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\refint\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\ref\YLproxy.Models.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj" (8) on node 6 (Clean target(s)).
+     8>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\AppSettings.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\3proxy.exe".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\3proxy_crypt.exe".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\FilePlugin.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\StringsPlugin.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\TrafficPlugin.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\utf8tocp1251.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\runtime\3proxy\bin64\WindowsAuthentication.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.exe".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.runtimeconfig.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Core.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Infrastructure.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Proxy.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Utils.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\MainWindow.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\Views\AddProxyWindow.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\Views\MainView.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\App.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI_MarkupCompile.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI_MarkupCompile.lref".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.g.resources".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy..4F5F54E8.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\refint\YLproxy.GUI.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.genruntimeconfig.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\ref\YLproxy.GUI.dll".
+     7>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (Clean target(s)).
+     5>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (Clean target(s)).
+     6>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (Clean target(s)).
+     4>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj" (Clean target(s)).
+     8>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj" (Clean target(s)).
+     2>Done Building Project "E:\GZQ\YLXCX\YLproxy\tests\YLproxy.Tests.csproj" (Clean target(s)).
+     1>Done Building Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (Clean target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.27
+[2026-07-16 06:19:41] [SUCCESS] 清理成功
+[2026-07-16 06:19:41] [INFO] 开始编译
+  Determining projects to restore...
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj (in 168 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj (in 168 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj (in 179 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj (in 301 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj (in 301 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj (in 301 ms).
+  1 of 7 projects are up-to-date for restore.
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(84,22): error CS1929: 'TcpClient' does not contain a definition for 'ConfigureAwait' and the best extension method overload 'TaskAsyncEnumerableExtensions.ConfigureAwait(IAsyncDisposable, bool)' requires a receiver of type 'System.IAsyncDisposable' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(122,53): error CS1503: Argument 1: cannot convert from 'System.ReadOnlySpan<byte>' to 'System.ReadOnlyMemory<byte>' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(8,1): error IDE0036: Modifiers are not ordered (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0036) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(11,58): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(11,58): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(20,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(20,13): error IDE0078: Use pattern matching (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0078) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(42,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(69,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(14,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(15,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(16,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(21,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(48,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(46,27): error CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Checking 3proxy dependencies...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(93,27): error CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] All 3proxy dependencies verified successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(81,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(102,21): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(109,21): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(112,21): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(117,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(133,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(176,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(190,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(207,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(219,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(151,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(19,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(28,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(139,13): error CA1031: Modify 'HandleClientAsync' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(236,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(249,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(222,13): error CA1031: Modify 'Start' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(332,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(335,9): error CA1031: Modify 'TryDeleteConfigFile' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(245,9): error CA1031: Modify 'IsRunning' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(361,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(368,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(160,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(165,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(174,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(201,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(209,9): error CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(217,9): error CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): error CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(239,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(295,35): error CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Waiting for process to exit...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(303,39): error CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] 3proxy process exited successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(307,39): error CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Warning: 3proxy process did not exit after waiting.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(1,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(5,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(1,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(4,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(7,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(10,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(1,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+
+Build FAILED.
+
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(84,22): error CS1929: 'TcpClient' does not contain a definition for 'ConfigureAwait' and the best extension method overload 'TaskAsyncEnumerableExtensions.ConfigureAwait(IAsyncDisposable, bool)' requires a receiver of type 'System.IAsyncDisposable' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(122,53): error CS1503: Argument 1: cannot convert from 'System.ReadOnlySpan<byte>' to 'System.ReadOnlyMemory<byte>' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(8,1): error IDE0036: Modifiers are not ordered (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0036) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(11,58): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(11,58): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(20,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(20,13): error IDE0078: Use pattern matching (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0078) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(42,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(69,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(14,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(15,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(16,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(21,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(48,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(46,27): error CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Checking 3proxy dependencies...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(93,27): error CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] All 3proxy dependencies verified successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(81,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(102,21): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(109,21): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(112,21): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(117,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(133,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(176,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(190,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(207,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(219,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(151,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(19,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(28,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(139,13): error CA1031: Modify 'HandleClientAsync' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(236,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(249,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(222,13): error CA1031: Modify 'Start' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(332,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(335,9): error CA1031: Modify 'TryDeleteConfigFile' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(245,9): error CA1031: Modify 'IsRunning' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(361,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(368,17): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(160,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(165,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(174,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(201,9): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(209,9): error CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(217,9): error CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): error CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(239,13): error IDE0011: Add braces to 'if' statement. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(295,35): error CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Waiting for process to exit...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(303,39): error CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] 3proxy process exited successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(307,39): error CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Warning: 3proxy process did not exit after waiting.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(1,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ConfigGenerator.cs(5,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): error IDE0300: Collection initialization can be simplified (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0300) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(1,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(4,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(7,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(10,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyRuntimeConfiguration.cs(1,1): error IDE0005: Using directive is unnecessary. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+    0 Warning(s)
+    58 Error(s)
+
+Time Elapsed 00:00:03.05
+[2026-07-16 06:19:44] [ERROR] 编译失败 (Exit Code: 1)

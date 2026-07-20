@@ -1,0 +1,650 @@
+﻿2026-07-16 10:10:21.257 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 10:10:21.260 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_0cb76d5ad01b43e485eb63ee908599c1\config.json.migration.bak
+2026-07-16 10:10:21.271 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 10:10:21.272 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 10:10:21.411 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 10:10:21.413 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_41febbb69dee48348ac973083abf1081\config.json.migration.bak
+2026-07-16 10:10:21.414 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 10:10:21.415 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 10:10:21.435 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 10:10:21.436 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_680a34e24eac4fdb91fd695303853d92\config.json.migration.bak
+2026-07-16 10:10:21.438 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 10:10:21.439 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 10:10:21.440 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 10:10:21.458 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 10:10:21.459 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_89a0cad4f55a464c8f6d2a9f1c73ecf4\config.json.migration.bak
+2026-07-16 10:10:21.460 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.Add(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 268
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 93
+2026-07-16 10:10:21.471 [WARN] Failed to remove database file during rollback: The process cannot access the file 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_89a0cad4f55a464c8f6d2a9f1c73ecf4\ylproxy.db' because it is being used by another process.
+2026-07-16 10:10:21.489 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 10:11:25.562 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 10:11:25.564 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\config.json.migration.bak
+2026-07-16 10:11:25.570 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.Add(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 268
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 93
+2026-07-16 10:11:25.689 [WARN] Failed to delete 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\ylproxy.db' during rollback: The process cannot access the file 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\ylproxy.db' because it is being used by another process.
+2026-07-16 10:11:25.803 [WARN] Failed to delete 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\ylproxy.db-shm' during rollback: The process cannot access the file 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\ylproxy.db-shm' because it is being used by another process.
+2026-07-16 10:11:25.921 [WARN] Failed to delete 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\ylproxy.db-wal' during rollback: The process cannot access the file 'C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d94c50d1811d4747a78e4e1f141d252a\ylproxy.db-wal' because it is being used by another process.
+2026-07-16 10:12:11.641 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 10:12:11.644 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_5acb9be2f21a49f1b0d3080f60e59875\config.json.migration.bak
+2026-07-16 10:12:11.653 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.Add(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 268
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 93
+2026-07-16 10:12:24.954 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 10:12:24.956 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_3e43453ffa1240ca906cf4e36e1e66bf\config.json.migration.bak
+2026-07-16 10:12:24.965 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 10:12:24.966 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 10:12:25.089 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 10:12:25.090 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_088ae50fbe6c4bc8b0582a6c2c01ab61\config.json.migration.bak
+2026-07-16 10:12:25.099 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 10:12:25.100 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 10:12:25.113 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 10:12:25.115 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_752804df0b1d4dfaa78fa142a323b7f6\config.json.migration.bak
+2026-07-16 10:12:25.116 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 10:12:25.117 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 10:12:25.117 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 10:12:25.136 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 10:12:25.137 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_ffc27e6774854498bd1f92b863671d34\config.json.migration.bak
+2026-07-16 10:12:25.138 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.Add(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 268
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 93
+2026-07-16 10:12:25.162 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 11:48:21.158 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 11:48:21.160 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_eb7bb52136b547a89d517dfed0e00096\config.json.migration.bak
+2026-07-16 11:48:21.172 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 11:48:21.173 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 11:48:21.191 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 11:48:21.192 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_4928e4f7ff854270b12d31355b8d4e50\config.json.migration.bak
+2026-07-16 11:48:21.193 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 11:48:21.194 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 11:48:21.206 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 11:48:21.207 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_fc75c233e9d44c69b2aa74d1444dc4d5\config.json.migration.bak
+2026-07-16 11:48:21.209 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 11:48:21.210 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 11:48:21.210 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 11:48:21.228 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 11:48:21.229 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d98cff4812aa416e8db0f04a3f4999d2\config.json.migration.bak
+2026-07-16 11:48:21.230 [INFO] Inserted 2 proxy records into SQLite.
+2026-07-16 11:48:21.231 [INFO] Migration completed successfully: 2 records migrated.
+2026-07-16 11:48:21.243 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 11:50:47.051 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 11:50:47.053 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_13c02eb5177248d49e16c300fdfc3cc2\config.json.migration.bak
+2026-07-16 11:50:47.064 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 11:50:47.065 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 11:50:47.085 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 11:50:47.087 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_ba9054818be34a9099844edc37b784de\config.json.migration.bak
+2026-07-16 11:50:47.088 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 11:50:47.089 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 11:50:47.101 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 11:50:47.102 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_c09d4f048c1542c9b94f246fa6a0e865\config.json.migration.bak
+2026-07-16 11:50:47.104 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 11:50:47.105 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 11:50:47.105 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 11:50:47.122 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 11:50:47.123 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_9a619b0ea4774ca2a7acd9f142066c97\config.json.migration.bak
+2026-07-16 11:50:47.124 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 11:50:47.151 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 11:52:33.025 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 11:52:33.027 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_93b5407925ac48a1b86803b01a925f23\config.json.migration.bak
+2026-07-16 11:52:33.037 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 11:52:33.038 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 11:52:33.055 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 11:52:33.057 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_09539e91d13643398b87f4799763ea8e\config.json.migration.bak
+2026-07-16 11:52:33.058 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 11:52:33.059 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 11:52:33.078 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 11:52:33.079 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_483b9a4300f04b5cb39b6f23e223876a\config.json.migration.bak
+2026-07-16 11:52:33.081 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 11:52:33.082 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 11:52:33.082 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 11:52:33.098 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 11:52:33.100 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_a6830463629c4049a2c424ec1f4e4389\config.json.migration.bak
+2026-07-16 11:52:33.101 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 11:52:33.130 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 12:24:09.436 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 12:24:09.438 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_23b7404eee5d4f26b1f124f3211f5661\config.json.migration.bak
+2026-07-16 12:24:09.451 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 12:24:09.452 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 12:24:09.483 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 12:24:09.483 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_a11ce94a1bf24e9daa1fe82d393d19c9\config.json.migration.bak
+2026-07-16 12:24:09.486 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 12:24:09.487 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 12:24:09.509 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 12:24:09.510 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_2f37c5c32df247d3bd7a36d2bfb8a56f\config.json.migration.bak
+2026-07-16 12:24:09.513 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 12:24:09.514 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 12:24:09.515 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 12:24:09.537 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 12:24:09.538 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_e140827cab3a417b98a9928f43f4b7b9\config.json.migration.bak
+2026-07-16 12:24:09.539 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 12:24:09.571 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 14:00:21.591 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:21.629 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:21.781 [ERROR] POST /proxies: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:21.816 [INFO] API server stopping...
+2026-07-16 14:00:21.828 [INFO] API server stopped.
+2026-07-16 14:00:21.854 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:21.864 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:21.883 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:00:21.886 [INFO] API server stopping...
+2026-07-16 14:00:21.887 [INFO] API server stopped.
+2026-07-16 14:00:21.891 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:21.895 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:21.912 [ERROR] GET /stats: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:21.921 [INFO] API server stopping...
+2026-07-16 14:00:21.922 [INFO] API server stopped.
+2026-07-16 14:00:21.929 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:21.931 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:21.957 [ERROR] GET /proxies/999: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:21.960 [INFO] API server stopping...
+2026-07-16 14:00:21.970 [INFO] API server stopped.
+2026-07-16 14:00:21.976 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:21.978 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:21.996 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:00:21.998 [INFO] API server stopping...
+2026-07-16 14:00:21.999 [INFO] API server stopped.
+2026-07-16 14:00:22.003 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:22.005 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:22.022 [ERROR] GET /proxies: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:22.028 [INFO] API server stopping...
+2026-07-16 14:00:22.029 [INFO] API server stopped.
+2026-07-16 14:00:22.034 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:22.035 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:22.128 [ERROR] DELETE /proxies/2: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:22.133 [ERROR] GET /proxies/2: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:22.136 [INFO] API server stopping...
+2026-07-16 14:00:22.137 [INFO] API server stopped.
+2026-07-16 14:00:22.142 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:22.145 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:22.159 [WARN] API: request rejected — invalid token
+2026-07-16 14:00:22.162 [INFO] API server stopping...
+2026-07-16 14:00:22.163 [INFO] API server stopped.
+2026-07-16 14:00:22.166 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:00:22.168 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:00:22.187 [ERROR] GET /proxies/1: Proxy data must be stored in the repository data/config.json file. (Parameter 'configPath')
+2026-07-16 14:00:22.191 [INFO] API server stopping...
+2026-07-16 14:00:22.205 [INFO] API server stopped.
+2026-07-16 14:03:18.432 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.451 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.585 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 14:03:18.622 [INFO] API server stopping...
+2026-07-16 14:03:18.631 [INFO] API server stopped.
+2026-07-16 14:03:18.648 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.656 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.672 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:03:18.674 [INFO] API server stopping...
+2026-07-16 14:03:18.676 [INFO] API server stopped.
+2026-07-16 14:03:18.682 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.683 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.716 [INFO] API server stopping...
+2026-07-16 14:03:18.717 [INFO] API server stopped.
+2026-07-16 14:03:18.721 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.723 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.756 [INFO] API server stopping...
+2026-07-16 14:03:18.757 [INFO] API server stopped.
+2026-07-16 14:03:18.771 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.773 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.793 [INFO] API server stopping...
+2026-07-16 14:03:18.794 [INFO] API server stopped.
+2026-07-16 14:03:18.798 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.800 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.821 [INFO] API server stopping...
+2026-07-16 14:03:18.822 [INFO] API server stopped.
+2026-07-16 14:03:18.831 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.834 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.856 [INFO] API: deleted proxy 2
+2026-07-16 14:03:18.871 [INFO] API server stopping...
+2026-07-16 14:03:18.872 [INFO] API server stopped.
+2026-07-16 14:03:18.875 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.876 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.889 [WARN] API: request rejected — invalid token
+2026-07-16 14:03:18.891 [INFO] API server stopping...
+2026-07-16 14:03:18.892 [INFO] API server stopped.
+2026-07-16 14:03:18.896 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:18.898 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:18.918 [INFO] API server stopping...
+2026-07-16 14:03:18.919 [INFO] API server stopped.
+2026-07-16 14:03:46.720 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 14:03:46.722 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_93dda51282214bd195c60a8401ad1c05\config.json.migration.bak
+2026-07-16 14:03:46.739 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 14:03:46.740 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 14:03:46.778 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:46.802 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:03:46.803 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_32c0704f9ef34678bba5ed9cf4aace2c\config.json.migration.bak
+2026-07-16 14:03:46.804 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:03:46.805 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:03:46.814 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:46.828 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:03:46.829 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_1dc32155791541f8b8dd97fe58a8026a\config.json.migration.bak
+2026-07-16 14:03:46.832 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:03:46.833 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:03:46.834 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 14:03:46.849 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 14:03:46.850 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_de6b0b0b786d4c68bf1d819ec86bbdd7\config.json.migration.bak
+2026-07-16 14:03:46.851 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 14:03:46.885 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 14:03:46.965 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 14:03:47.001 [INFO] API server stopping...
+2026-07-16 14:03:47.013 [INFO] API server stopped.
+2026-07-16 14:03:47.027 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.035 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.050 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:03:47.052 [INFO] API server stopping...
+2026-07-16 14:03:47.053 [INFO] API server stopped.
+2026-07-16 14:03:47.056 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.058 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.094 [INFO] API server stopping...
+2026-07-16 14:03:47.096 [INFO] API server stopped.
+2026-07-16 14:03:47.099 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.101 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.120 [INFO] API server stopping...
+2026-07-16 14:03:47.121 [INFO] API server stopped.
+2026-07-16 14:03:47.133 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.134 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.151 [INFO] API server stopping...
+2026-07-16 14:03:47.152 [INFO] API server stopped.
+2026-07-16 14:03:47.155 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.157 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.176 [INFO] API server stopping...
+2026-07-16 14:03:47.177 [INFO] API server stopped.
+2026-07-16 14:03:47.194 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.195 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.215 [INFO] API: deleted proxy 2
+2026-07-16 14:03:47.229 [INFO] API server stopping...
+2026-07-16 14:03:47.230 [INFO] API server stopped.
+2026-07-16 14:03:47.233 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.234 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.250 [WARN] API: request rejected — invalid token
+2026-07-16 14:03:47.253 [INFO] API server stopping...
+2026-07-16 14:03:47.254 [INFO] API server stopped.
+2026-07-16 14:03:47.257 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:03:47.258 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:03:47.279 [INFO] API server stopping...
+2026-07-16 14:03:47.280 [INFO] API server stopped.
+2026-07-16 14:32:43.970 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 14:32:43.972 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_53b9c07c4a634c43ba489f0e4753c95f\config.json.migration.bak
+2026-07-16 14:32:43.983 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 14:32:43.984 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 14:32:44.027 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:32:44.036 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_bca371f660b4467696b6ad782b22624f\config.json.migration.bak
+2026-07-16 14:32:44.037 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:32:44.037 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:32:44.053 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.086 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:32:44.087 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_10ba9630311f4d388f9e56026b4f59f2\config.json.migration.bak
+2026-07-16 14:32:44.088 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.089 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:32:44.089 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:32:44.090 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 14:32:44.102 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 14:32:44.103 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_9230e986e26b4dff82bfc34912b71141\config.json.migration.bak
+2026-07-16 14:32:44.104 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 14:32:44.134 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 14:32:44.236 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 14:32:44.266 [INFO] API server stopping...
+2026-07-16 14:32:44.275 [INFO] API server stopped.
+2026-07-16 14:32:44.285 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.292 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.308 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:32:44.317 [INFO] API server stopping...
+2026-07-16 14:32:44.318 [INFO] API server stopped.
+2026-07-16 14:32:44.322 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.323 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.360 [INFO] API server stopping...
+2026-07-16 14:32:44.360 [INFO] API server stopped.
+2026-07-16 14:32:44.365 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.370 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.390 [INFO] API server stopping...
+2026-07-16 14:32:44.391 [INFO] API server stopped.
+2026-07-16 14:32:44.404 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.405 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.424 [INFO] API server stopping...
+2026-07-16 14:32:44.425 [INFO] API server stopped.
+2026-07-16 14:32:44.429 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.431 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.490 [INFO] API server stopping...
+2026-07-16 14:32:44.491 [INFO] API server stopped.
+2026-07-16 14:32:44.512 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.514 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.536 [INFO] API: deleted proxy 2
+2026-07-16 14:32:44.552 [INFO] API server stopping...
+2026-07-16 14:32:44.553 [INFO] API server stopped.
+2026-07-16 14:32:44.557 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.558 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.573 [WARN] API: request rejected — invalid token
+2026-07-16 14:32:44.575 [INFO] API server stopping...
+2026-07-16 14:32:44.576 [INFO] API server stopped.
+2026-07-16 14:32:44.579 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:32:44.580 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:32:44.601 [INFO] API server stopping...
+2026-07-16 14:32:44.603 [INFO] API server stopped.
+2026-07-16 14:33:25.819 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 14:33:25.829 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_c3d93d1b47c74b3b87977d169cd2989e\config.json.migration.bak
+2026-07-16 14:33:25.842 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 14:33:25.843 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 14:33:25.872 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:33:25.872 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:25.872 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_37d0d3afbb1b4b158a0c9bebd9ea3a2d\config.json.migration.bak
+2026-07-16 14:33:25.873 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:33:25.874 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:33:25.891 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:33:25.892 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_e0dc1a26e8ef4d0f84f14778e1e659ee\config.json.migration.bak
+2026-07-16 14:33:25.894 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:33:25.895 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:33:25.895 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 14:33:25.906 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:25.911 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 14:33:25.912 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_9a0c348fb9ca485b8aaf61e55278cf05\config.json.migration.bak
+2026-07-16 14:33:25.913 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 14:33:25.945 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 14:33:26.069 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 14:33:26.115 [INFO] API server stopping...
+2026-07-16 14:33:26.126 [INFO] API server stopped.
+2026-07-16 14:33:26.136 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.158 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.180 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:33:26.182 [INFO] API server stopping...
+2026-07-16 14:33:26.183 [INFO] API server stopped.
+2026-07-16 14:33:26.186 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.188 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.229 [INFO] API server stopping...
+2026-07-16 14:33:26.231 [INFO] API server stopped.
+2026-07-16 14:33:26.234 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.244 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.266 [INFO] API server stopping...
+2026-07-16 14:33:26.267 [INFO] API server stopped.
+2026-07-16 14:33:26.283 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.285 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.309 [INFO] API server stopping...
+2026-07-16 14:33:26.311 [INFO] API server stopped.
+2026-07-16 14:33:26.314 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.316 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.348 [INFO] API server stopping...
+2026-07-16 14:33:26.349 [INFO] API server stopped.
+2026-07-16 14:33:26.361 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.363 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.387 [INFO] API: deleted proxy 2
+2026-07-16 14:33:26.408 [INFO] API server stopping...
+2026-07-16 14:33:26.409 [INFO] API server stopped.
+2026-07-16 14:33:26.412 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.414 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.441 [WARN] API: request rejected — invalid token
+2026-07-16 14:33:26.444 [INFO] API server stopping...
+2026-07-16 14:33:26.444 [INFO] API server stopped.
+2026-07-16 14:33:26.453 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:33:26.454 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:33:26.477 [INFO] API server stopping...
+2026-07-16 14:33:26.478 [INFO] API server stopped.
+2026-07-16 14:38:41.349 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 14:38:41.380 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_fd56294471194b4494458c06a48c1ff8\config.json.migration.bak
+2026-07-16 14:38:41.423 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 14:38:41.424 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 14:38:41.461 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:38:41.463 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_2c129eec99284d71913597b675f44c9c\config.json.migration.bak
+2026-07-16 14:38:41.465 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:38:41.465 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:38:41.482 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:41.499 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 14:38:41.500 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_a23532de5f1c42a1abad5bd0ba572c10\config.json.migration.bak
+2026-07-16 14:38:41.502 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 14:38:41.502 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 14:38:41.503 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 14:38:41.522 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 14:38:41.523 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_774fa84c1fbc401cb1640d3f6371df73\config.json.migration.bak
+2026-07-16 14:38:41.525 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 14:38:41.567 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 14:38:41.577 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:41.728 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 14:38:41.765 [INFO] API server stopping...
+2026-07-16 14:38:41.777 [INFO] API server stopped.
+2026-07-16 14:38:41.789 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:41.800 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:41.819 [WARN] API: request rejected — no Authorization header
+2026-07-16 14:38:41.825 [INFO] API server stopping...
+2026-07-16 14:38:41.826 [INFO] API server stopped.
+2026-07-16 14:38:41.830 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:41.832 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:41.874 [INFO] API server stopping...
+2026-07-16 14:38:41.875 [INFO] API server stopped.
+2026-07-16 14:38:41.879 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:41.881 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:41.911 [INFO] API server stopping...
+2026-07-16 14:38:41.912 [INFO] API server stopped.
+2026-07-16 14:38:42.043 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:42.091 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:42.133 [INFO] API server stopping...
+2026-07-16 14:38:42.134 [INFO] API server stopped.
+2026-07-16 14:38:42.143 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:42.155 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:42.189 [INFO] API server stopping...
+2026-07-16 14:38:42.190 [INFO] API server stopped.
+2026-07-16 14:38:42.212 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:42.216 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:42.244 [INFO] API: deleted proxy 2
+2026-07-16 14:38:42.260 [INFO] API server stopping...
+2026-07-16 14:38:42.261 [INFO] API server stopped.
+2026-07-16 14:38:42.265 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:42.270 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:42.290 [WARN] API: request rejected — invalid token
+2026-07-16 14:38:42.302 [INFO] API server stopping...
+2026-07-16 14:38:42.303 [INFO] API server stopped.
+2026-07-16 14:38:42.307 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 14:38:42.309 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 14:38:42.354 [INFO] API server stopping...
+2026-07-16 14:38:42.355 [INFO] API server stopped.
+2026-07-16 15:02:32.055 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 15:02:32.058 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_5bdc99c3c04b494983d80d7d0457dc8b\config.json.migration.bak
+2026-07-16 15:02:32.078 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 15:02:32.079 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 15:02:32.106 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 15:02:32.107 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_7690174d31634a88a82a0646ca700064\config.json.migration.bak
+2026-07-16 15:02:32.108 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 15:02:32.109 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 15:02:32.113 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.124 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 15:02:32.126 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_02d840ea85eb464ab75873171294e5d0\config.json.migration.bak
+2026-07-16 15:02:32.127 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 15:02:32.128 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 15:02:32.128 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 15:02:32.142 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 15:02:32.143 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_64b460c7e7974d3bbaf0e5d4a46c5d64\config.json.migration.bak
+2026-07-16 15:02:32.145 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 15:02:32.153 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.180 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 15:02:32.314 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 15:02:32.352 [INFO] API server stopping...
+2026-07-16 15:02:32.363 [INFO] API server stopped.
+2026-07-16 15:02:32.374 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.394 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.419 [WARN] API: request rejected — no Authorization header
+2026-07-16 15:02:32.437 [INFO] API server stopping...
+2026-07-16 15:02:32.439 [INFO] API server stopped.
+2026-07-16 15:02:32.443 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.446 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.481 [INFO] API server stopping...
+2026-07-16 15:02:32.481 [INFO] API server stopped.
+2026-07-16 15:02:32.486 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.489 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.522 [INFO] API server stopping...
+2026-07-16 15:02:32.523 [INFO] API server stopped.
+2026-07-16 15:02:32.532 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.535 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.559 [INFO] API server stopping...
+2026-07-16 15:02:32.561 [INFO] API server stopped.
+2026-07-16 15:02:32.567 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.569 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.590 [INFO] API server stopping...
+2026-07-16 15:02:32.591 [INFO] API server stopped.
+2026-07-16 15:02:32.613 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.615 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.639 [INFO] API: deleted proxy 2
+2026-07-16 15:02:32.658 [INFO] API server stopping...
+2026-07-16 15:02:32.659 [INFO] API server stopped.
+2026-07-16 15:02:32.664 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.666 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.683 [WARN] API: request rejected — invalid token
+2026-07-16 15:02:32.686 [INFO] API server stopping...
+2026-07-16 15:02:32.687 [INFO] API server stopped.
+2026-07-16 15:02:32.691 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:02:32.692 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:02:32.715 [INFO] API server stopping...
+2026-07-16 15:02:32.716 [INFO] API server stopped.
+2026-07-16 15:22:46.590 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 15:22:46.592 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_10e62e4ec40b4df59deca75f6398a826\config.json.migration.bak
+2026-07-16 15:22:46.605 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 15:22:46.607 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 15:22:46.631 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 15:22:46.632 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_9db999bce0be4b809ccb81b85d29c167\config.json.migration.bak
+2026-07-16 15:22:46.634 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 15:22:46.635 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 15:22:46.652 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:46.653 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 15:22:46.655 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_d8a8f9d89fc74304a18c7d3a9dcb2ef7\config.json.migration.bak
+2026-07-16 15:22:46.658 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 15:22:46.659 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 15:22:46.659 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 15:22:46.679 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:46.682 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 15:22:46.684 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_4c793b17689947f883113bdadeac8227\config.json.migration.bak
+2026-07-16 15:22:46.685 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 15:22:46.718 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 15:22:46.829 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 15:22:46.857 [INFO] API server stopping...
+2026-07-16 15:22:46.866 [INFO] API server stopped.
+2026-07-16 15:22:46.881 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:46.891 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:46.909 [WARN] API: request rejected — no Authorization header
+2026-07-16 15:22:46.912 [INFO] API server stopping...
+2026-07-16 15:22:46.913 [INFO] API server stopped.
+2026-07-16 15:22:46.919 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:46.923 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:46.958 [INFO] API server stopping...
+2026-07-16 15:22:46.959 [INFO] API server stopped.
+2026-07-16 15:22:46.963 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:46.966 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:46.994 [INFO] API server stopping...
+2026-07-16 15:22:46.995 [INFO] API server stopped.
+2026-07-16 15:22:47.009 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:47.011 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:47.036 [INFO] API server stopping...
+2026-07-16 15:22:47.039 [INFO] API server stopped.
+2026-07-16 15:22:47.044 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:47.046 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:47.079 [INFO] API server stopping...
+2026-07-16 15:22:47.081 [INFO] API server stopped.
+2026-07-16 15:22:47.095 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:47.098 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:47.125 [INFO] API: deleted proxy 2
+2026-07-16 15:22:47.148 [INFO] API server stopping...
+2026-07-16 15:22:47.149 [INFO] API server stopped.
+2026-07-16 15:22:47.154 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:47.156 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:47.178 [WARN] API: request rejected — invalid token
+2026-07-16 15:22:47.181 [INFO] API server stopping...
+2026-07-16 15:22:47.182 [INFO] API server stopped.
+2026-07-16 15:22:47.187 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:22:47.189 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:22:47.219 [INFO] API server stopping...
+2026-07-16 15:22:47.220 [INFO] API server stopped.
+2026-07-16 15:28:18.284 [INFO] Starting migration of 3 proxy records from JSON to SQLite.
+2026-07-16 15:28:18.285 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_28d1f98ab5a243598ef95a2813840eeb\config.json.migration.bak
+2026-07-16 15:28:18.296 [INFO] Inserted 3 proxy records into SQLite.
+2026-07-16 15:28:18.297 [INFO] Migration completed successfully: 3 records migrated.
+2026-07-16 15:28:18.332 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 15:28:18.333 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_042b586d1c664418b02d67c919f132af\config.json.migration.bak
+2026-07-16 15:28:18.334 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 15:28:18.335 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 15:28:18.343 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.361 [INFO] Starting migration of 1 proxy records from JSON to SQLite.
+2026-07-16 15:28:18.362 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_83eb50de3b3a49d58612be8e515c0217\config.json.migration.bak
+2026-07-16 15:28:18.364 [INFO] Inserted 1 proxy records into SQLite.
+2026-07-16 15:28:18.364 [INFO] Migration completed successfully: 1 records migrated.
+2026-07-16 15:28:18.365 [INFO] Migration already completed (marker file exists). Skipping.
+2026-07-16 15:28:18.374 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.383 [INFO] Starting migration of 2 proxy records from JSON to SQLite.
+2026-07-16 15:28:18.385 [INFO] Backup created: C:\Users\Y\AppData\Local\Temp\YLproxy_Test_188194fb65da4d29abbf2a35f69b764d\config.json.migration.bak
+2026-07-16 15:28:18.386 [ERROR] Migration failed after inserting 1 of 2 records.
+Exception: Simulated database failure on second insert.
+StackTrace:    at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.ThrowOnSecond(ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 279
+   at YLproxy.Tests.SqliteMigrationTests.ThrowOnSecondAddRepository.AddWithTransaction(SqliteTransaction transaction, ProxyItem proxy) in E:\GZQ\YLXCX\YLproxy\tests\SqliteMigrationTests.cs:line 272
+   at YLproxy.Core.Data.DataMigrationService.MigrateIfNeeded() in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\Data\DataMigrationService.cs:line 94
+2026-07-16 15:28:18.420 [INFO] No proxy data to migrate. Creating marker file.
+2026-07-16 15:28:18.525 [INFO] API: added proxy 3 (10.0.0.1:8080)
+2026-07-16 15:28:18.565 [INFO] API server stopping...
+2026-07-16 15:28:18.576 [INFO] API server stopped.
+2026-07-16 15:28:18.589 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.599 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.617 [WARN] API: request rejected — no Authorization header
+2026-07-16 15:28:18.621 [INFO] API server stopping...
+2026-07-16 15:28:18.624 [INFO] API server stopped.
+2026-07-16 15:28:18.628 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.633 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.671 [INFO] API server stopping...
+2026-07-16 15:28:18.672 [INFO] API server stopped.
+2026-07-16 15:28:18.677 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.679 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.702 [INFO] API server stopping...
+2026-07-16 15:28:18.703 [INFO] API server stopped.
+2026-07-16 15:28:18.713 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.715 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.736 [INFO] API server stopping...
+2026-07-16 15:28:18.737 [INFO] API server stopped.
+2026-07-16 15:28:18.741 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.742 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.765 [INFO] API server stopping...
+2026-07-16 15:28:18.766 [INFO] API server stopped.
+2026-07-16 15:28:18.786 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.788 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.808 [INFO] API: deleted proxy 2
+2026-07-16 15:28:18.821 [INFO] API server stopping...
+2026-07-16 15:28:18.822 [INFO] API server stopped.
+2026-07-16 15:28:18.825 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.827 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.843 [WARN] API: request rejected — invalid token
+2026-07-16 15:28:18.845 [INFO] API server stopping...
+2026-07-16 15:28:18.846 [INFO] API server stopped.
+2026-07-16 15:28:18.849 [INFO] API server starting on http://127.0.0.1:9101
+2026-07-16 15:28:18.851 [INFO] API server started on http://127.0.0.1:9101
+2026-07-16 15:28:18.877 [INFO] API server stopping...
+2026-07-16 15:28:18.878 [INFO] API server stopped.

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YLproxy.Utils</name>
+    </assembly>
+    <members>
+        <member name="M:YLproxy.Utils.NetworkUtil.GetBestLocalIp">
+            <summary>
+            Returns the first non-loopback IPv4 address of the local machine, or null.
+            </summary>
+        </member>
+    </members>
+</doc>

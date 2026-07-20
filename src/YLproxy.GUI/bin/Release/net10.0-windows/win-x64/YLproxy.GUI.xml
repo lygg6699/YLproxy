@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YLproxy.GUI</name>
+    </assembly>
+    <members>
+        <member name="T:YLproxy.GUI.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:YLproxy.GUI.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:YLproxy.GUI.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:YLproxy.GUI.InverseBoolConverter">
+            <summary>
+            反转布尔值的转换器，用于按钮的 IsEnabled 属性绑定
+            </summary>
+        </member>
+        <member name="M:YLproxy.GUI.MainViewModel.RefreshDataGrid">
+            <summary>
+            Force-refresh DataGrid by re-inserting all items (since ProxyItem lacks INotifyPropertyChanged)
+            </summary>
+        </member>
+        <member name="T:YLproxy.GUI.MainWindow">
+            <summary>
+            Interaction logic for MainWindow.xaml
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:YLproxy.GUI.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:YLproxy.GUI.Views.AddProxyWindow">
+            <summary>
+            AddProxyWindow
+            </summary>
+        </member>
+        <member name="M:YLproxy.GUI.Views.AddProxyWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:YLproxy.GUI.Views.MainView">
+            <summary>
+            MainView
+            </summary>
+        </member>
+        <member name="M:YLproxy.GUI.Views.MainView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

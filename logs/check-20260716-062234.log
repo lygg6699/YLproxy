@@ -1,0 +1,156 @@
+[2026-07-16 06:22:34] [INFO] 检查开始
+[2026-07-16 06:22:34] [INFO] 清理项目
+Build started 2026/7/16 6:22:35.
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" on node 1 (Clean target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (3) on node 2 (Clean target(s)).
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (4) on node 6 (Clean target(s)).
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.deps.json".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (5) on node 7 (Clean target(s)).
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.deps.json".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.xml".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.pdb".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.pdb".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.xml".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.xml".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.GeneratedMSBuildEditorConfig.editorconfig".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.pdb".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.GeneratedMSBuildEditorConfig.editorconfig".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfoInputs.cache".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfoInputs.cache".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfo.cs".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfo.cs".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.pdb".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.csproj.CoreCompileInputs.cache".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.AssemblyReference.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.dll".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\refint\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\refint\YLproxy.Models.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.xml".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.xml".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfoInputs.cache".
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\ref\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.pdb".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.CoreCompileInputs.cache".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\ref\YLproxy.Models.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy..A32E2790.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\refint\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.pdb".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (6) on node 4 (Clean target(s)).
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfo.cs".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\ref\YLproxy.Infrastructure.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.CoreCompileInputs.cache".
+     4>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (Clean target(s)).
+     5>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (Clean target(s)).
+     3>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (Clean target(s)).
+     6>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (Clean target(s)).
+     1>Done Building Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (Clean target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.01
+[2026-07-16 06:22:36] [SUCCESS] 清理成功
+[2026-07-16 06:22:36] [INFO] 开始编译
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(167,32): warning CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+  YLproxy.Proxy -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.dll
+  YLproxy.Core -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.dll
+  YLproxy.Tests -> E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.dll
+
+Build succeeded.
+
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(167,32): warning CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+    1 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.05
+[2026-07-16 06:22:41] [SUCCESS] 编译成功
+[2026-07-16 06:22:41] [INFO] 开始 Release 发布验证
+  Determining projects to restore...
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj (in 204 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj (in 180 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj (in 180 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj (in 290 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj (in 290 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj (in 290 ms).
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Release\net10.0\YLproxy.Models.dll
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Release\net10.0\YLproxy.Utils.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Release\net10.0\YLproxy.Infrastructure.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(167,32): warning CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+  YLproxy.Proxy -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Release\net10.0\YLproxy.Proxy.dll
+  YLproxy.Core -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Release\net10.0\YLproxy.Core.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\YLproxy.GUI.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\publish\
+[2026-07-16 06:22:47] [SUCCESS] Release 发布验证成功: E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\publish
+[2026-07-16 06:22:47] [WARNING] 跳过所有测试步骤 (--SkipTests)
+[2026-07-16 06:22:47] [WARNING] 跳过 Smoke Test (--SkipSmokeTest)
+[2026-07-16 06:22:47] [SUCCESS] 报告已生成: E:\GZQ\YLXCX\YLproxy\reports\check-report-20260716-062234.md
+[2026-07-16 06:22:47] [SUCCESS] 检查完成，所有验证通过

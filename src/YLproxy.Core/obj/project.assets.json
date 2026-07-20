@@ -2,13 +2,17 @@
   "version": 4,
   "targets": {
     "net10.0": {
-      "System.Security.Cryptography.ProtectedData/10.0.0": {
+      "System.Security.Cryptography.ProtectedData/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/net10.0/System.Security.Cryptography.ProtectedData.dll": {}
+          "lib/net9.0/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net10.0/System.Security.Cryptography.ProtectedData.dll": {}
+          "lib/net9.0/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/net8.0/_._": {}
@@ -18,7 +22,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
-          "System.Security.Cryptography.ProtectedData": "10.0.0",
+          "System.Security.Cryptography.ProtectedData": "9.0.0",
           "YLproxy.Models": "1.0.0",
           "YLproxy.Utils": "1.0.0"
         },
@@ -67,14 +71,15 @@
     }
   },
   "libraries": {
-    "System.Security.Cryptography.ProtectedData/10.0.0": {
-      "sha512": "qy6C3gQRTrfhFfuiIYU1jNwWfFdJpBVo1BARW7jgMm1zTEm3LRzLLyOLJGaAuKE+nZCGkEP71y4rj9NWjqLGdQ==",
+    "System.Security.Cryptography.ProtectedData/9.0.0": {
+      "sha512": "CJW+x/F6fmRQ7N6K8paasTw9PDZp4t7G76UjGNlSDgoHPF0h08vTzLYbLZpOLEJSg35d5wy2jCXGo84EN05DpQ==",
       "type": "package",
-      "path": "system.security.cryptography.protecteddata/10.0.0",
+      "path": "system.security.cryptography.protecteddata/9.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
+        "LICENSE.TXT",
         "PACKAGE.md",
         "THIRD-PARTY-NOTICES.TXT",
         "buildTransitive/net461/System.Security.Cryptography.ProtectedData.targets",
@@ -83,16 +88,19 @@
         "buildTransitive/netcoreapp2.0/System.Security.Cryptography.ProtectedData.targets",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
-        "lib/net10.0/System.Security.Cryptography.ProtectedData.dll",
         "lib/net462/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net462/System.Security.Cryptography.ProtectedData.xml",
         "lib/net8.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net8.0/System.Security.Cryptography.ProtectedData.xml",
         "lib/net9.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net9.0/System.Security.Cryptography.ProtectedData.xml",
         "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.xml",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "lib/xamarintvos10/_._",
         "lib/xamarinwatchos10/_._",
-        "system.security.cryptography.protecteddata.10.0.0.nupkg.sha512",
+        "system.security.cryptography.protecteddata.9.0.0.nupkg.sha512",
         "system.security.cryptography.protecteddata.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -127,20 +135,19 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\Y\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj",
+      "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
       "projectName": "YLproxy.Core",
-      "projectPath": "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/workspaces/YLproxy/src/YLproxy.Core/obj/",
+      "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
+      "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
+      "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\obj\\",
       "projectStyle": "PackageReference",
-      "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -153,17 +160,17 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj": {
-              "projectPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj"
+            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
             },
-            "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj": {
-              "projectPath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj"
+            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
             },
-            "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj": {
-              "projectPath": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj"
+            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
+              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
             },
-            "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj": {
-              "projectPath": "/workspaces/YLproxy/src/YLproxy.Utils/YLproxy.Utils.csproj"
+            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
             }
           }
         }
@@ -187,15 +194,6 @@
       "net10.0": {
         "framework": "net10.0",
         "targetAlias": "net10.0",
-        "centralPackageVersions": {
-          "coverlet.collector": "6.0.4",
-          "Microsoft.Extensions.DependencyInjection": "9.0.0",
-          "Microsoft.NET.Test.Sdk": "17.14.1",
-          "Swashbuckle.AspNetCore": "7.3.1",
-          "System.Security.Cryptography.ProtectedData": "10.0.0",
-          "xunit": "2.9.3",
-          "xunit.runner.visualstudio": "3.1.4"
-        },
         "imports": [
           "net461",
           "net462",
@@ -207,18 +205,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[10.0.10, 10.0.10]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.302/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

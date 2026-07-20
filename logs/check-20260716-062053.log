@@ -1,0 +1,151 @@
+[2026-07-16 06:20:53] [INFO] 检查开始
+[2026-07-16 06:20:53] [INFO] 清理项目
+Build started 2026/7/16 6:20:54.
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" on node 1 (Clean target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (2) on node 5 (Clean target(s)).
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (6) on node 6 (Clean target(s)).
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.deps.json".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.pdb".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.xml".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.pdb".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.GeneratedMSBuildEditorConfig.editorconfig".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.xml".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfoInputs.cache".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (3) on node 2 (Clean target(s)).
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.AssemblyReference.cache".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfo.cs".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.GeneratedMSBuildEditorConfig.editorconfig".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.GeneratedMSBuildEditorConfig.editorconfig".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.csproj.CoreCompileInputs.cache".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfoInputs.cache".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfoInputs.cache".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfo.cs".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfo.cs".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\refint\YLproxy.Utils.dll".
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.CoreCompileInputs.cache".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.csproj.CoreCompileInputs.cache".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.xml".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.dll".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.pdb".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\refint\YLproxy.Models.dll".
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\ref\YLproxy.Utils.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\ref\YLproxy.Models.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (7) on node 4 (Clean target(s)).
+     7>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy..A32E2790.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\refint\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.xml".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\ref\YLproxy.Infrastructure.dll".
+     2>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (Clean target(s)).
+     6>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (Clean target(s)).
+     7>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (Clean target(s)).
+     3>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (Clean target(s)).
+     1>Done Building Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (Clean target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.88
+[2026-07-16 06:20:54] [SUCCESS] 清理成功
+[2026-07-16 06:20:55] [INFO] 开始编译
+  Determining projects to restore...
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj (in 162 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj (in 161 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj (in 186 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj (in 333 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj (in 333 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj (in 333 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\tests\YLproxy.Tests.csproj (in 341 ms).
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(84,22): error CS1929: 'TcpClient' does not contain a definition for 'ConfigureAwait' and the best extension method overload 'TaskAsyncEnumerableExtensions.ConfigureAwait(IAsyncDisposable, bool)' requires a receiver of type 'System.IAsyncDisposable' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(122,53): error CS1503: Argument 1: cannot convert from 'System.ReadOnlySpan<byte>' to 'System.ReadOnlyMemory<byte>' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(139,13): warning CA1031: Modify 'HandleClientAsync' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(46,27): warning CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Checking 3proxy dependencies...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(93,27): warning CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] All 3proxy dependencies verified successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(222,13): warning CA1031: Modify 'Start' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): warning CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(335,9): warning CA1031: Modify 'TryDeleteConfigFile' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(209,9): warning CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(217,9): warning CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(245,9): warning CA1031: Modify 'IsRunning' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(295,35): warning CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Waiting for process to exit...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(303,39): warning CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] 3proxy process exited successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(307,39): warning CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Warning: 3proxy process did not exit after waiting.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+
+Build FAILED.
+
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(139,13): warning CA1031: Modify 'HandleClientAsync' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(46,27): warning CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Checking 3proxy dependencies...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(93,27): warning CA1303: Method 'void ProxyProcessManager.Ensure3ProxyDependencies()' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] All 3proxy dependencies verified successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(222,13): warning CA1031: Modify 'Start' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(164,32): warning CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(335,9): warning CA1031: Modify 'TryDeleteConfigFile' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(209,9): warning CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(217,9): warning CA1031: Modify 'Dispose' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(245,9): warning CA1031: Modify 'IsRunning' to catch a more specific allowed exception type, or rethrow the exception (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1031) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(295,35): warning CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Waiting for process to exit...". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(303,39): warning CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] 3proxy process exited successfully.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\ProxyProcessManager.cs(307,39): warning CA1303: Method 'void ProxyProcessManager.Stop(ProxyItem proxy)' passes a literal string as parameter 'value' of a call to 'void Console.WriteLine(string? value)'. Retrieve the following string(s) from a resource table instead: "[ProxyProcessManager] Warning: 3proxy process did not exit after waiting.". (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1303) [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(84,22): error CS1929: 'TcpClient' does not contain a definition for 'ConfigureAwait' and the best extension method overload 'TaskAsyncEnumerableExtensions.ConfigureAwait(IAsyncDisposable, bool)' requires a receiver of type 'System.IAsyncDisposable' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\TransparentCoalescingForwarder.cs(122,53): error CS1503: Argument 1: cannot convert from 'System.ReadOnlySpan<byte>' to 'System.ReadOnlyMemory<byte>' [E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj]
+    12 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:03.47
+[2026-07-16 06:20:58] [ERROR] 编译失败 (Exit Code: 1)

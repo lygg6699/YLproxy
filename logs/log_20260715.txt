@@ -1,0 +1,172 @@
+﻿2026-07-15 15:59:04.943 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:05.145 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:05.351 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:05.538 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:05.741 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:05.948 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:06.138 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:06.340 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:06.545 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:06.750 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method403(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.101 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.194 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.287 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.395 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.489 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.601 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.692 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.786 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:29.894 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:30.003 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:30.106 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:30.194 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:30.287 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:30.398 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 15:59:30.492 [WARN] Monitor could not read the proxy list.
+Exception: There is no Runspace available to run scripts in this thread. You can provide one in the DefaultRunspace property of the System.Management.Automation.Runspaces.Runspace type. The script block you attempted to invoke was:  return $cfg.Proxies.ToArray() 
+StackTrace:    at System.Management.Automation.ScriptBlock.GetContextFromTLS()
+   at lambda_method441(Closure)
+   at YLproxy.Core.MonitorService.MonitorTick(Object state) in E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\MonitorService.cs:line 49
+2026-07-15 16:09:44.821 [INFO] [16:09:44] Application started. (Phase 7 with MonitorService) 
+2026-07-15 16:09:46.095 [INFO] [16:09:46] Started proxy: 127.0.0.1:9001 -> 107.150.105.8:1253
+2026-07-15 16:10:02.731 [INFO] [16:10:02] Application started. (Phase 7 with MonitorService) 
+2026-07-15 16:10:03.752 [INFO] [16:10:03] Started proxy: 127.0.0.1:9001 -> 107.150.105.8:1253
+2026-07-15 16:10:07.741 [INFO] [16:10:07] Monitor: proxy 1 (127.0.0.1:9001) process exited unexpectedly
+2026-07-15 16:10:13.229 [INFO] [16:10:13] Started proxy: 127.0.0.1:9001 -> 107.150.105.8:1253
+2026-07-15 18:44:48.856 [INFO] [18:44:48] config.json loaded: 0 proxies.
+2026-07-15 18:44:48.894 [INFO] [18:44:48] Application started. (Phase 7 with MonitorService) 
+2026-07-15 18:45:38.398 [INFO] [18:45:38] Testing proxy: 128.1.12.34:2010 ...
+2026-07-15 18:45:39.165 [INFO] [18:45:39] 成功：延迟: 757ms
+2026-07-15 18:45:42.812 [INFO] [18:45:42] Testing proxy: 107.150.105.8:1986 ...
+2026-07-15 18:45:48.089 [INFO] [18:45:48] 成功：延迟: 5276ms
+2026-07-15 18:45:50.582 [INFO] [18:45:50] Started proxy: 192.168.64.128:9002 -> 107.150.105.8:1986
+2026-07-15 18:46:00.453 [INFO] [18:46:00] Started proxy: 192.168.64.128:9002 -> 107.150.105.8:1986
+2026-07-15 18:46:06.614 [INFO] [18:46:06] Started proxy: 192.168.64.128:9001 -> 128.1.12.34:2010
+2026-07-15 18:50:16.341 [INFO] [18:50:16] Started proxy: 192.168.64.128:9001 -> 128.1.12.34:2010
+2026-07-15 18:52:29.464 [INFO] [18:52:29] Application started. (Phase 7 with MonitorService) 
+2026-07-15 18:52:40.330 [INFO] [18:52:40] Started proxy: 192.168.64.128:9001 -> 128.1.12.34:2010
+2026-07-15 18:52:42.966 [INFO] [18:52:42] Started proxy: 192.168.64.128:9002 -> 107.150.105.8:1986
+2026-07-15 18:53:56.382 [INFO] [18:53:56] Start failed: no proxy selected
+2026-07-15 18:53:56.949 [INFO] [18:53:56] Stop failed: no proxy selected
+2026-07-15 18:53:58.614 [INFO] [18:53:58] Stopped proxy: 192.168.64.128:9001
+2026-07-15 18:54:00.058 [INFO] [18:54:00] Stopped proxy: 192.168.64.128:9002
+2026-07-15 18:54:27.605 [INFO] [18:54:27] Stop failed: no proxy selected
+2026-07-15 18:54:28.053 [INFO] [18:54:28] Stop failed: no proxy selected
+2026-07-15 18:54:29.245 [INFO] [18:54:29] Stopped proxy: 192.168.64.128:9001
+2026-07-15 18:54:31.221 [INFO] [18:54:31] Stopped proxy: 192.168.64.128:9002
+2026-07-15 18:57:29.007 [INFO] [18:57:29] Application started. (Phase 7 with MonitorService) 
+2026-07-15 18:59:14.461 [INFO] [18:59:14] Started proxy: 192.168.64.128:9003 -> 128.1.12.34:2596
+2026-07-15 18:59:16.045 [INFO] [18:59:16] Started proxy: 192.168.64.128:9004 -> 107.150.105.8:1253
+2026-07-15 18:59:18.315 [INFO] [18:59:18] Started proxy: 192.168.64.128:9002 -> 107.150.105.8:1986
+2026-07-15 18:59:20.179 [INFO] [18:59:20] Started proxy: 192.168.64.128:9001 -> 128.1.12.34:2010
+2026-07-15 19:06:45.294 [INFO] [19:06:45] Started proxy: 192.168.64.128:9001 -> 128.1.12.34:2010
+2026-07-15 19:06:45.901 [INFO] [19:06:45] Start failed: no proxy selected
+2026-07-15 19:09:17.479 [INFO] [19:09:17] Stopped proxy: 192.168.64.128:9001
+2026-07-15 19:09:19.090 [INFO] [19:09:19] Stopped proxy: 192.168.64.128:9002
+2026-07-15 19:09:20.661 [INFO] [19:09:20] Stopped proxy: 192.168.64.128:9003
+2026-07-15 19:09:22.223 [INFO] [19:09:22] Stopped proxy: 192.168.64.128:9004
+2026-07-15 19:18:42.554 [INFO] [19:18:42] Application started. (Phase 7 with MonitorService) 
+2026-07-15 19:24:35.857 [INFO] [19:24:35] Started proxy: 192.168.64.128:9001 -> 128.1.12.34:2010
+2026-07-15 19:24:37.807 [INFO] [19:24:37] Started proxy: 192.168.64.128:9002 -> 107.150.105.8:1986
+2026-07-15 19:24:40.440 [INFO] [19:24:40] Started proxy: 192.168.64.128:9003 -> 128.1.12.34:2596
+2026-07-15 19:24:42.119 [INFO] [19:24:42] Started proxy: 192.168.64.128:9004 -> 107.150.105.8:1253
+2026-07-15 19:26:25.406 [INFO] [19:26:25] Stopped proxy: 192.168.64.128:9001
+2026-07-15 19:26:26.757 [INFO] [19:26:26] Stopped proxy: 192.168.64.128:9002
+2026-07-15 19:26:28.489 [INFO] [19:26:28] Stopped proxy: 192.168.64.128:9003
+2026-07-15 19:26:29.666 [INFO] [19:26:29] Stopped proxy: 192.168.64.128:9004

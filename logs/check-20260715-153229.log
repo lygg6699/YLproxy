@@ -1,0 +1,376 @@
+[2026-07-15 15:32:29] [INFO] 检查开始
+[2026-07-15 15:32:29] [INFO] 清理项目
+Build started 2026/7/15 15:32:29.
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" on node 1 (Clean target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\tests\YLproxy.Tests.csproj" (2) on node 1 (Clean target(s)).
+     2>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\.msCoverageSourceRootsMapping_YLproxy.Tests".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\CoverletSourceRootsMapping_YLproxy.Tests".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\testhost.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.abstractions.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\testhost.exe".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.runner.visualstudio.testadapter.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.runtimeconfig.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.CoreUtilities.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.PlatformAbstractions.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.CommunicationUtilities.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.CrossPlatEngine.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.TestPlatform.Utilities.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Microsoft.VisualStudio.TestPlatform.Common.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\Newtonsoft.Json.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\System.Security.Cryptography.ProtectedData.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.assert.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\xunit.execution.dotnet.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\cs\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\de\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\de\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\es\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\es\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\fr\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\fr\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\it\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\it\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ja\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ja\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ko\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ko\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pl\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pl\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pt-BR\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pt-BR\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ru\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ru\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\tr\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\tr\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hans\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hans\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hant\Microsoft.TestPlatform.CoreUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hant\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\cs\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\cs\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\cs\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\de\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\de\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\de\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\es\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\es\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\es\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\fr\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\fr\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\fr\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\it\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\it\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\it\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ja\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ja\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ja\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ko\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ko\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ko\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pl\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pl\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pl\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pt-BR\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pt-BR\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\pt-BR\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ru\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ru\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\ru\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\tr\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\tr\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\tr\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hans\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hans\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hans\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hant\Microsoft.TestPlatform.CommunicationUtilities.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hant\Microsoft.TestPlatform.CrossPlatEngine.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\zh-Hant\Microsoft.VisualStudio.TestPlatform.Common.resources.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.sourcelink.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy..5EC4ABFD.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\refint\YLproxy.Tests.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\YLproxy.Tests.genruntimeconfig.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\tests\obj\Debug\net10.0\ref\YLproxy.Tests.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (4:2) on node 1 (Clean target(s)).
+     4>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.sourcelink.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\refint\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\obj\Debug\net10.0\ref\YLproxy.Models.dll".
+     4>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj" (Clean target(s)).
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj" (3:2) on node 1 (Clean target(s)).
+     3>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.sourcelink.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy..C850C749.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\refint\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\obj\Debug\net10.0\ref\YLproxy.Core.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj" (8) on node 1 (Clean target(s)).
+     8>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\AppSettings.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.exe".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.runtimeconfig.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Core.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Core.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\MainWindow.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\Views\AddProxyWindow.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\Views\MainView.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\App.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI_MarkupCompile.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI_MarkupCompile.lref".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.g.resources".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.sourcelink.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy..4F5F54E8.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\refint\YLproxy.GUI.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\YLproxy.GUI.genruntimeconfig.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\obj\Debug\net10.0-windows\ref\YLproxy.GUI.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (6) on node 3 (Clean target(s)).
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.sourcelink.json".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (5) on node 2 (Clean target(s)).
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.deps.json".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\refint\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\YLproxy.Utils.pdb".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.dll".
+     6>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Debug\net10.0\ref\YLproxy.Utils.dll".
+     5>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.sourcelink.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy..A32E2790.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\refint\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\obj\Debug\net10.0\ref\YLproxy.Infrastructure.dll".
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (1) is building "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (7) on node 4 (Clean target(s)).
+     7>CoreClean:
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.deps.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Infrastructure.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Models.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Utils.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Infrastructure.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Models.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Utils.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.AssemblyReference.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.GeneratedMSBuildEditorConfig.editorconfig".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfoInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.AssemblyInfo.cs".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.csproj.CoreCompileInputs.cache".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.sourcelink.json".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy..CE186318.Up2Date".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\refint\YLproxy.Proxy.dll".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\YLproxy.Proxy.pdb".
+         Deleting file "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\obj\Debug\net10.0\ref\YLproxy.Proxy.dll".
+     6>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj" (Clean target(s)).
+     5>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" (Clean target(s)).
+     7>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj" (Clean target(s)).
+     3>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj" (Clean target(s)).
+     8>Done Building Project "E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj" (Clean target(s)).
+     2>Done Building Project "E:\GZQ\YLXCX\YLproxy\tests\YLproxy.Tests.csproj" (Clean target(s)).
+     1>Done Building Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (Clean target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.04
+[2026-07-15 15:32:32] [SUCCESS] 清理成功
+[2026-07-15 15:32:32] [INFO] 开始编译
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll
+  YLproxy.Proxy -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.dll
+  YLproxy.Core -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.dll
+  YLproxy.Tests -> E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.05
+[2026-07-15 15:32:37] [SUCCESS] 编译成功
+[2026-07-15 15:32:37] [INFO] 开始 Release 发布验证
+  Determining projects to restore...
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\YLproxy.Utils.csproj (in 166 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\YLproxy.GUI.csproj (in 198 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\YLproxy.Models.csproj (in 6 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj (in 319 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\YLproxy.Core.csproj (in 318 ms).
+  Restored E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\YLproxy.Proxy.csproj (in 92 ms).
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Release\net10.0\YLproxy.Models.dll
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Release\net10.0\YLproxy.Utils.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Release\net10.0\YLproxy.Infrastructure.dll
+  YLproxy.Proxy -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Release\net10.0\YLproxy.Proxy.dll
+  YLproxy.Core -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Release\net10.0\YLproxy.Core.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\YLproxy.GUI.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\publish\
+[2026-07-15 15:32:43] [SUCCESS] Release 发布验证成功: E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Release\net10.0-windows\win-x64\publish
+[2026-07-15 15:32:43] [INFO] 开始单元测试
+Build started 2026/7/15 15:32:43.
+     1>Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" on node 1 (VSTest target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+Test run for E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0\YLproxy.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.9)
+[xUnit.net 00:00:00.11]   Discovering: YLproxy.Tests
+[xUnit.net 00:00:00.15]   Discovered:  YLproxy.Tests
+[xUnit.net 00:00:00.18]   Starting:    YLproxy.Tests
+[ProxyProcessManager] Starting proxy ID: 351942
+[ProxyProcessManager] Resolved 3proxy.exe path: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\3proxy.exe
+[ProxyProcessManager] Checking 3proxy dependencies...
+[ProxyProcessManager] Checking main executable: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\3proxy.exe
+[ProxyProcessManager] Main executable found: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\3proxy.exe
+[ProxyProcessManager] Checking DLL dependencies in: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64
+[ProxyProcessManager] Checking dependency: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\FilePlugin.dll
+[ProxyProcessManager] Dependency found: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\FilePlugin.dll
+[ProxyProcessManager] Checking dependency: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\StringsPlugin.dll
+[ProxyProcessManager] Dependency found: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\StringsPlugin.dll
+[ProxyProcessManager] Ensuring config directory exists: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\cfg
+[ProxyProcessManager] Ensuring log directory exists: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\logs
+[ProxyProcessManager] All 3proxy dependencies verified successfully.
+[ProxyProcessManager] Writing config to: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\cfg\351942.cfg
+[ProxyProcessManager] Resolved 3proxy.exe path: E:\GZQ\YLXCX\YLproxy\runtime\3proxy\bin64\3proxy.exe
+[ProxyProcessManager] Starting 3proxy with arguments: cfg\351942.cfg
+[ProxyProcessManager] Working directory: E:\GZQ\YLXCX\YLproxy\runtime\3proxy
+[ProxyProcessManager] 3proxy started successfully with PID: 5876
+  Passed YLproxy.Tests.UnitTest1.Test1 [3 ms]
+  Passed YLproxy.Tests.PathResolverTests.ResolvePathShouldReturnExistingRepositoryPaths [16 ms]
+  Passed YLproxy.Tests.PathResolverTests.AppSettingsShouldBeValidJsonAtRepositoryRoot [8 ms]
+  Passed YLproxy.Tests.ConfigurationContractTests.ProxyDataServiceShouldRejectNonCanonicalDataPaths [1 ms]
+  Passed YLproxy.Tests.ConfigurationContractTests.GlobalConfigServiceShouldRejectNonCanonicalSettingsPaths [1 ms]
+  Passed YLproxy.Tests.ConfigurationContractTests.AppSettingsShouldUseTheCanonicalDirectoriesAndValues [5 ms]
+  Passed YLproxy.Tests.ConfigurationContractTests.RuntimePathsShouldResolveToCanonicalDirectories [< 1 ms]
+  Passed YLproxy.Tests.SecurityServiceTests.ProxyDataSerializerShouldMigrateLegacyCredentials [77 ms]
+[ProxyProcessManager] Stopping proxy ID: 351942
+[ProxyProcessManager] Killing 3proxy process with PID: 5876
+[ProxyProcessManager] Waiting for process to exit...
+[ProxyProcessManager] 3proxy process exited successfully.
+[ProxyProcessManager] Removed proxy ID 351942 from process tracking.
+[xUnit.net 00:00:00.73]   Finished:    YLproxy.Tests
+  Passed YLproxy.Tests.SecurityServiceTests.ProxyDataSerializerShouldResetCredentialsWhenDecryptionFails [2 ms]
+  Passed YLproxy.Tests.SecurityServiceTests.DpapiSecurityServiceShouldRejectMalformedProtectedPayload [1 ms]
+  Passed YLproxy.Tests.SecurityServiceTests.DpapiSecurityServiceShouldRoundTripWithoutStoringPlaintext [6 ms]
+  Passed YLproxy.Tests.ProxyIntegrationTests.ProxyProcessShouldForwardThroughAuthenticatedHttpParentAndCleanConfig [468 ms]
+
+Test Run Successful.
+Total tests: 12
+     Passed: 12
+ Total time: 2.3041 Seconds
+     1>Done Building Project "E:\GZQ\YLXCX\YLproxy\YLproxy.sln" (VSTest target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.59
+
+Attachments:
+  E:\GZQ\YLXCX\YLproxy\reports\coverage\acbb3861-1cd6-4ca8-abe2-0a80d8990b1d\coverage.cobertura.xml
+[2026-07-15 15:32:47] [SUCCESS] 所有测试通过，覆盖率文件已生成
+[2026-07-15 15:32:47] [INFO] 开始功能测试
+[2026-07-15 15:32:48] [INFO] 启动隔离 Smoke Test 实例...
+[2026-07-15 15:32:58] [SUCCESS] 隔离 Smoke Test 实例启动成功。
+[2026-07-15 15:32:58] [SUCCESS] 隔离日志检查完成，未发现错误。
+[2026-07-15 15:32:58] [INFO] 隔离 Smoke Test 实例已关闭。
+[2026-07-15 15:32:58] [SUCCESS] 报告已生成: E:\GZQ\YLXCX\YLproxy\reports\check-report-20260715-153229.md
+[2026-07-15 15:32:58] [SUCCESS] 检查完成，所有验证通过

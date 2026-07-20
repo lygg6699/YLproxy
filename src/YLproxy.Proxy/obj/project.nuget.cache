@@ -1,25 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "3EBWJXqjBmA=",
+  "dgSpecHash": "zC4ZtWlCciM=",
   "success": true,
-  "projectFilePath": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj",
+  "projectFilePath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
   "expectedPackageFiles": [
-    "/root/.nuget/packages/microsoft.netcore.platforms/1.0.1/microsoft.netcore.platforms.1.0.1.nupkg.sha512",
-    "/root/.nuget/packages/system.security.cryptography.protecteddata/4.0.0/system.security.cryptography.protecteddata.4.0.0.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/10.0.10/microsoft.windowsdesktop.app.ref.10.0.10.nupkg.sha512"
+    "C:\\Users\\Y\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.0\\system.security.cryptography.protecteddata.9.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1602",
-      "level": "Warning",
-      "message": "YLproxy.Infrastructure does not provide an inclusive lower bound for dependency System.Security.Cryptography.ProtectedData. System.Security.Cryptography.ProtectedData 4.0.0 was resolved instead.",
-      "projectPath": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj",
-      "warningLevel": 1,
-      "filePath": "/workspaces/YLproxy/src/YLproxy.Proxy/YLproxy.Proxy.csproj",
-      "libraryId": "System.Security.Cryptography.ProtectedData",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    }
-  ]
+  "logs": []
 }

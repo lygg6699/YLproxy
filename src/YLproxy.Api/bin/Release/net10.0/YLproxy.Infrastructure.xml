@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YLproxy.Infrastructure</name>
+    </assembly>
+    <members>
+        <member name="P:YLproxy.Infrastructure.ExceptionHandler.OnUserNotification">
+            <summary>
+            Optional callback for presenting user-facing error messages.
+            Set by the GUI or API host layer during startup.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Infrastructure.ExceptionHandler.TryCatch``1(System.Func{``0},YLproxy.Infrastructure.ILogger,System.String,``0,System.Object)">
+            <summary>
+            Wraps a synchronous function with try-catch, logging and returning a default on failure.
+            </summary>
+            <param name="func">Function to invoke.</param>
+            <param name="logger">Logger used for error reporting.</param>
+            <param name="context">Logical context string.</param>
+            <param name="defaultValue">Returned when function invocation fails.</param>
+            <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        </member>
+        <member name="M:YLproxy.Infrastructure.ExceptionHandler.TryCatch(System.Action,YLproxy.Infrastructure.ILogger,System.String,System.Object)">
+            <summary>
+            Wraps a synchronous action with try-catch and logging.
+            </summary>
+            <param name="action">Action to invoke.</param>
+            <param name="logger">Logger used for error reporting.</param>
+            <param name="context">Logical context string.</param>
+            <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        </member>
+        <member name="M:YLproxy.Infrastructure.ExceptionHandler.TryCatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}},YLproxy.Infrastructure.ILogger,System.String,``0,System.Object)">
+            <summary>
+            Wraps an async function with try-catch, logging and returning a default on failure.
+            </summary>
+            <param name="func">Async function to invoke.</param>
+            <param name="logger">Logger used for error reporting.</param>
+            <param name="context">Logical context string.</param>
+            <param name="defaultValue">Returned when invocation fails.</param>
+            <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        </member>
+        <member name="M:YLproxy.Infrastructure.ExceptionHandler.TryCatchAsync(System.Func{System.Threading.Tasks.Task},YLproxy.Infrastructure.ILogger,System.String,System.Object)">
+            <summary>
+            Wraps an async action with try-catch and logging.
+            </summary>
+            <param name="func">Async action to invoke.</param>
+            <param name="logger">Logger used for error reporting.</param>
+            <param name="context">Logical context string.</param>
+            <param name="data">Optional structured context (e.g. proxy Id) appended to the log entry.</param>
+        </member>
+        <member name="F:YLproxy.Infrastructure.FileLogger._credentialPattern">
+            <summary>
+            Matches DPAPI-encrypted credential blobs that may leak into log output.
+            Pattern: dpapi:v1: followed by Base64 characters.
+            </summary>
+        </member>
+        <member name="T:YLproxy.Infrastructure.StructuredLogEntry">
+            <summary>
+            Structured log entry for JSON-line output.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Infrastructure.ILogger.Log(YLproxy.Infrastructure.LogLevel,System.String,System.Object)">
+            <summary>
+            Writes a structured log entry with optional contextual data.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Infrastructure.ILogger.Log(YLproxy.Infrastructure.LogLevel,System.String,System.Exception,System.Object)">
+            <summary>
+            Writes a structured log entry with an exception and optional contextual data.
+            </summary>
+        </member>
+        <member name="T:YLproxy.Infrastructure.SimpleRetry">
+            <summary>
+            Simple retry utility for transient operations (file I/O, DB cleanup, etc.).
+            </summary>
+        </member>
+        <member name="M:YLproxy.Infrastructure.SimpleRetry.Execute(System.Action,System.Int32,System.Int32,YLproxy.Infrastructure.ILogger)">
+            <summary>
+            Executes an action with a fixed-delay retry policy.
+            </summary>
+            <param name="action">The action to execute.</param>
+            <param name="maxAttempts">Maximum number of attempts (default 3).</param>
+            <param name="delayMs">Delay between attempts in milliseconds (default 50).</param>
+            <param name="logger">Optional logger for recording retry attempts.</param>
+            <exception cref="T:System.AggregateException">Thrown if all attempts fail, containing all exceptions.</exception>
+        </member>
+        <member name="M:YLproxy.Infrastructure.SimpleRetry.Execute``1(System.Func{``0},System.Int32,System.Int32,YLproxy.Infrastructure.ILogger)">
+            <summary>
+            Executes a function with a fixed-delay retry policy.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Infrastructure.SimpleRetry.ExecuteAsync(System.Func{System.Threading.Tasks.Task},System.Int32,System.Int32,YLproxy.Infrastructure.ILogger)">
+            <summary>
+            Executes an async action with a fixed-delay retry policy.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Infrastructure.SimpleRetry.ExecuteAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.Int32,System.Int32,YLproxy.Infrastructure.ILogger)">
+            <summary>
+            Executes an async function with a fixed-delay retry policy.
+            </summary>
+        </member>
+    </members>
+</doc>

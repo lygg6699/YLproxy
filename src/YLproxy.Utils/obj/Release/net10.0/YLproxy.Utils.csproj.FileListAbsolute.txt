@@ -1,0 +1,14 @@
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Release\net10.0\YLproxy.Utils.deps.json
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Release\net10.0\YLproxy.Utils.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Release\net10.0\YLproxy.Utils.pdb
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Release\net10.0\YLproxy.Utils.xml
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.GeneratedMSBuildEditorConfig.editorconfig
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.AssemblyInfoInputs.cache
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.AssemblyInfo.cs
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.csproj.CoreCompileInputs.cache
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.sourcelink.json
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\refint\YLproxy.Utils.dll
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.xml
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\YLproxy.Utils.pdb
+E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\obj\Release\net10.0\ref\YLproxy.Utils.dll

@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YLproxy.Core</name>
+    </assembly>
+    <members>
+        <member name="T:YLproxy.Core.Config.ProxyDataService">
+            <summary>
+            JSON-based proxy data persistence service.
+            Single data source: data/config.json with atomic writes and rotating backups.
+            </summary>
+        </member>
+        <member name="P:YLproxy.Core.Config.ProxyDataService.CredentialsResetDuringLoad">
+            <summary>
+            Indicates whether credentials were reset during the most recent load operation.
+            </summary>
+        </member>
+        <member name="F:YLproxy.Core.MonitorService._restartBackoff">
+            <summary>
+            Tracks consecutive restart failures per proxy for exponential backoff.
+            Key: proxy Id, Value: (failureCount, lastAttemptTime)
+            </summary>
+        </member>
+        <member name="M:YLproxy.Core.MonitorService.#ctor(System.Func{System.Collections.Generic.IReadOnlyList{YLproxy.Models.ProxyItem}},System.Action{System.String},System.Action,System.Action{YLproxy.Models.ProxyItem},System.Action,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Int32,System.Nullable{System.TimeSpan},YLproxy.Infrastructure.ILogger,System.Func{YLproxy.Models.ProxyItem,System.Boolean})">
+            <summary>
+            Creates a MonitorService with health-check and optional auto-restart.
+            </summary>
+            <param name="getProxies">Callback to enumerate current proxies.</param>
+            <param name="logAction">Callback for UI log messages.</param>
+            <param name="refreshAction">Callback to refresh UI after status changes.</param>
+            <param name="restartAction">Optional callback to restart a failed proxy. If null, auto-restart is disabled.</param>
+            <param name="saveAction">Optional callback to persist proxy state changes (e.g., status Failed → disk).</param>
+            <param name="checkInterval">Polling interval for process liveness checks.</param>
+            <param name="healthCheckInterval">Interval for TCP connectivity health checks. Defaults to 30s.</param>
+            <param name="maxRestartAttempts">Max consecutive restart attempts before giving up. Default 5.</param>
+            <param name="restartBackoffBase">Base backoff duration for restart attempts. Default 30s.</param>
+            <param name="logger">Optional logger.</param>
+            <param name="isRunning">Optional override for process liveness check.</param>
+        </member>
+        <member name="M:YLproxy.Core.MonitorService.ResetBackoff(System.Int32)">
+            <summary>
+            Resets the restart backoff counter for a proxy (e.g., after manual restart by user).
+            </summary>
+        </member>
+        <member name="P:YLproxy.Core.ProxyTester.TestUrl">
+            <summary>
+            代理连通性测试使用的目标 URL（可配置）。
+            </summary>
+        </member>
+        <member name="P:YLproxy.Core.ProxyTester.TimeoutMs">
+            <summary>
+            单次测试超时时间（毫秒），默认 15000ms。
+            </summary>
+        </member>
+        <member name="P:YLproxy.Core.ProxyTester.HttpMessageHandlerFactory">
+            <summary>
+            Allows tests to inject a custom HttpMessageHandler.
+            When set, the normal HttpClientHandler / proxy configuration is bypassed.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Core.ProxyTester.SetLogger(YLproxy.Infrastructure.ILogger)">
+            <summary>
+            Allows tests or callers to replace the default logger.
+            </summary>
+        </member>
+        <member name="M:YLproxy.Core.ProxyTester.TestAsync(System.String,System.Int32,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            代理连通性测试，内置重试 + 指数退避。
+            </summary>
+            <param name="host">代理服务器主机名或 IP</param>
+            <param name="port">代理服务器端口</param>
+            <param name="username">代理用户名（可空，取决于上游认证需求）</param>
+            <param name="password">代理密码（可空，取决于上游认证需求）</param>
+            <param name="cancellationToken">取消令牌</param>
+        </member>
+        <member name="M:YLproxy.Core.ProxyTester.TestAsync(System.String,System.Int32,System.String,System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            代理连通性测试，可配置重试策略。
+            </summary>
+            <param name="host">代理服务器主机名或 IP</param>
+            <param name="port">代理服务器端口</param>
+            <param name="username">代理用户名（可空，取决于上游认证需求）</param>
+            <param name="password">代理密码（可空，取决于上游认证需求）</param>
+            <param name="maxRetries">最大重试次数（总共尝试 maxRetries + 1 次）。</param>
+            <param name="retryDelayMs">基础重试延迟（毫秒），每次重试翻倍。</param>
+            <param name="cancellationToken">取消令牌</param>
+        </member>
+        <member name="T:YLproxy.Core.ProxyTesterAdapter">
+            <summary>
+            Adapter that implements IProxyTester by delegating to the static ProxyTester.
+            Enables DI injection and testability without modifying the existing static class.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "L3X/Zt/33DQ=",
+  "dgSpecHash": "VdnBdqbFWOw=",
   "success": true,
-  "projectFilePath": "/workspaces/YLproxy/src/YLproxy.Models/YLproxy.Models.csproj",
-  "expectedPackageFiles": [
-    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/10.0.10/microsoft.windowsdesktop.app.ref.10.0.10.nupkg.sha512"
-  ],
+  "projectFilePath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

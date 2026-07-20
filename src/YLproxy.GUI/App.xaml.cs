@@ -116,7 +116,7 @@ public partial class App : Application
         {
             var cfg = sp.GetRequiredService<GlobalProxyConfig>();
             var configPath = PathResolver.ResolvePath(cfg.DataDirectory, cfg.ConfigFileName);
-            return new Core.Config.ProxyDataService(configPath);
+            return new Core.ProxyDataService(configPath);
         });
 
         // Main VM

@@ -127,6 +127,10 @@ public static class PreFlightChecker
         if (cfg.Proxy.PortRangeStart < 1 || cfg.Proxy.PortRangeEnd > 65535 || cfg.Proxy.PortRangeStart > cfg.Proxy.PortRangeEnd)
             result.Errors.Add($"端口范围无效: {cfg.Proxy.PortRangeStart}-{cfg.Proxy.PortRangeEnd}");
 
+        // Check for port overlap between API port and proxy port range
+        if (cfg.Api.Port >= cfg.Proxy.PortRangeStart && cfg.Api.Port <= cfg.Proxy.PortRangeEnd)
+            result.Errors.Add($"API 端口 {cfg.Api.Port} 与代理端口范围 {cfg.Proxy.PortRangeStart}-{cfg.Proxy.PortRangeEnd} 冲突。请修改 Api.Port 或 Proxy.PortRangeEnd 以避免冲突。");
+
         if (cfg.Proxy.CheckIntervalSeconds < 1)
             result.Errors.Add("监控间隔必须大于 0 秒。");
 

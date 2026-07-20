@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YLproxy.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77e631bda15007c7e9384b0ecfc375ffb553f5e1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d1790a6e979e4aefb2d9eed694b7e3af905dd8f1")]
 [assembly: System.Reflection.AssemblyProductAttribute("YLproxy.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YLproxy.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
