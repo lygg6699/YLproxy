@@ -8,7 +8,7 @@ public sealed class ApiAuthMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly string _expectedToken;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public ApiAuthMiddleware(RequestDelegate next, string expectedToken)
     {

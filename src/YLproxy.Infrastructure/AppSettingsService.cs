@@ -19,6 +19,9 @@ namespace YLproxy.Infrastructure
         private readonly FileSystemWatcher _watcher;
         private readonly List<string> _loadErrors = new();
         private readonly List<string> _saveErrors = new();
+        private DateTime _lastConfigLoad = DateTime.MinValue;
+        private static readonly TimeSpan ConfigLoadDebounce = TimeSpan.FromMilliseconds(500);
+        private bool _isSaving = false;
 
         public IReadOnlyList<string> LoadErrors => _loadErrors.AsReadOnly();
         public IReadOnlyList<string> SaveErrors => _saveErrors.AsReadOnly();
@@ -119,6 +122,7 @@ namespace YLproxy.Infrastructure
 
         private void SaveConfig()
         {
+            _isSaving = true;
             try
             {
                 var json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
@@ -149,16 +153,36 @@ namespace YLproxy.Infrastructure
             {
                 _saveErrors.Add($"Failed to save config: {ex.Message}");
             }
+            finally
+            {
+                _isSaving = false;
+            }
         }
 
         private void OnConfigChanged(object sender, FileSystemEventArgs e)
         {
+            if (_isSaving)
+                return;
+
+            var now = DateTime.UtcNow;
+            if (now - _lastConfigLoad < ConfigLoadDebounce)
+                return;
+
             LoadConfig();
+            _lastConfigLoad = DateTime.UtcNow;
         }
 
         private void OnConfigRenamed(object sender, RenamedEventArgs e)
         {
+            if (_isSaving)
+                return;
+
+            var now = DateTime.UtcNow;
+            if (now - _lastConfigLoad < ConfigLoadDebounce)
+                return;
+
             LoadConfig();
+            _lastConfigLoad = DateTime.UtcNow;
         }
 
         private static void Validate(AppSettingsConfig config)

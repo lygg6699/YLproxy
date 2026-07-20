@@ -26,3 +26,218 @@
 {"Timestamp":"2026-07-20T18:54:05.2017714Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
 {"Timestamp":"2026-07-20T18:54:05.2033903Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
 {"Timestamp":"2026-07-20T18:55:45.2246120Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T18:56:16.2512528Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T18:56:16.2645732Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T18:56:16.2848574Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T18:57:56.2945603Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T18:58:27.3147945Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T18:58:27.3218282Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T18:58:27.3242065Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T18:58:27.3550872Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T18:58:27.3617400Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T18:58:27.3667766Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T18:58:27.3683757Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:00:07.3761485Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:00:38.3943302Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:00:38.4013313Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:00:38.4034176Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:02:18.4109605Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:02:49.4215794Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:02:49.4284188Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:02:49.4316272Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:02:49.4533849Z","Level":"WARN","Message":"API: request rejected \u2014 invalid token"}
+{"Timestamp":"2026-07-20T19:02:49.4579825Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:02:49.4591008Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:02:49.4620268Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:02:49.4656053Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:04:29.5942421Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:05:00.6139576Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:16:54.2258158Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: \u8D85\u65F6"}
+{"Timestamp":"2026-07-20T19:16:54.2315548Z","Level":"WARN","Message":"Retry attempt 1/3 failed: The process cannot access the file \u0027e:\\GZQ\\YLXCX\\YLproxy\\runtime\\3proxy\\cfg\\209257.cfg\u0027 because it is being used by another process."}
+{"Timestamp":"2026-07-20T19:16:54.3251912Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:16:54.3254671Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:16:54.4251695Z","Level":"WARN","Message":"Proxy test attempt 1/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u4E0D\u77E5\u9053\u8FD9\u6837\u7684\u4E3B\u673A\u3002 (256.256.256.256:1)"}
+{"Timestamp":"2026-07-20T19:16:54.4346223Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:16:54.4357754Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:16:54.5878116Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:16:54.6050618Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:16:55.4635446Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:16:56.3824036Z","Level":"ERROR","Message":"Failed to start proxy ID 209257: 3proxy exited during startup with code 1.","ExceptionMessage":"3proxy exited during startup with code 1.","ExceptionType":"System.InvalidOperationException","StackTrace":"   at YLproxy.Proxy.ProxyProcessManager.WaitForPort(Process process, Int32 port, TimeSpan timeout) in e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\ProxyProcessManager.cs:line 449\r\n   at YLproxy.Proxy.ProxyProcessManager.Start(ProxyItem proxy) in e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\ProxyProcessManager.cs:line 282"}
+{"Timestamp":"2026-07-20T19:16:57.4661761Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:16:57.4713898Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:16:58.4723454Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:17:00.4898358Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:17:00.5224555Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25"}
+{"Timestamp":"2026-07-20T19:17:00.5248152Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: test hre"}
+{"Timestamp":"2026-07-20T19:18:34.4514761Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:19:05.4781780Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:19:05.4886498Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:19:05.5042725Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:19:05.5257563Z","Level":"WARN","Message":"API: request rejected \u2014 no Authorization header"}
+{"Timestamp":"2026-07-20T19:19:05.5391026Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:19:05.5405006Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:19:05.5467194Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:19:05.5485004Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:20:45.5590784Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:21:16.5863783Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:21:16.5960424Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:21:16.5992263Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:22:56.6166459Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:23:27.6367548Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:23:27.6490911Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:23:27.6699073Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:23:27.8624569Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:23:27.8639293Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:23:27.8722083Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:23:27.8836414Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:25:07.8980621Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:25:38.9182472Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:25:38.9268259Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:25:38.9353314Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:27:19.0259215Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:27:50.0348938Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:27:50.0409684Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:27:50.0449062Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:27:50.0585378Z","Level":"WARN","Message":"API: request rejected \u2014 invalid token"}
+{"Timestamp":"2026-07-20T19:27:50.0681932Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:27:50.0706145Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:27:50.0745427Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:27:50.0980380Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:29:30.1048964Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:30:01.1233235Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:35:11.4411887Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:35:11.4697631Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:36:51.4993975Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:37:22.5205618Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:37:22.5544491Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:37:22.5758064Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:37:22.5951119Z","Level":"WARN","Message":"API: request rejected \u2014 no Authorization header"}
+{"Timestamp":"2026-07-20T19:37:22.6077703Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:37:22.6094485Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:37:22.6132407Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:37:22.6164041Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:39:02.6357477Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:39:33.6587644Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:39:33.6687512Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:39:33.6788049Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:41:13.7006821Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:41:44.7208284Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:41:44.7306407Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:41:44.7328212Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:41:44.7746360Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:41:44.7833526Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:41:44.7912657Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:41:44.7924606Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:43:24.7970772Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:43:55.8285726Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:43:55.8328213Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:43:55.8351812Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:45:35.8492096Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:46:06.8596972Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:46:06.8661724Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:46:06.8675695Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:46:06.8951752Z","Level":"WARN","Message":"API: request rejected \u2014 invalid token"}
+{"Timestamp":"2026-07-20T19:46:06.8985647Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:46:06.9001727Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:46:06.9259829Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:46:06.9294791Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T19:47:46.9418492Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:48:17.9607214Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:52:47.3540007Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: \u8D85\u65F6"}
+{"Timestamp":"2026-07-20T19:52:47.4446851Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:52:47.4537591Z","Level":"WARN","Message":"Proxy test attempt 1/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u4E0D\u77E5\u9053\u8FD9\u6837\u7684\u4E3B\u673A\u3002 (256.256.256.256:1)"}
+{"Timestamp":"2026-07-20T19:52:47.4611734Z","Level":"WARN","Message":"Proxy test attempt 2/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u4E0D\u77E5\u9053\u8FD9\u6837\u7684\u4E3B\u673A\u3002 (256.256.256.256:1)"}
+{"Timestamp":"2026-07-20T19:52:47.4675886Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:52:47.4700863Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:52:47.6576907Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:52:47.6760305Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:52:48.4693177Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:52:50.4745415Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:52:50.4802703Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:52:51.4813158Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:52:53.4931889Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:52:53.4974632Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25"}
+{"Timestamp":"2026-07-20T19:52:53.4992793Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: test hre"}
+{"Timestamp":"2026-07-20T19:54:08.9329636Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: \u8D85\u65F6"}
+{"Timestamp":"2026-07-20T19:54:09.0110444Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:54:09.0556836Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:54:09.1081851Z","Level":"WARN","Message":"Proxy test attempt 2/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u4E0D\u77E5\u9053\u8FD9\u6837\u7684\u4E3B\u673A\u3002 (256.256.256.256:1)"}
+{"Timestamp":"2026-07-20T19:54:09.2113885Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:54:09.3769536Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:54:09.3950907Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:54:10.2222993Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:54:12.2330468Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:54:12.2403439Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:54:13.2487202Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:54:15.2564019Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:54:15.2611903Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25"}
+{"Timestamp":"2026-07-20T19:54:15.2624794Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: test hre"}
+{"Timestamp":"2026-07-20T19:54:46.9720713Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: \u8D85\u65F6"}
+{"Timestamp":"2026-07-20T19:54:47.0186849Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:54:47.0481631Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T19:54:47.0852036Z","Level":"WARN","Message":"Proxy test attempt 2/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u4E0D\u77E5\u9053\u8FD9\u6837\u7684\u4E3B\u673A\u3002 (256.256.256.256:1)"}
+{"Timestamp":"2026-07-20T19:54:47.0921548Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:54:47.2265267Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T19:54:47.2474827Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T19:54:48.0986791Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:54:50.1085271Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T19:54:50.1159192Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:54:51.1215418Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:54:53.1368838Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T19:54:53.1415972Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25"}
+{"Timestamp":"2026-07-20T19:54:53.1429407Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: test hre"}
+{"Timestamp":"2026-07-20T20:30:27.0567533Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: \u8D85\u65F6"}
+{"Timestamp":"2026-07-20T20:30:27.1404986Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T20:30:27.1404986Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.1723068Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9102"}
+{"Timestamp":"2026-07-20T20:30:27.1829931Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.3879870Z","Level":"WARN","Message":"Proxy test attempt 1/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u8D85\u65F6"}
+{"Timestamp":"2026-07-20T20:30:27.3996864Z","Level":"WARN","Message":"Proxy test attempt 2/2 failed for 256.256.256.256:1: \u8FDE\u63A5\u5931\u8D25: \u4E0D\u77E5\u9053\u8FD9\u6837\u7684\u4E3B\u673A\u3002 (256.256.256.256:1)"}
+{"Timestamp":"2026-07-20T20:30:27.4938552Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T20:30:27.5379010Z","Level":"INFO","Message":"API: added proxy 3 (10.0.0.1:8080)"}
+{"Timestamp":"2026-07-20T20:30:27.5805407Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.5992724Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.6439963Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.6549896Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.6591705Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.6705410Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.6880115Z","Level":"WARN","Message":"API: request rejected \u2014 no Authorization header"}
+{"Timestamp":"2026-07-20T20:30:27.6899692Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.6947991Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.7000729Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.7017730Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.7276309Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.7286259Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.7331269Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.7348845Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.7610057Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.7737028Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.7776934Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.7862651Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.8082585Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.8097128Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.8128931Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.8144151Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.8464883Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.8474566Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.8514631Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.8539319Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.8829656Z","Level":"INFO","Message":"API: deleted proxy 2"}
+{"Timestamp":"2026-07-20T20:30:27.8897044Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.8903197Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.8936009Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.8997504Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.9221443Z","Level":"WARN","Message":"API: request rejected \u2014 invalid token"}
+{"Timestamp":"2026-07-20T20:30:27.9242041Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.9250807Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:27.9297159Z","Level":"INFO","Message":"API server starting on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.9348235Z","Level":"INFO","Message":"API server started on http://127.0.0.1:9101"}
+{"Timestamp":"2026-07-20T20:30:27.9524213Z","Level":"INFO","Message":"API server stopping..."}
+{"Timestamp":"2026-07-20T20:30:27.9531489Z","Level":"INFO","Message":"API server stopped."}
+{"Timestamp":"2026-07-20T20:30:28.5045845Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T20:30:30.5054206Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for  :123: host \u4E3A\u7A7A"}
+{"Timestamp":"2026-07-20T20:30:30.5102635Z","Level":"WARN","Message":"Proxy test attempt 1/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T20:30:31.5223891Z","Level":"WARN","Message":"Proxy test attempt 2/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T20:30:33.5337213Z","Level":"WARN","Message":"Proxy test attempt 3/3 failed for 127.0.0.1:123: \u4EE3\u7406\u8BA4\u8BC1\u4FE1\u606F\u4E0D\u5B8C\u6574"}
+{"Timestamp":"2026-07-20T20:30:33.5370005Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25"}
+{"Timestamp":"2026-07-20T20:30:33.5386332Z","Level":"WARN","Message":"Proxy test attempt 1/1 failed for 127.0.0.1:1234: \u8FDE\u63A5\u5931\u8D25: test hre"}

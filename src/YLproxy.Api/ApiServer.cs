@@ -14,7 +14,7 @@ public sealed class ApiServer
     private readonly string _accessToken;
     private readonly int _port;
     private readonly bool _enableSwagger;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private WebApplication? _app;
     private Task? _runTask;
     private CancellationTokenSource? _cts;

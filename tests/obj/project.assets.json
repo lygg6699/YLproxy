@@ -1501,11 +1501,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\tests\\YLproxy.Tests.csproj",
+      "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\tests\\YLproxy.Tests.csproj",
       "projectName": "YLproxy.Tests",
-      "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\tests\\YLproxy.Tests.csproj",
+      "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\tests\\YLproxy.Tests.csproj",
       "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-      "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\tests\\obj\\",
+      "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1521,17 +1521,17 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj": {
-              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj"
+            "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj": {
+              "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj"
             },
-            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
-              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
+            "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+              "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
             },
-            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
-              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
+            "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
+              "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
             },
-            "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
-              "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
+            "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+              "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
             }
           }
         }

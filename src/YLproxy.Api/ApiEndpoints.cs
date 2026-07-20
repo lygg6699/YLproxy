@@ -9,7 +9,7 @@ namespace YLproxy.Api;
 
 public static class ApiEndpoints
 {
-    private static readonly ILog _logger = LogFactory.CreateLogger();
+    private static readonly ILogger _logger = LogFactory.CreateLogger();
 
     private static bool IsJsonContentType(HttpRequest request) =>
         request.Headers.ContentType.FirstOrDefault() is string ct &&

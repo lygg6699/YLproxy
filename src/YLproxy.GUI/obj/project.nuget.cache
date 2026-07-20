@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eFpGEvDuqQo=",
+  "dgSpecHash": "mDxetPLLdZg=",
   "success": true,
-  "projectFilePath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj",
+  "projectFilePath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Y\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Y\\.nuget\\packages\\microsoft.openapi\\1.6.22\\microsoft.openapi.1.6.22.nupkg.sha512",

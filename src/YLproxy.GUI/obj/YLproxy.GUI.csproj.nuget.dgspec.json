@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj": {}
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj": {}
   },
   "projects": {
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj",
         "projectName": "YLproxy.Api",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -27,17 +27,17 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
               }
             }
           }
@@ -504,14 +504,14 @@
         }
       }
     },
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
         "projectName": "YLproxy.Core",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\YLproxy.Core.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -527,17 +527,17 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -855,14 +855,14 @@
         }
       }
     },
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj",
         "projectName": "YLproxy.GUI",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\YLproxy.GUI.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.GUI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -878,11 +878,11 @@
             "framework": "net10.0-windows7.0",
             "targetAlias": "net10.0-windows",
             "projectReferences": {
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Api\\YLproxy.Api.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
               }
             }
           }
@@ -1219,14 +1219,14 @@
         }
       }
     },
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
         "projectName": "YLproxy.Infrastructure",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1242,11 +1242,11 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -1570,14 +1570,14 @@
         }
       }
     },
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
         "projectName": "YLproxy.Models",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1908,14 +1908,14 @@
         }
       }
     },
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
         "projectName": "YLproxy.Proxy",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\YLproxy.Proxy.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Proxy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1931,14 +1931,14 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Infrastructure\\YLproxy.Infrastructure.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj"
               },
-              "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
-                "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
+              "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+                "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj"
               }
             }
           }
@@ -2256,14 +2256,14 @@
         }
       }
     },
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
         "projectName": "YLproxy.Utils",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\YLproxy.Utils.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Utils\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xHmK05lI50g=",
+  "dgSpecHash": "5JGrVxFF7qo=",
   "success": true,
-  "projectFilePath": "e:\\GZQ\\YLXCX\\YLproxy\\tests\\YLproxy.Tests.csproj",
+  "projectFilePath": "E:\\GZQ\\YLXCX\\YLproxy\\tests\\YLproxy.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Y\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\Y\\.nuget\\packages\\microsoft.codecoverage\\17.12.0\\microsoft.codecoverage.17.12.0.nupkg.sha512",

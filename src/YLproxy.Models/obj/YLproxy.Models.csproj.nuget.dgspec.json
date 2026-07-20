@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {}
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {}
   },
   "projects": {
-    "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
+    "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+        "projectUniqueName": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
         "projectName": "YLproxy.Models",
-        "projectPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
+        "projectPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\YLproxy.Models.csproj",
         "packagesPath": "C:\\Users\\Y\\.nuget\\packages\\",
-        "outputPath": "e:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\obj\\",
+        "outputPath": "E:\\GZQ\\YLXCX\\YLproxy\\src\\YLproxy.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Y\\AppData\\Roaming\\NuGet\\NuGet.Config"

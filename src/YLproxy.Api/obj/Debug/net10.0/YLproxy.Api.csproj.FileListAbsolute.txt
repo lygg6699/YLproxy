@@ -24,12 +24,6 @@
 /workspaces/YLproxy/src/YLproxy.Api/obj/Debug/net10.0/YLproxy.Api.xml
 /workspaces/YLproxy/src/YLproxy.Api/obj/Debug/net10.0/YLproxy.Api.pdb
 /workspaces/YLproxy/src/YLproxy.Api/obj/Debug/net10.0/ref/YLproxy.Api.dll
-e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.csproj.AssemblyReference.cache
-e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.GeneratedMSBuildEditorConfig.editorconfig
-e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.AssemblyInfoInputs.cache
-e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.AssemblyInfo.cs
-e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.csproj.CoreCompileInputs.cache
-e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.sourcelink.json
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Api.deps.json
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Api.dll
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Api.pdb
@@ -44,6 +38,12 @@ e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Infrastructure.pd
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Models.pdb
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Proxy.pdb
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Utils.pdb
+e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.csproj.AssemblyReference.cache
+e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.GeneratedMSBuildEditorConfig.editorconfig
+e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.AssemblyInfoInputs.cache
+e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.AssemblyInfo.cs
+e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.csproj.CoreCompileInputs.cache
+e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.sourcelink.json
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy..074E2412.Up2Date
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\YLproxy.Api.dll
 e:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\obj\Debug\net10.0\refint\YLproxy.Api.dll

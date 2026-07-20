@@ -4,5 +4,5 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
-global using ILog = YLproxy.Infrastructure.ILogger;
+global using ILogger = YLproxy.Infrastructure.ILogger;
 global using LogFactory = YLproxy.Infrastructure.LoggerFactory;

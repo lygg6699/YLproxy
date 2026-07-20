@@ -8,6 +8,12 @@ namespace YLproxy.Infrastructure
         private static ILogger? _logger;
         private static readonly object _lock = new object();
 
+        /// <summary>
+        /// Creates or returns the singleton logger instance.
+        /// This method is NOT thread-safe during first initialization (protected by _lock).
+        /// This is a transitional logging factory; long-term should migrate to DI injection.
+        /// Reads configuration directly from AppSettings.json to avoid circular dependency with AppSettingsService.
+        /// </summary>
         public static ILogger CreateLogger()
         {
             if (_logger is not null)

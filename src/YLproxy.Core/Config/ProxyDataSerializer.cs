@@ -18,10 +18,17 @@ public sealed class ProxyDataSerializer
 
     public ProxyDataSerializer(ISecurityService? securityService = null)
     {
-        if (securityService is null && !OperatingSystem.IsWindows())
-            throw new PlatformNotSupportedException("DPAPI credential storage requires Windows.");
-
-        _securityService = securityService ?? new DpapiSecurityService();
+        if (securityService is null)
+        {
+            if (!OperatingSystem.IsWindows())
+                throw new PlatformNotSupportedException("DPAPI credential storage requires Windows platform.");
+            
+            _securityService = new DpapiSecurityService();
+        }
+        else
+        {
+            _securityService = securityService;
+        }
     }
 
     public AppConfig Deserialize(string json, out bool requiresMigration)
