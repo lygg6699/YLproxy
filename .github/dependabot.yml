@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # 仅安全更新：不再自动创建版本升级分支和 PR
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
@@ -7,12 +8,10 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Asia/Shanghai"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     labels:
       - "dependencies"
       - "security"
-    reviewers:
-      - "lygg6699"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -21,6 +20,7 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 0
     labels:
       - "dependencies"
       - "ci"

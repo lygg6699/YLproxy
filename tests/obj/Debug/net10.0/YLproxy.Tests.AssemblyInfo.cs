@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YLproxy.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d112f528b22e796cecffff1ec3d3c4c6e114e453")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+045a4928d64a05924b0d2b6f92269bdb26b07224")]
 [assembly: System.Reflection.AssemblyProductAttribute("YLproxy.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YLproxy.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

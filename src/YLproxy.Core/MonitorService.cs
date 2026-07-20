@@ -135,6 +135,7 @@ public sealed class MonitorService : IDisposable
                 }
             }
 
+            // Unified refresh: only once at the end of tick
             if (changed)
             {
                 _saveAction?.Invoke();
@@ -167,14 +168,9 @@ public sealed class MonitorService : IDisposable
                 _logger?.Warn($"MonitorService: health check failed for proxy {proxy.Id} ({proxy.LocalPort}), port not reachable");
 
                 // Mark failed and trigger auto-restart immediately.
-                // For correctness with unit tests, we must ensure TryAutoRestart is reached.
                 proxy.Status = ProxyStatus.Failed;
                 _logAction($"[{DateTime.Now:HH:mm:ss}] Monitor: proxy {proxy.Id} health check failed, port unreachable");
-                _saveAction?.Invoke();
-                _refreshAction();
-
                 TryAutoRestart(proxy);
-
             }
             else
             {

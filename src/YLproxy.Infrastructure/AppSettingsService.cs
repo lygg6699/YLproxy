@@ -57,6 +57,30 @@ namespace YLproxy.Infrastructure
             _watcher.EnableRaisingEvents = true;
         }
 
+        /// <summary>
+        /// Gets the logging configuration section.
+        /// </summary>
+        public LoggingConfig GetLoggingConfig() => _config.Logging;
+
+        /// <summary>
+        /// Gets the proxy configuration section.
+        /// </summary>
+        public ProxyConfig GetProxyConfig() => _config.Proxy;
+
+        /// <summary>
+        /// Gets the ThreeProxy configuration section.
+        /// </summary>
+        public ThreeProxyConfig GetThreeProxyConfig() => _config.ThreeProxy;
+
+        /// <summary>
+        /// Gets the API configuration section.
+        /// </summary>
+        public ApiConfig GetApiConfig() => _config.Api;
+
+        /// <summary>
+        /// Gets a configuration section by name. Prefer the strongly-typed Get*Config() methods instead.
+        /// </summary>
+        [Obsolete("Use GetLoggingConfig(), GetProxyConfig(), GetThreeProxyConfig(), or GetApiConfig() instead")]
         public T GetSection<T>(string sectionName) where T : class, new()
         {
             return sectionName switch
@@ -186,13 +210,22 @@ namespace YLproxy.Infrastructure
             _lastConfigLoad = DateTime.UtcNow;
         }
 
-        private static void Validate(AppSettingsConfig config)
+private static void Validate(AppSettingsConfig config)
         {
             ArgumentNullException.ThrowIfNull(config);
 
-            if (config.Logging is null || string.IsNullOrWhiteSpace(config.Logging.LogDirectory) ||
-                !string.Equals(config.Logging.LogDirectory.Replace('\\', '/').Trim('/'), ConfigDefaults.LogDirectory, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("Logging.LogDirectory must be the repository logs directory.");
+            if (config.Logging is null || string.IsNullOrWhiteSpace(config.Logging.LogDirectory))
+            {
+                throw new InvalidDataException("Logging.LogDirectory is required.");
+            }
+
+            // Relaxed: log directory can be any valid path, not just "logs"
+            // Only validate format, not the specific directory name
+            var logDir = config.Logging.LogDirectory.Replace('\\', '/').Trim('/');
+            if (logDir.Contains("..") || logDir.Contains("~"))
+            {
+                throw new InvalidDataException("Logging.LogDirectory must not contain relative path segments.");
+            }
 
             if (config.Logging.RetentionDays < 0)
                 throw new InvalidDataException("Logging.RetentionDays must be zero or greater.");

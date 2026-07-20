@@ -103,11 +103,11 @@ public partial class App : Application
         services.AddSingleton<GlobalConfigService>(sp => sp.GetRequiredService<AppSettingsService>());
         services.AddSingleton<GlobalProxyConfig>(sp =>
         {
-            return sp.GetRequiredService<AppSettingsService>().GetSection<GlobalProxyConfig>("Proxy");
+            return sp.GetRequiredService<AppSettingsService>().GetProxyConfig();
         });
         services.AddSingleton<GlobalThreeProxyConfig>(sp =>
         {
-            return sp.GetRequiredService<AppSettingsService>().GetSection<GlobalThreeProxyConfig>("ThreeProxy");
+            return sp.GetRequiredService<AppSettingsService>().GetThreeProxyConfig();
         });
 
         // Core abstractions → adapters

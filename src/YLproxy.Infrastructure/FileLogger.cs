@@ -11,12 +11,12 @@ namespace YLproxy.Infrastructure
 {
     public class FileLogger : ILogger, IDisposable
     {
-        private readonly string _logDirectory;
-        private readonly int _retentionDays;
-        private readonly string _minLevel;
-        private static readonly object _lock = new object();
-        private readonly List<string> _cleanupErrors = new();
-        private int _disposed;
+private readonly string _logDirectory;
+    private readonly int _retentionDays;
+    private readonly string _minLevel;
+    private readonly ReaderWriterLockSlim _rwLock = new();
+    private readonly List<string> _cleanupErrors = new();
+    private int _disposed;
 
         public IReadOnlyList<string> CleanupErrors => _cleanupErrors.AsReadOnly();
 
@@ -123,19 +123,21 @@ namespace YLproxy.Infrastructure
         private void WriteLine(string line)
         {
             var targetFile = GetLogFilePath();
-            lock (_lock)
+            _rwLock.EnterWriteLock();
+            try
             {
-                try
-                {
-                    using var fs = new FileStream(targetFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-                    using var writer = new StreamWriter(fs, Encoding.UTF8);
-                    writer.Write(line);
-                    writer.Flush();
-                }
-                catch (IOException)
-                {
-                    // Log file is locked, discard entry without blocking.
-                }
+                using var fs = new FileStream(targetFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                using var writer = new StreamWriter(fs, Encoding.UTF8);
+                writer.Write(line);
+                writer.Flush();
+            }
+            catch (IOException)
+            {
+                // Log file is locked, discard entry without blocking.
+            }
+            finally
+            {
+                _rwLock.ExitWriteLock();
             }
         }
 
@@ -148,9 +150,10 @@ namespace YLproxy.Infrastructure
                 Log((LogLevel)ordinal, message);
         }
 
-        public void Dispose()
+public void Dispose()
         {
             if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+            _rwLock.Dispose();
             GC.SuppressFinalize(this);
         }
 

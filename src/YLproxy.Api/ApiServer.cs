@@ -102,7 +102,9 @@ public sealed class ApiServer
             });
         }
 
-        _app.UseMiddleware<ApiAuthMiddleware>(_accessToken);
+        // In production, force-disable Swagger regardless of flag
+        var isProduction = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Production", StringComparison.OrdinalIgnoreCase);
+        _app.UseMiddleware<ApiAuthMiddleware>(_accessToken, isProduction);
         ApiEndpoints.Map(_app, _configPath, _proxyConfig);
 
         _logger.Info($"API server starting on http://127.0.0.1:{_port}");

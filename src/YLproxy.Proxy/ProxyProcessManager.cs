@@ -318,20 +318,8 @@ public sealed class ProxyProcessManager
         }
 
         // 无 forwarder 时检查 3proxy 进程。
-        try
-        {
-            Ensure3ProxyDependencies();
-        }
-        catch (Exception ex)
-        {
-            // 如果依赖检查失败，认为进程不在运行中（安全策略）
-            _logger.Warn($"Dependency check failed for proxy {proxy?.Id ?? 0}, considering as not running: {ex.Message}");
-            if (_processes.TryRemove(proxyId, out var failedProcess))
-                failedProcess?.Dispose();
-            TryDeleteConfigFile(configPath);
-            return false;
-        }
-
+        // Note: Ensure3ProxyDependencies removed from IsRunning to avoid side effects
+        // on every liveness check. Dependencies are checked during Start() only.
         if (!_processes.TryGetValue(proxy.Id, out var process))
         {
             _logger.Debug($"No process found for proxy ID: {proxy.Id}");
@@ -380,20 +368,27 @@ public sealed class ProxyProcessManager
                 // 3proxy doesn't provide an RPC in this integration; kill is the reliable option.
                 process.Kill(true);
 
-                // small wait to release port
+                // Wait for process exit with confirmation (P3-3)
                 _logger.Debug($"Waiting for process to exit...");
-                for (var i = 0; i < 30 && !process.HasExited; i++)
+                var exited = false;
+                for (var i = 0; i < 30; i++)
                 {
+                    process.Refresh();
+                    if (process.HasExited)
+                    {
+                        exited = true;
+                        break;
+                    }
                     Thread.Sleep(50);
                 }
 
-                if (process.HasExited)
+                if (exited)
                 {
                     _logger.Debug($"3proxy process exited successfully.");
                 }
                 else
                 {
-                    _logger.Warn($"3proxy process did not exit after waiting.");
+                    _logger.Warn($"3proxy process did not exit after waiting. Proceeding with cleanup.");
                 }
             }
             else

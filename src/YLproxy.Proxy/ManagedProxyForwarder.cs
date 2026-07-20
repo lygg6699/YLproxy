@@ -23,7 +23,10 @@ public sealed class ManagedProxyForwarder : IDisposable
     private readonly ILogger _logger;
     private readonly string _proxyName;
     private readonly CancellationTokenSource _cts = new();
+    private readonly SemaphoreSlim _concurrencyLimiter;
     private int _disposed;
+
+    private const int MaxConcurrentClients = 100;
 
     public ManagedProxyForwarder(ProxyItem proxy, ILogger? logger = null)
     {
@@ -35,6 +38,7 @@ public sealed class ManagedProxyForwarder : IDisposable
         _username = proxy.Username;
         _password = proxy.Password;
         _logger = logger ?? LoggerFactory.CreateLogger();
+        _concurrencyLimiter = new SemaphoreSlim(MaxConcurrentClients, MaxConcurrentClients);
 
         var handler = new HttpClientHandler
         {
@@ -92,14 +96,30 @@ public sealed class ManagedProxyForwarder : IDisposable
                 catch (SocketException) when (token.IsCancellationRequested) { return; }
                 catch { continue; }
 
+                // Acquire semaphore before processing (P3-1 concurrency limit)
+                await _concurrencyLimiter.WaitAsync(token).ConfigureAwait(false);
+
                 _ = Task.Run(() => HandleClientAsync(client, token), token)
-                    .ContinueWith(t => { if (t.IsFaulted) _logger.Warn($"ManagedProxyForwarder [{_proxyName}] client fault: {t.Exception?.InnerException?.Message}"); },
-                    TaskContinuationOptions.OnlyOnFaulted);
+                    .ContinueWith(t =>
+                    {
+                        _concurrencyLimiter.Release();
+                        if (t.IsFaulted)
+                            _logger.Warn($"ManagedProxyForwarder [{_proxyName}] client fault: {t.Exception?.InnerException?.Message}");
+                    }, TaskContinuationOptions.OnlyOnFaulted);
             }
+        }
+        catch (OperationCanceledException)
+        {
+            // Normal shutdown
+        }
+        catch (ObjectDisposedException)
+        {
+            // Normal shutdown
         }
         catch (Exception ex)
         {
-            _logger.Warn($"ManagedProxyForwarder [{_proxyName}] accept loop: {ex.Message}");
+            if (!token.IsCancellationRequested)
+                _logger.Warn($"ManagedProxyForwarder [{_proxyName}] accept loop: {ex.Message}");
         }
     }
 
@@ -243,8 +263,11 @@ public sealed class ManagedProxyForwarder : IDisposable
         var respLen = await upstreamStream.ReadAsync(respBuf.AsMemory(0, respBuf.Length), token).ConfigureAwait(false);
         var respText = Encoding.ASCII.GetString(respBuf, 0, respLen);
 
+        // P3-2: 精确解析 HTTP 状态码
+        var statusCode = ParseHttpStatusCode(respText);
+
         // 407 挑战-响应：若预认证被拒绝，发送带完整 Basic 认证的 CONNECT
-        if (respText.Contains("407") && !string.IsNullOrEmpty(_username))
+        if (statusCode == 407 && !string.IsNullOrEmpty(_username))
         {
             var authBytes = System.Text.Encoding.UTF8.GetBytes($"{_username}:{_password}");
             var basicAuth = "Basic " + System.Convert.ToBase64String(authBytes);
@@ -259,9 +282,10 @@ public sealed class ManagedProxyForwarder : IDisposable
             await upstreamStream.WriteAsync(retryBytes, token).ConfigureAwait(false);
             respLen = await upstreamStream.ReadAsync(respBuf.AsMemory(0, respBuf.Length), token).ConfigureAwait(false);
             respText = Encoding.ASCII.GetString(respBuf, 0, respLen);
+            statusCode = ParseHttpStatusCode(respText);
         }
 
-        if (respText.Contains("200"))
+        if (statusCode == 200)
         {
             var ok = "HTTP/1.1 200 Connection Established\r\n\r\n"u8;
             await clientStream.WriteAsync(ok.ToArray(), token).ConfigureAwait(false);
@@ -276,6 +300,25 @@ public sealed class ManagedProxyForwarder : IDisposable
             var err = "HTTP/1.1 502 Bad Gateway\r\n\r\n"u8;
             await clientStream.WriteAsync(err.ToArray(), token).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>
+    /// Parses the HTTP status code from the first response line.
+    /// </summary>
+    private static int ParseHttpStatusCode(string responseText)
+    {
+        try
+        {
+            var firstLine = responseText.Split("\r\n")[0];
+            var parts = firstLine.Split(' ');
+            if (parts.Length >= 2 && int.TryParse(parts[1], out var code))
+                return code;
+        }
+        catch
+        {
+            // Fall through to default
+        }
+        return 0;
     }
 
     private string BuildConnectRequest(string target, bool addAuth)
@@ -310,12 +353,14 @@ public sealed class ManagedProxyForwarder : IDisposable
     public void Stop()
     {
         try { _cts.Cancel(); }
+        catch (ObjectDisposedException) { return; } // P3-8: break on disposed
         catch (Exception ex)
         {
             // Ignore cancellation errors during shutdown
             _logger.Debug($"CancellationTokenSource.Cancel() failed during cleanup: {ex.Message}");
         }
         try { _listener.Stop(); }
+        catch (ObjectDisposedException) { return; } // P3-8: break on disposed
         catch (Exception ex)
         {
             // Ignore listener stop errors during shutdown
@@ -347,5 +392,6 @@ public sealed class ManagedProxyForwarder : IDisposable
         Stop();
         _cts.Dispose();
         _upstreamClient.Dispose();
+        _concurrencyLimiter.Dispose();
     }
 }

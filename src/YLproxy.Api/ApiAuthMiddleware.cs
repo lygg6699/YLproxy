@@ -9,19 +9,21 @@ public sealed class ApiAuthMiddleware
     private readonly RequestDelegate _next;
     private readonly string _expectedToken;
     private readonly ILogger _logger;
+    private readonly bool _isProduction;
 
-    public ApiAuthMiddleware(RequestDelegate next, string expectedToken)
+    public ApiAuthMiddleware(RequestDelegate next, string expectedToken, bool isProduction = false)
     {
         _next = next;
         _expectedToken = expectedToken;
         _logger = LogFactory.CreateLogger();
+        _isProduction = isProduction;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Allow health-check and swagger (no auth)
+        // Allow health-check (no auth). Swagger is only accessible in non-production environments.
         if (context.Request.Path.StartsWithSegments("/api/health", StringComparison.OrdinalIgnoreCase) ||
-            context.Request.Path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase))
+            (!_isProduction && context.Request.Path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase)))
         {
             await _next(context);
             return;
