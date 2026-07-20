@@ -25,10 +25,9 @@ public static class ConfigGenerator
         var password = hasPassword ? ValidateToken(proxy.Password, nameof(proxy.Password)) : string.Empty;
 
         var sb = new StringBuilder();
-        var runtimePath = GetRuntime3ProxyPath();
 
         sb.AppendLine("service");
-        sb.AppendLine($"log {runtimePath}\\logs\\3proxy-{proxy.Id}.log D");
+        sb.AppendLine($"log {GetProxyLogPath(proxy.Id)} D");
         sb.AppendLine("logformat \"- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T\"");
         sb.AppendLine("auth iponly");
         sb.AppendLine("allow *");
@@ -49,6 +48,15 @@ public static class ConfigGenerator
             throw new ArgumentException($"{parameterName} contains characters that cannot be represented safely in a 3proxy configuration.", parameterName);
 
         return value;
+    }
+
+    /// <summary>
+    /// Returns the full log file path for a given proxy.
+    /// </summary>
+    private static string GetProxyLogPath(int proxyId)
+    {
+        var runtimePath = GetRuntime3ProxyPath();
+        return Path.Combine(runtimePath, "logs", $"3proxy-{proxyId}.log");
     }
 
     private static string GetRuntime3ProxyPath()

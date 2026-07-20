@@ -11,6 +11,9 @@ namespace YLproxy.Infrastructure
     {
         /// <summary>
         /// Executes an action with a fixed-delay retry policy.
+        /// NOTE: This synchronous version uses Thread.Sleep which blocks the calling thread.
+        /// If called from a UI thread or a high-throughput async context, prefer the async
+        /// overload <see cref="ExecuteAsync(Func{Task}, int, int, ILogger)"/> instead.
         /// </summary>
         /// <param name="action">The action to execute.</param>
         /// <param name="maxAttempts">Maximum number of attempts (default 3).</param>
@@ -38,6 +41,9 @@ namespace YLproxy.Infrastructure
                     logger?.Warn($"Retry attempt {attempt + 1}/{maxAttempts} failed: {ex.Message}");
 
                     if (attempt < maxAttempts - 1)
+                        // Synchronous retry uses Thread.Sleep which blocks the calling thread.
+                        // For UI thread or high-throughput scenarios, prefer ExecuteAsync to
+                        // avoid thread-pool starvation.
                         Thread.Sleep(delayMs);
                 }
             }
@@ -48,6 +54,9 @@ namespace YLproxy.Infrastructure
 
         /// <summary>
         /// Executes a function with a fixed-delay retry policy.
+        /// NOTE: This synchronous version uses Thread.Sleep which blocks the calling thread.
+        /// If called from a UI thread or a high-throughput async context, prefer the async
+        /// overload <see cref="ExecuteAsync{T}(Func{Task{T}}, int, int, ILogger)"/> instead.
         /// </summary>
         public static T Execute<T>(Func<T> func, int maxAttempts = 3, int delayMs = 50, ILogger? logger = null)
         {
@@ -69,6 +78,9 @@ namespace YLproxy.Infrastructure
                     logger?.Warn($"Retry attempt {attempt + 1}/{maxAttempts} failed: {ex.Message}");
 
                     if (attempt < maxAttempts - 1)
+                        // Synchronous retry uses Thread.Sleep which blocks the calling thread.
+                        // For UI thread or high-throughput scenarios, prefer ExecuteAsync to
+                        // avoid thread-pool starvation.
                         Thread.Sleep(delayMs);
                 }
             }

@@ -20,7 +20,9 @@ public sealed class DpapiSecurityService : ISecurityService
             if (IsEncrypted(plainText))
                 return plainText;
 
-            throw new FormatException("The DPAPI credential payload has an invalid format.");
+            // Invalid payload format: log debug info and treat it as plain text to re-encrypt.
+            System.Diagnostics.Debug.WriteLine($"[DpapiSecurityService] Payload format invalid for '{plainText}', re-encrypting as plain text.");
+            // Fall through to encryption logic below
         }
 
         var protectedBytes = ProtectedData.Protect(
