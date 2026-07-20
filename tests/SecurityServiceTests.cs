@@ -86,7 +86,11 @@ public sealed class SecurityServiceTests
 
         var service = new DpapiSecurityService();
 
-        Assert.Throws<FormatException>(() => service.Encrypt($"{DpapiSecurityService.Prefix}not-base64"));
+        // Encrypt now re-encrypts invalid payloads instead of throwing
+        var reEncrypted = service.Encrypt($"{DpapiSecurityService.Prefix}not-base64");
+        Assert.StartsWith(DpapiSecurityService.Prefix, reEncrypted);
+        Assert.NotEqual($"{DpapiSecurityService.Prefix}not-base64", reEncrypted);
+        // Decrypt still throws for invalid base64
         Assert.Throws<CryptographicException>(() => service.Decrypt($"{DpapiSecurityService.Prefix}not-base64"));
       }
 }
