@@ -1,3 +1,4 @@
+
 using YLproxy.Core;
 using YLproxy.Core.Config;
 using YLproxy.Infrastructure;
@@ -141,8 +142,7 @@ public static class ApiEndpoints
                 var removed = cfg.Proxies.RemoveAll(p => p.Id == id);
                 if (removed == 0)
                     return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
-
-                try { ProxyProcessManager.Stop(new ProxyItem { Id = id }); } catch (Exception ex) { _logger.Warn($"Failed to stop proxy {id} during delete: {ex.Message}"); }
+                try { ProxyProcessManager.Default.Stop(new ProxyItem { Id = id }); } catch (Exception ex) { _logger.Warn($"Failed to stop proxy {id} during delete: {ex.Message}"); }
 
                 svc.Save(cfg);
                 _logger.Info($"API: deleted proxy {id}");
@@ -194,7 +194,7 @@ public static class ApiEndpoints
                     return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
 
                 proxy.Status = ProxyStatus.Running;
-                ProxyProcessManager.Start(proxy);
+                ProxyProcessManager.Default.Start(proxy);
                 svc.Save(cfg);
                 _logger.Info($"API: started proxy {id}");
                 return Results.Ok(ApiResponse.Ok(MapToDto(proxy)));
@@ -215,7 +215,7 @@ public static class ApiEndpoints
                 if (proxy is null)
                     return Results.NotFound(ApiResponse.Fail<object>("Proxy not found"));
 
-                ProxyProcessManager.Stop(proxy);
+                ProxyProcessManager.Default.Stop(proxy);
                 proxy.Status = ProxyStatus.Stopped;
                 svc.Save(cfg);
                 _logger.Info($"API: stopped proxy {id}");

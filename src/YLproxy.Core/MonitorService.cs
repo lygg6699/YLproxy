@@ -70,7 +70,7 @@ public sealed class MonitorService : IDisposable
         _restartAction = restartAction;
         _saveAction = saveAction;
         _logger = logger ?? LoggerFactory.CreateLogger();
-        _isRunning = isRunning ?? ProxyProcessManager.IsRunning;
+        _isRunning = isRunning ?? ProxyProcessManager.Default.IsRunning;
         _healthCheckInterval = healthCheckInterval ?? TimeSpan.FromSeconds(30);
         _maxRestartAttempts = maxRestartAttempts;
         _restartBackoffBase = restartBackoffBase ?? TimeSpan.FromSeconds(30);

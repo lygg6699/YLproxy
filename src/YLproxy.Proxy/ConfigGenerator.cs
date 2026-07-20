@@ -61,7 +61,7 @@ public static class ConfigGenerator
 
     private static string GetRuntime3ProxyPath()
     {
-        return ProxyRuntimeConfiguration.GetRuntimeDirectory();
+        return ProxyRuntimeConfiguration.Default.GetRuntimeDirectory();
     }
 }
 

@@ -5,16 +5,30 @@ using YLproxy.Utils;
 
 namespace YLproxy.Proxy;
 
-internal static class ProxyRuntimeConfiguration
+public sealed class ProxyRuntimeConfiguration
 {
-    private static string _runtimeDirectory = "runtime/3proxy";
-    private static IReadOnlyList<string> _requiredDlls = new[]
+    private string _runtimeDirectory = "runtime/3proxy";
+    private IReadOnlyList<string> _requiredDlls = new[]
     {
         "FilePlugin.dll",
         "StringsPlugin.dll"
     };
 
-    public static void Configure(string runtimeDirectory, IEnumerable<string> requiredDlls)
+    /// <summary>
+    /// 默认全局实例，用于向后兼容静态调用。
+    /// </summary>
+    internal static readonly ProxyRuntimeConfiguration Default = new();
+
+    public ProxyRuntimeConfiguration()
+    {
+    }
+
+    public ProxyRuntimeConfiguration(string? runtimeDirectory, IEnumerable<string>? requiredDlls)
+    {
+        Configure(runtimeDirectory, requiredDlls);
+    }
+
+    public void Configure(string? runtimeDirectory, IEnumerable<string>? requiredDlls)
     {
         if (!string.IsNullOrWhiteSpace(runtimeDirectory))
             _runtimeDirectory = runtimeDirectory.Trim();
@@ -29,12 +43,12 @@ internal static class ProxyRuntimeConfiguration
             _requiredDlls = configuredDlls;
     }
 
-    public static string GetRuntimeDirectory()
+    public string GetRuntimeDirectory()
     {
         return PathResolver.ResolvePath(_runtimeDirectory);
     }
 
-    public static IReadOnlyList<string> GetRequiredDlls()
+    public IReadOnlyList<string> GetRequiredDlls()
     {
         return _requiredDlls;
     }

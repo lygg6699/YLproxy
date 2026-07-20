@@ -14,27 +14,48 @@ namespace YLproxy.Proxy;
 public sealed class ProxyProcessManager
 {
     // key: Proxy.Id
-    private static readonly ConcurrentDictionary<int, Process> Processes = new();
-    private static readonly ConcurrentDictionary<int, ManagedProxyForwarder> Forwarders = new();
+    private readonly ConcurrentDictionary<int, Process> _processes = new();
+    private readonly ConcurrentDictionary<int, ManagedProxyForwarder> _forwarders = new();
+    private readonly ProxyRuntimeConfiguration _runtimeConfig;
+    private readonly ILogger _logger;
 
-    private static readonly ILogger _logger = LoggerFactory.CreateLogger();
+    /// <summary>
+    /// 默认全局实例，用于向后兼容静态调用。
+    /// </summary>
+    private static readonly ProxyProcessManager _defaultInstance = new();
 
-    public static void Configure(ThreeProxyConfig settings)
+    /// <summary>
+    /// 获取默认全局实例（仅用于向后兼容的过渡期）。
+    /// </summary>
+    [Obsolete("Use instance methods via IProxyProcessManager injection instead")]
+    public static ProxyProcessManager Default => _defaultInstance;
+
+    public ProxyProcessManager()
+        : this(new ProxyRuntimeConfiguration(), LoggerFactory.CreateLogger())
+    {
+    }
+
+    public ProxyProcessManager(ProxyRuntimeConfiguration runtimeConfig, ILogger? logger = null)
+    {
+        _runtimeConfig = runtimeConfig ?? throw new ArgumentNullException(nameof(runtimeConfig));
+        _logger = logger ?? LoggerFactory.CreateLogger();
+    }
+
+    public void Configure(ThreeProxyConfig settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
-        ProxyRuntimeConfiguration.Configure(settings.RuntimeDirectory, settings.RequiredDlls);
-
+        _runtimeConfig.Configure(settings.RuntimeDirectory, settings.RequiredDlls);
     }
 
-    private static string GetRuntime3ProxyPath()
+    private string GetRuntime3ProxyPath()
     {
-        return ProxyRuntimeConfiguration.GetRuntimeDirectory();
+        return _runtimeConfig.GetRuntimeDirectory();
     }
 
-    private static string Runtime3ProxyPath
+    private string Runtime3ProxyPath
         => GetRuntime3ProxyPath();
 
-    private static string GetConfigPath(ProxyItem proxy)
+    private string GetConfigPath(ProxyItem proxy)
     {
         return Path.Combine(GetRuntime3ProxyPath(), "cfg", $"{proxy.Id}.cfg");
     }
@@ -43,7 +64,7 @@ public sealed class ProxyProcessManager
     /// 验证所有必要的3proxy依赖文件是否存在
     /// </summary>
     /// <exception cref="FileNotFoundException">当任何必要依赖缺失时抛出</exception>
-    public static void Ensure3ProxyDependencies()
+    public void Ensure3ProxyDependencies()
     {
         var exePath = Get3ProxyExePath();
 
@@ -58,11 +79,7 @@ public sealed class ProxyProcessManager
                             $"Expected location: {Path.GetDirectoryName(exePath)}";
             _logger.Error(errorMsg);
             throw new FileNotFoundException(errorMsg);
-
         }
-
-
-
 
         _logger.Debug($"Main executable found: {exePath}");
 
@@ -70,14 +87,9 @@ public sealed class ProxyProcessManager
         var dllDirectory = Path.GetDirectoryName(exePath);
         ArgumentNullException.ThrowIfNull(dllDirectory);
 
-
-
-
-
-
         _logger.Debug($"Checking DLL dependencies in: {dllDirectory}");
 
-        foreach (var dll in ProxyRuntimeConfiguration.GetRequiredDlls())
+        foreach (var dll in _runtimeConfig.GetRequiredDlls())
         {
             var dllPath = Path.Combine(dllDirectory, dll);
             _logger.Debug($"Checking dependency: {dllPath}");
@@ -112,7 +124,7 @@ public sealed class ProxyProcessManager
     /// <summary>
     /// 清理 cfg 目录中不再有对应运行进程的孤立配置文件，避免明文凭据残留。
     /// </summary>
-    private static void CleanOrphanedConfigFiles(string configDir)
+    private void CleanOrphanedConfigFiles(string configDir)
     {
         try
         {
@@ -124,7 +136,7 @@ public sealed class ProxyProcessManager
                     continue;
 
                 // 如果有活动的进程跟踪记录且进程仍在运行，保留 cfg
-                if (Processes.TryGetValue(proxyId, out var process) && !process.HasExited)
+                if (_processes.TryGetValue(proxyId, out var process) && !process.HasExited)
                     continue;
 
                 TryDeleteConfigFile(cfgFile);
@@ -139,7 +151,7 @@ public sealed class ProxyProcessManager
     /// <summary>
     /// 获取3proxy可执行文件的完整路径
     /// </summary>
-    private static string Get3ProxyExePath()
+    private string Get3ProxyExePath()
     {
         var runtimePath = Get3ProxyDirectory();
         ArgumentNullException.ThrowIfNull(runtimePath);
@@ -149,51 +161,42 @@ public sealed class ProxyProcessManager
         return exePath;
     }
 
-
     /// <summary>
     /// 获取3proxy目录的完整路径
     /// </summary>
-    private static string Get3ProxyDirectory()
+    private string Get3ProxyDirectory()
     {
         var runtimePath = GetRuntime3ProxyPath();
         ArgumentNullException.ThrowIfNull(runtimePath);
         return runtimePath;
-
-
-
     }
 
     /// <summary>
     /// 获取3proxy配置目录的完整路径
     /// </summary>
-    private static string Get3ProxyConfigDirectory()
+    private string Get3ProxyConfigDirectory()
     {
         var proxyDir = Get3ProxyDirectory();
         return Path.Combine(proxyDir, "cfg");
-
-
     }
 
     /// <summary>
     /// 获取3proxy日志目录的完整路径
     /// </summary>
-    private static string Get3ProxyLogDirectory()
+    private string Get3ProxyLogDirectory()
     {
         var proxyDir = Get3ProxyDirectory();
         return Path.Combine(proxyDir, "logs");
-
     }
 
-
-
-    public static void Start(ProxyItem proxy)
+    public void Start(ProxyItem proxy)
     {
         ArgumentNullException.ThrowIfNull(proxy);
 
         _logger.Debug($"Starting proxy ID: {proxy.Id}");
 
         // Prevent double-start
-        if (Processes.TryGetValue(proxy.Id, out var existing))
+        if (_processes.TryGetValue(proxy.Id, out var existing))
         {
             if (!existing.HasExited)
             {
@@ -201,21 +204,21 @@ public sealed class ProxyProcessManager
                 return;
             }
 
-            if (Processes.TryRemove(proxy.Id, out var exitedProcess))
+            if (_processes.TryRemove(proxy.Id, out var exitedProcess))
             {
                 exitedProcess.Dispose();
                 TryDeleteConfigFile(GetConfigPath(proxy));
             }
         }
 
-        if (Forwarders.TryGetValue(proxy.Id, out var existingFwd))
+        if (_forwarders.TryGetValue(proxy.Id, out var existingFwd))
         {
             if (existingFwd.IsListening)
             {
                 _logger.Debug($"Proxy ID {proxy.Id} forwarder is already running.");
                 return;
             }
-            Forwarders.TryRemove(proxy.Id, out _);
+            _forwarders.TryRemove(proxy.Id, out _);
             existingFwd.Dispose();
         }
 
@@ -234,7 +237,7 @@ public sealed class ProxyProcessManager
             {
                 var forwarder = new ManagedProxyForwarder(proxy, _logger);
                 forwarder.Start();
-                Forwarders[proxy.Id] = forwarder;
+                _forwarders[proxy.Id] = forwarder;
                 _logger.Info($"Proxy ID {proxy.Id} started via ManagedProxyForwarder on port {proxy.LocalPort}");
                 return;
             }
@@ -278,7 +281,7 @@ public sealed class ProxyProcessManager
                 throw new InvalidOperationException("Failed to start 3proxy process");
 
             _logger.Debug($"3proxy started successfully with PID: {process.Id}");
-            Processes[proxy.Id] = process;
+            _processes[proxy.Id] = process;
             WaitForPort(process, proxy.LocalPort, TimeSpan.FromSeconds(5));
         }
         catch (Exception ex)
@@ -290,33 +293,31 @@ public sealed class ProxyProcessManager
                 if (process is not null && !process.HasExited)
                     process.Kill(true);
             }
-
             catch (Exception killEx)
             {
                 _logger.Warn($"Failed to kill process during cleanup: {killEx.Message}");
             }
 
             process?.Dispose();
-            Processes.TryRemove(proxy.Id, out _);
+            _processes.TryRemove(proxy.Id, out _);
             TryDeleteConfigFile(cfgPath);
             throw;
         }
     }
 
-    public static bool IsRunning(ProxyItem proxy)
+    public bool IsRunning(ProxyItem proxy)
     {
         if (proxy is null) return false;
         var proxyId = proxy.Id;
         var configPath = GetConfigPath(proxy);
 
         // 检查 ManagedProxyForwarder
-        if (Forwarders.TryGetValue(proxy.Id, out var forwarder))
+        if (_forwarders.TryGetValue(proxy.Id, out var forwarder))
         {
             return forwarder.IsListening;
         }
 
         // 无 forwarder 时检查 3proxy 进程。
-        // 添加依赖验证（虽然检查运行状态不严格需要exe，但保持一致性）
         try
         {
             Ensure3ProxyDependencies();
@@ -325,13 +326,13 @@ public sealed class ProxyProcessManager
         {
             // 如果依赖检查失败，认为进程不在运行中（安全策略）
             _logger.Warn($"Dependency check failed for proxy {proxy?.Id ?? 0}, considering as not running: {ex.Message}");
-            if (Processes.TryRemove(proxyId, out var failedProcess))
+            if (_processes.TryRemove(proxyId, out var failedProcess))
                 failedProcess?.Dispose();
             TryDeleteConfigFile(configPath);
             return false;
         }
 
-        if (!Processes.TryGetValue(proxy.Id, out var process))
+        if (!_processes.TryGetValue(proxy.Id, out var process))
         {
             _logger.Debug($"No process found for proxy ID: {proxy.Id}");
             return false;
@@ -340,7 +341,7 @@ public sealed class ProxyProcessManager
         bool isRunning = !process.HasExited;
         _logger.Debug($"Proxy ID {proxy.Id} is running: {isRunning} (HasExited: {process.HasExited})");
 
-        if (!isRunning && Processes.TryRemove(proxy.Id, out var exitedProcess))
+        if (!isRunning && _processes.TryRemove(proxy.Id, out var exitedProcess))
         {
             exitedProcess.Dispose();
             TryDeleteConfigFile(configPath);
@@ -349,14 +350,14 @@ public sealed class ProxyProcessManager
         return isRunning;
     }
 
-    public static void Stop(ProxyItem proxy)
+    public void Stop(ProxyItem proxy)
     {
         ArgumentNullException.ThrowIfNull(proxy);
 
         _logger.Debug($"Stopping proxy ID: {proxy.Id}");
 
         // Stop ManagedProxyForwarder if it exists
-        if (Forwarders.TryRemove(proxy.Id, out var forwarder))
+        if (_forwarders.TryRemove(proxy.Id, out var forwarder))
         {
             forwarder.Stop();
             forwarder.Dispose();
@@ -364,7 +365,7 @@ public sealed class ProxyProcessManager
             return;
         }
 
-        if (!Processes.TryGetValue(proxy.Id, out var process))
+        if (!_processes.TryGetValue(proxy.Id, out var process))
         {
             _logger.Debug($"No process found to stop for proxy ID: {proxy.Id}");
             TryDeleteConfigFile(GetConfigPath(proxy));
@@ -402,14 +403,14 @@ public sealed class ProxyProcessManager
         }
         finally
         {
-            Processes.TryRemove(proxy.Id, out _);
+            _processes.TryRemove(proxy.Id, out _);
             TryDeleteConfigFile(GetConfigPath(proxy));
             process.Dispose();
             _logger.Debug($"Removed proxy ID {proxy.Id} from process tracking.");
         }
     }
 
-    private static void TryDeleteConfigFile(string configPath)
+    private void TryDeleteConfigFile(string configPath)
     {
         try
         {

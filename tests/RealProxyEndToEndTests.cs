@@ -75,7 +75,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
         var json = serializer.Serialize(emptyCfg);
         await File.WriteAllTextAsync(_configPath, json);
 
-        ProxyProcessManager.Configure(new ThreeProxyConfig());
+        ProxyProcessManager.Default.Configure(new ThreeProxyConfig());
 
         var proxyCfg = new ProxyConfig
         {
@@ -100,7 +100,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
         {
             try
             {
-                ProxyProcessManager.Stop(new ProxyItem { Id = id });
+                ProxyProcessManager.Default.Stop(new ProxyItem { Id = id });
                 await _client!.DeleteAsync($"/api/proxies/{id}");
             }
             catch (Exception)
@@ -206,7 +206,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             var cfgPath = PathResolver.ResolvePath("runtime", "3proxy", "cfg", $"{fp.Id}.cfg");
 
             // 3a. 启动
-            ProxyProcessManager.Start(fp);
+            ProxyProcessManager.Default.Start(fp);
             Assert.True(File.Exists(cfgPath) || IsPortListening(forwardLocalPort, TimeSpan.FromSeconds(5)),
                 "cfg 或转发器应在启动后可用");
             R($"  3a. ✅ 启动成功, cfg 已生成");
@@ -242,7 +242,7 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             }
 
             // 3d. 停止
-            ProxyProcessManager.Stop(fp);
+            ProxyProcessManager.Default.Stop(fp);
             Thread.Sleep(800);
             var cfgGone = !File.Exists(cfgPath);
             var portFree = IsPortAvailable(forwardLocalPort);

@@ -86,7 +86,7 @@ public sealed class LoggingAndMonitorTests
             LocalPort = 9502,
         };
 
-        var exception = Record.Exception(() => ProxyProcessManager.Stop(proxy));
+        var exception = Record.Exception(() => ProxyProcessManager.Default.Stop(proxy));
 
         Assert.Null(exception);
     }

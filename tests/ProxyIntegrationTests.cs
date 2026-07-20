@@ -47,11 +47,11 @@ public sealed class ProxyIntegrationTests
         var upstreamRequestTask = AcceptRequestAsync(upstream, cancellation.Token);
         var configRemainedAfterStop = false;
 
-        ProxyProcessManager.Configure(new ThreeProxyConfig());
+        ProxyProcessManager.Default.Configure(new ThreeProxyConfig());
 
         try
         {
-            ProxyProcessManager.Start(proxy);
+            ProxyProcessManager.Default.Start(proxy);
             Assert.True(File.Exists(configPath) || IsPortListening(localPort, TimeSpan.FromSeconds(3)),
                 "cfg 或转发器应在启动后可用");
             await WaitForPortAsync(localPort, TimeSpan.FromSeconds(5));
@@ -80,7 +80,7 @@ public sealed class ProxyIntegrationTests
         }
         finally
         {
-            ProxyProcessManager.Stop(proxy);
+            ProxyProcessManager.Default.Stop(proxy);
             configRemainedAfterStop = File.Exists(configPath);
             cancellation.Cancel();
             upstream.Stop();
