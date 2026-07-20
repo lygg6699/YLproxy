@@ -22,9 +22,10 @@ namespace YLproxy.Infrastructure
                 {
                     OnUserNotification(context, ex.Message);
                 }
-                catch
+                catch (Exception notifyEx)
                 {
                     // Notification failure must not mask the original exception.
+                    System.Diagnostics.Debug.WriteLine($"[ExceptionHandler] User notification failed: {notifyEx.Message}");
                 }
             }
         }

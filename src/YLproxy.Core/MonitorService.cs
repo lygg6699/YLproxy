@@ -29,6 +29,12 @@ public sealed class MonitorService : IDisposable
     /// </summary>
     private readonly ConcurrentDictionary<int, (int FailureCount, DateTime LastAttempt)> _restartBackoff = new();
 
+    /// <summary>
+    /// Tracks the last health check time per proxy, separated from restart backoff timestamps
+    /// to avoid timestamp collision that would corrupt backoff calculations.
+    /// </summary>
+    private readonly ConcurrentDictionary<int, DateTime> _lastHealthCheck = new();
+
     private bool _disposed;
 
     /// <summary>
@@ -146,10 +152,11 @@ public sealed class MonitorService : IDisposable
         try
         {
             // Only check health at the configured interval
-            // Use _restartBackoff's LastAttempt as a coarse-grained last-health-check time
-            if (_restartBackoff.TryGetValue(proxy.Id, out var entry))
+            // Use _lastHealthCheck to track health check timestamps independently
+            // from restart backoff (which is tracked in _restartBackoff).
+            if (_lastHealthCheck.TryGetValue(proxy.Id, out var lastCheck))
             {
-                if (DateTime.UtcNow - entry.LastAttempt < _healthCheckInterval)
+                if (DateTime.UtcNow - lastCheck < _healthCheckInterval)
                     return;
             }
 
@@ -171,10 +178,8 @@ public sealed class MonitorService : IDisposable
             }
             else
             {
-                // Health check passed — reset the tracking
-                _restartBackoff.AddOrUpdate(proxy.Id,
-                    (0, DateTime.UtcNow),
-                    (_, _) => (0, DateTime.UtcNow));
+                // Health check passed — record the check time in the dedicated dictionary
+                _lastHealthCheck[proxy.Id] = DateTime.UtcNow;
             }
         }
         catch (Exception ex)
