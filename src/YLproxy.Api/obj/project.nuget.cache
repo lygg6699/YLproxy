@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "wVV5MFnTD2w=",
+  "success": false,
+  "projectFilePath": "/workspaces/YLproxy/src/YLproxy.Api/YLproxy.Api.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/10.0.10/microsoft.windowsdesktop.app.ref.10.0.10.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1015",
+      "level": "Error",
+      "message": "The following PackageReference item(s) do not have a version specified: Swashbuckle.AspNetCore",
+      "projectPath": "/workspaces/YLproxy/src/YLproxy.Api/YLproxy.Api.csproj",
+      "filePath": "/workspaces/YLproxy/src/YLproxy.Api/YLproxy.Api.csproj",
+      "targetGraphs": []
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "LEp/ajBDFis=",
+  "success": false,
+  "projectFilePath": "/workspaces/YLproxy/tests/YLproxy.Tests.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/10.0.10/microsoft.windowsdesktop.app.ref.10.0.10.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1015",
+      "level": "Error",
+      "message": "The following PackageReference item(s) do not have a version specified: coverlet.collector, Microsoft.NET.Test.Sdk, xunit, xunit.runner.visualstudio",
+      "projectPath": "/workspaces/YLproxy/tests/YLproxy.Tests.csproj",
+      "filePath": "/workspaces/YLproxy/tests/YLproxy.Tests.csproj",
+      "targetGraphs": []
+    }
+  ]
+}

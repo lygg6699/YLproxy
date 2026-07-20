@@ -137,7 +137,12 @@ namespace YLproxy.Infrastructure
                 }
                 finally
                 {
-                    try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { }
+                    try { if (File.Exists(tempPath)) File.Delete(tempPath); }
+                    catch (Exception ex)
+                    {
+                        // Non-critical: temp file cleanup failure should not affect config save result
+                        _saveErrors.Add($"Failed to delete temp file: {ex.Message}");
+                    }
                 }
             }
             catch (Exception ex)

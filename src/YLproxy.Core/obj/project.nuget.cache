@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "KD4RvlrzVww=",
+  "success": true,
+  "projectFilePath": "/workspaces/YLproxy/src/YLproxy.Core/YLproxy.Core.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/system.security.cryptography.protecteddata/10.0.0/system.security.cryptography.protecteddata.10.0.0.nupkg.sha512",
+    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/10.0.10/microsoft.windowsdesktop.app.ref.10.0.10.nupkg.sha512"
+  ],
+  "logs": []
+}

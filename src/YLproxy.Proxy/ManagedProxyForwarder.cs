@@ -177,7 +177,10 @@ public sealed class ManagedProxyForwarder : IDisposable
                         name.Equals("Proxy-Connection", StringComparison.OrdinalIgnoreCase))
                         continue;
                     try { request.Headers.TryAddWithoutValidation(name, line[(colon + 1)..].Trim()); }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        _logger.Debug($"Failed to add header '{name}': {ex.Message}");
+                    }
                 }
 
                 // 如果有 body，写入
@@ -297,13 +300,27 @@ public sealed class ManagedProxyForwarder : IDisposable
     private static async Task WriteError(NetworkStream stream, int code, string msg)
     {
         var resp = Encoding.ASCII.GetBytes($"HTTP/1.1 {code} {msg}\r\nContent-Length: 0\r\n\r\n");
-        try { await stream.WriteAsync(resp).ConfigureAwait(false); } catch { }
+        try { await stream.WriteAsync(resp).ConfigureAwait(false); }
+        catch (Exception ex)
+        {
+            _logger.Debug($"Failed to write error response to client: {ex.Message}");
+        }
     }
 
     public void Stop()
     {
-        try { _cts.Cancel(); } catch { }
-        try { _listener.Stop(); } catch { }
+        try { _cts.Cancel(); }
+        catch (Exception ex)
+        {
+            // Ignore cancellation errors during shutdown
+            _logger.Debug($"CancellationTokenSource.Cancel() failed during cleanup: {ex.Message}");
+        }
+        try { _listener.Stop(); }
+        catch (Exception ex)
+        {
+            // Ignore listener stop errors during shutdown
+            _logger.Debug($"HttpListener.Stop() failed during cleanup: {ex.Message}");
+        }
     }
 
     public bool IsListening

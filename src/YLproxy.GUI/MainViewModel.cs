@@ -333,7 +333,10 @@ public sealed class MainViewModel : ViewModelBase
 
             // Attempt to stop the proxy, but continue with removal even if stopping fails
             try { _proxyProcessManager.Stop(proxy); }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Stop proxy {proxy.Id} before removal failed (non-critical): {ex.Message}");
+            }
 
             Proxies.Remove(proxy);
             ApplyProxyFilter();
@@ -706,7 +709,10 @@ public sealed class MainViewModel : ViewModelBase
                     imported++;
                 }
                 // Skip invalid proxy entries and continue with the next one
-                catch { }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Skipped invalid proxy entry during import: {ex.Message}");
+                }
             }
 
             _proxyDataService.Save(cfg);
@@ -797,7 +803,11 @@ public sealed class MainViewModel : ViewModelBase
         // Attempt to stop each proxy, but continue shutdown even if stopping fails
         foreach (var proxy in Proxies.Where(p => p.Status == ProxyStatus.Running).ToList())
         {
-            try { _proxyProcessManager.Stop(proxy); } catch { }
+            try { _proxyProcessManager.Stop(proxy); }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Stop proxy {proxy.Id} before removal failed (non-critical): {ex.Message}");
+            }
         }
         await Task.CompletedTask;
     }

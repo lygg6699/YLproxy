@@ -198,7 +198,7 @@
 - [ ] 2. AppSettingsService 接入 ILogger（5 处）
 - [ ] 3. TransparentCoalescingForwarder + ProxyDataService 接入 ILogger（2 处）
 - [ ] 4. FileLogger 自清理路径修复
-- [ ] 5. 空 catch 块治理
+- [x] 5. 空 catch 块治理
 - [ ] 6. 日志生命周期文档更新 + 3proxy 引擎日志清理
 - [ ] 7. 测试补齐（预期 ≥7 个新测试）
 - [ ] 8. SQLite 数据层实现

@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "P2b14c5DF/8=",
+  "success": false,
+  "projectFilePath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/10.0.10/microsoft.windowsdesktop.app.ref.10.0.10.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1015",
+      "level": "Error",
+      "message": "The following PackageReference item(s) do not have a version specified: System.Security.Cryptography.ProtectedData",
+      "projectPath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
+      "filePath": "/workspaces/YLproxy/src/YLproxy.Infrastructure/YLproxy.Infrastructure.csproj",
+      "targetGraphs": []
+    }
+  ]
+}
