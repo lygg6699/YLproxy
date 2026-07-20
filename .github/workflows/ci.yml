@@ -70,23 +70,29 @@ jobs:
         shell: pwsh
         run: dotnet build YLproxy.sln --configuration Release --no-restore -warnaserror
 
-      - name: Run unit tests
+      - name: Run tests (excluding E2E)
         shell: pwsh
         run: |
           $testOutput = & dotnet test tests/YLproxy.Tests.csproj `
             --configuration Debug --no-build --no-restore `
-            --filter "Category=Unit" `
+            --filter "TestCategory!=E2E" `
             --results-directory TestResults `
             --logger "trx;LogFileName=tests.trx" 2>&1
           $testOutput | Out-String | Write-Host
 
           $passedMatch = [regex]::Match(($testOutput -join "`n"), 'Passed:?\s*(\d+)')
           $passed = if ($passedMatch.Success) { [int]$passedMatch.Groups[1].Value } else { 0 }
-          if ($passed -eq 0) {
-            Write-Error "Minimum test protection: no unit tests passed (0 Passed). Ensure at least one test has [Trait(""Category"", ""Unit"")]."
+          $failedMatch = [regex]::Match(($testOutput -join "`n"), 'Failed:?\s*(\d+)')
+          $failed = if ($failedMatch.Success) { [int]$failedMatch.Groups[1].Value } else { 0 }
+          if ($failed -gt 0) {
+            Write-Error "Test failures detected: $failed Failed, $passed Passed"
             exit 1
           }
-          Write-Host "Unit tests: $passed Passed"
+          if ($passed -eq 0) {
+            Write-Error "No tests passed. Ensure tests have correct TestCategory filter."
+            exit 1
+          }
+          Write-Host "Tests: $passed Passed, 0 Failed"
 
       - name: Upload test results
         if: always()

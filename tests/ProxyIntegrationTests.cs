@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
+using YLproxy.Models.Config;
 using YLproxy.Proxy;
 using YLproxy.Utils;
 

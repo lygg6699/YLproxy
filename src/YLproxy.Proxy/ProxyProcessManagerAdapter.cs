@@ -1,4 +1,5 @@
 using YLproxy.Models;
+using YLproxy.Models.Config;
 using YLproxy.Proxy.Abstractions;
 
 namespace YLproxy.Proxy;
@@ -21,7 +22,7 @@ public sealed class ProxyProcessManagerAdapter : IProxyProcessManager
         _manager = manager ?? throw new System.ArgumentNullException(nameof(manager));
     }
 
-    public void Configure(Infrastructure.ThreeProxyConfig settings)
+    public void Configure(Models.Config.ThreeProxyConfig settings)
     {
         _manager.Configure(settings);
     }

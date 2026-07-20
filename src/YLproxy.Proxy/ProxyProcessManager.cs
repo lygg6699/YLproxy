@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
+using YLproxy.Models.Config;
 using YLproxy.Utils;
 
 namespace YLproxy.Proxy;
@@ -27,7 +28,6 @@ public sealed class ProxyProcessManager
     /// <summary>
     /// 获取默认全局实例（仅用于向后兼容的过渡期）。
     /// </summary>
-    [Obsolete("Use instance methods via IProxyProcessManager injection instead")]
     public static ProxyProcessManager Default => _defaultInstance;
 
     public ProxyProcessManager()

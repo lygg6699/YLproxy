@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using YLproxy.Models.Config;
 
 namespace YLproxy.Infrastructure
 {
@@ -53,7 +54,7 @@ namespace YLproxy.Infrastructure
                     // Use defaults if reading config fails.
                 }
 
-                _logger = new FileLogger("logs", 30, "Info");
+                _logger = new FileLogger(ConfigDefaults.LogDirectory, ConfigDefaults.LogRetentionDays, ConfigDefaults.DefaultLogLevel);
                 return _logger;
             }
         }

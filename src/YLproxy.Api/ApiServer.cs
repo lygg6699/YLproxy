@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using YLproxy.Infrastructure;
+using YLproxy.Models.Config;
 using YLproxy.Utils;
 
 namespace YLproxy.Api;

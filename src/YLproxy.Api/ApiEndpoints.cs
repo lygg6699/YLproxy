@@ -3,6 +3,7 @@ using YLproxy.Core;
 using YLproxy.Core.Config;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
+using YLproxy.Models.Config;
 using YLproxy.Proxy;
 using Microsoft.AspNetCore.Http;
 

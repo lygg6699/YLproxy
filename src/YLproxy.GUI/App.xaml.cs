@@ -6,10 +6,11 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using YLproxy.Core.PreFlight;
 using YLproxy.Infrastructure;
+using YLproxy.Models.Config;
 using YLproxy.Utils;
 using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
-using GlobalProxyConfig = YLproxy.Infrastructure.ProxyConfig;
-using GlobalThreeProxyConfig = YLproxy.Infrastructure.ThreeProxyConfig;
+using GlobalProxyConfig = YLproxy.Models.Config.ProxyConfig;
+using GlobalThreeProxyConfig = YLproxy.Models.Config.ThreeProxyConfig;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 

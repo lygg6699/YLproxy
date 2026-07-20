@@ -1,11 +1,12 @@
 using YLproxy.Models;
+using YLproxy.Models.Config;
 
 namespace YLproxy.Core.Abstractions;
 
 // Compatibility shim (optional): not used directly by GUI.
 public interface IProxyProcessManager
 {
-    void Configure(Infrastructure.ThreeProxyConfig settings);
+    void Configure(ThreeProxyConfig settings);
 
     void Ensure3ProxyDependencies();
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
 using YLproxy.Models;
+using YLproxy.Models.Config;
 using YLproxy.Utils;
 using YLproxy.Infrastructure.Abstractions;
 
@@ -190,13 +191,13 @@ namespace YLproxy.Infrastructure
             ArgumentNullException.ThrowIfNull(config);
 
             if (config.Logging is null || string.IsNullOrWhiteSpace(config.Logging.LogDirectory) ||
-                !string.Equals(config.Logging.LogDirectory.Replace('\\', '/').Trim('/'), "logs", StringComparison.OrdinalIgnoreCase))
+                !string.Equals(config.Logging.LogDirectory.Replace('\\', '/').Trim('/'), ConfigDefaults.LogDirectory, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("Logging.LogDirectory must be the repository logs directory.");
 
             if (config.Logging.RetentionDays < 0)
                 throw new InvalidDataException("Logging.RetentionDays must be zero or greater.");
 
-            if (!new[] { "Debug", "Info", "Warn", "Error" }
+            if (!ConfigDefaults.ValidLogLevels
                     .Contains(config.Logging.MinLevel, StringComparer.OrdinalIgnoreCase))
                 throw new InvalidDataException("Logging.MinLevel must be Debug, Info, Warn, or Error.");
 
@@ -205,60 +206,18 @@ namespace YLproxy.Infrastructure
                 config.Proxy.CheckIntervalSeconds < 1)
                 throw new InvalidDataException("Proxy port range or check interval is invalid.");
 
-            if (!string.Equals(config.Proxy.DataDirectory.Replace('\\', '/').Trim('/'), "data", StringComparison.OrdinalIgnoreCase) ||
+            if (!string.Equals(config.Proxy.DataDirectory.Replace('\\', '/').Trim('/'), ConfigDefaults.DataDirectory, StringComparison.OrdinalIgnoreCase) ||
                 string.IsNullOrWhiteSpace(config.Proxy.ConfigFileName) ||
                 !string.Equals(Path.GetFileName(config.Proxy.ConfigFileName), config.Proxy.ConfigFileName, StringComparison.Ordinal) ||
-                !string.Equals(config.Proxy.ConfigFileName, "config.json", StringComparison.OrdinalIgnoreCase))
+                !string.Equals(config.Proxy.ConfigFileName, ConfigDefaults.ConfigFileName, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("Proxy data must be stored in data/config.json.");
 
             if (config.ThreeProxy is null ||
-                !string.Equals(config.ThreeProxy.RuntimeDirectory.Replace('\\', '/').Trim('/'), "runtime/3proxy", StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(config.ThreeProxy.RuntimeDirectory.Replace('\\', '/').Trim('/'), ConfigDefaults.ThreeProxyRuntime, StringComparison.OrdinalIgnoreCase) ||
                 config.ThreeProxy.RequiredDlls is null ||
                 config.ThreeProxy.RequiredDlls.Any(dll => string.IsNullOrWhiteSpace(dll) ||
                     !string.Equals(Path.GetFileName(dll), dll, StringComparison.Ordinal)))
                 throw new InvalidDataException("3proxy runtime or DLL configuration is invalid.");
         }
-    }
-
-    public class AppSettingsConfig
-    {
-        public LoggingConfig Logging { get; set; } = new LoggingConfig();
-        public ProxyConfig Proxy { get; set; } = new ProxyConfig();
-        public ThreeProxyConfig ThreeProxy { get; set; } = new ThreeProxyConfig();
-        public ApiConfig Api { get; set; } = new ApiConfig();
-        public StartupConfig Startup { get; set; } = new StartupConfig();
-    }
-
-    public class LoggingConfig
-    {
-        public string LogDirectory { get; set; } = "logs";
-        public int RetentionDays { get; set; } = 30;
-        public string MinLevel { get; set; } = "Info";
-    }
-
-    public class ProxyConfig
-    {
-        public string DataDirectory { get; set; } = "data";
-        public string ConfigFileName { get; set; } = "config.json";
-        public int PortRangeStart { get; set; } = 9001;
-        public int PortRangeEnd { get; set; } = 9100;
-        public int CheckIntervalSeconds { get; set; } = 5;
-    }
-
-    public class ThreeProxyConfig
-    {
-        public string RuntimeDirectory { get; set; } = "runtime/3proxy";
-        public List<string> RequiredDlls { get; set; } = new List<string> { "FilePlugin.dll", "StringsPlugin.dll" };
-    }
-
-    public class StartupConfig
-    {
-        public bool AutoStart { get; set; }
-    }
-
-    public class ApiConfig
-    {
-        public int Port { get; set; } = 9100;
-        public string AccessToken { get; set; } = string.Empty;
     }
 }

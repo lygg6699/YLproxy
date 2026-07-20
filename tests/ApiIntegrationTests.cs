@@ -3,6 +3,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using YLproxy.Api;
 using YLproxy.Infrastructure;
+using YLproxy.Models.Config;
+using ProxyConfig = YLproxy.Models.Config.ProxyConfig;
 
 namespace YLproxy.Tests;
 
