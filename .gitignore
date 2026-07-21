@@ -1,0 +1,72 @@
+# YLproxy 仓库清理与 .gitignore 优化执行方案
+# 生成日期：2026-07-21
+
+# 构建产物
+bin/
+obj/
+**/bin/
+**/obj/
+*/bin/*
+*/obj/*
+src/*/bin/
+src/*/obj/
+tests/bin/
+tests/obj/
+
+# 发布产物
+*/bin/*/publish/
+src/*/bin/*/publish/
+*/bin/Release/**/publish/
+src/*/bin/Release/**/publish/
+
+# WPF 编译缓存
+**/*_wpftmp/
+*/obj/**/*_wpftmp/
+src/*/obj/**/*_wpftmp/
+
+# 根目录构建产物
+build_stdout.txt
+build.binlog
+test_3proxy.cfg
+
+# 日志文件
+logs/
+runtime/3proxy/logs/
+*.log
+*.txt
+
+# 数据和配置文件（保留模板，忽略实际配置）
+data/config.json
+data/config.json.bak
+AppSettings.json
+
+# AI 代理临时文件
+.blackbox/tmp/
+.blackboxcli/PROJECT_SUMMARY.md
+.clinerules/Agent.md
+
+# 临时文件和缓存
+*.cache
+*.user
+*.userosscache
+*.sln.docstates
+.vscode/
+.idea/
+*.suo
+*.pidb
+*.log
+*.vs
+Bin/
+Obj/
+[Bb]in/
+[O]bj/
+[Ll]og/
+[Ll]ogs/
+
+# 保留关键文件（反向模式）
+!AppSettings.example.json
+!data/config.example.json
+!data/README.md
+!logs/README.md
+!runtime/3proxy/copying
+!runtime/3proxy/authors
