@@ -1,71 +1,82 @@
-# YLproxy 仓库清理与 .gitignore 优化执行方案
+# YLproxy .gitignore
 # 生成日期：2026-07-21
 
-# 构建产物
+# ====== 构建产物 ======
 bin/
 obj/
 **/bin/
 **/obj/
-*/bin/*
-*/obj/*
 src/*/bin/
 src/*/obj/
 tests/bin/
 tests/obj/
-
-# 发布产物
-*/bin/*/publish/
-src/*/bin/*/publish/
-*/bin/Release/**/publish/
-src/*/bin/Release/**/publish/
-
-# WPF 编译缓存
-**/*_wpftmp/
-*/obj/**/*_wpftmp/
-src/*/obj/**/*_wpftmp/
-
-# 根目录构建产物
 build_stdout.txt
 build.binlog
 test_3proxy.cfg
+*.binlog
 
-# 日志文件
+# ====== 发布产物 ======
+publish/
+*/bin/*/publish/
+
+# ====== WPF 编译缓存 ======
+**/*_wpftmp/
+
+# ====== NuGet ======
+packages/
+*.nupkg
+
+# ====== 日志文件 ======
 logs/
 runtime/3proxy/logs/
 *.log
-*.txt
 
-# 数据和配置文件（保留模板和全局配置，忽略本地代理数据）
+# ====== 数据和本地配置 ======
 data/config.json
 data/config.json.bak
+AppSettings.local.json
 
-# AI 代理临时文件
+# ====== 测试产物 ======
+TestResults/
+coverage/
+*.trx
+*.coverage
+coverage.json
+*.opencover.xml
+
+# ====== 运行时文件 ======
+runtime/3proxy/bin64/
+runtime/3proxy/cfg/
+runtime/3proxy/logs/
+
+# ====== AI 代理临时文件 ======
 .blackbox/tmp/
-.blackboxcli/PROJECT_SUMMARY.md
-.clinerules/Agent.md
+.blackboxcli/
+.clinerules/
 
-# 临时文件和缓存
+# ====== 临时文件和缓存 ======
 *.cache
 *.user
-*.userosscache
-*.sln.docstates
-.vscode/
-.idea/
 *.suo
 *.pidb
-*.log
+*.sln.docstates
 *.vs
-Bin/
-Obj/
-[Bb]in/
-[O]bj/
-[Ll]og/
-[Ll]ogs/
+*.tmp
+*.bak
+*.swp
+*.swo
 
-# 保留关键文件（反向模式）
-!AppSettings.example.json
-!data/config.example.json
-!data/README.md
-!logs/README.md
-!runtime/3proxy/copying
-!runtime/3proxy/authors
+# ====== IDE 配置 ======
+.vscode/
+.idea/
+.vs/
+
+# ====== OS 文件 ======
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# ====== 执行方案文档（不提交仓库，仅本地执行参考） ======
+CI修复执行方案_步骤*.md
+完整的工程债与技术债清偿执行方案_*.md
+docs/issues/*执行方案.md

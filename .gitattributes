@@ -1,57 +1,58 @@
-# YLproxy 仓库清理与 .gitignore 优化执行方案
-# 生成日期：2026-07-21
+# YLproxy Git Attributes
+# 统一行尾符规范
 
-# 统一行尾符为 LF（Unix风格）
+# 默认自动检测文本/二进制，文本文件使用 LF
 * text=auto eol=lf
 
-# 特定文件类型强制使用 LF
-*.cs text eol=lf
-*.cpp text eol=lf
-*.h text eol=lf
-*.hpp text eol=lf
-*.js text eol=lf
-*.ts text eol=lf
-*.jsx text eol=lf
-*.tsx text eol=lf
-*.json text eol=lf
-*.xml text eol=lf
-*.html text eol=lf
-*.htm text eol=lf
-*.css text eol=lf
-*.scss text eol=lf
-*.less text eol=lf
-*.md text eol=lf
-*.txt text eol=lf
-*.json text eol=lf
-*.yaml text eol=lf
-*.yml text eol=lf
-*.csproj text eol=lf
-*.sln text eol=lf
-*.props text eol=lf
-*.targets text eol=lf
-*.config text eol=lf
-*.config.text eol=lf
+# 特定源代码文件强制 LF
+*.cs        text eol=lf
+*.cpp       text eol=lf
+*.h         text eol=lf
+*.hpp       text eol=lf
+*.js        text eol=lf
+*.ts        text eol=lf
+*.jsx       text eol=lf
+*.tsx       text eol=lf
+*.json      text eol=lf
+*.xml       text eol=lf
+*.html      text eol=lf
+*.htm       text eol=lf
+*.css       text eol=lf
+*.scss      text eol=lf
+*.less      text eol=lf
+*.md        text eol=lf
+*.txt       text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+*.csproj    text eol=lf
+*.sln       text eol=lf
+*.props     text eol=lf
+*.targets   text eol=lf
+*.config    text eol=lf
 
-# 二进制文件设置为二进制模式（不转换）
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.bmp binary
-*.ico binary
-*.svg binary
-*.pdf binary
-*.zip binary
-*.rar binary
-*.7z binary
-*.exe binary
-*.dll binary
-*.pdb binary
-*.lib binary
-*.so binary
-*.dylib binary
+# Windows 脚本保留 CRLF
+*.ps1       text eol=crlf
+*.cmd       text eol=crlf
+*.bat       text eol=crlf
 
-# 保留特定文件的原始格式
-!*.md -text
-!LICENSE -text
-!THIRD-PARTY-NOTICES.md -text
+# Unix 脚本保留 LF
+*.sh        text eol=lf
+
+# 二进制文件
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.bmp       binary
+*.ico       binary
+*.svg       binary
+*.pdf       binary
+*.zip       binary
+*.rar       binary
+*.7z        binary
+*.exe       binary
+*.dll       binary
+*.pdb       binary
+*.lib       binary
+*.so        binary
+*.dylib     binary

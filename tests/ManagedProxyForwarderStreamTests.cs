@@ -6,6 +6,9 @@ using YLproxy.Models;
 using YLproxy.Proxy;
 using System.Runtime.Versioning;
 
+
+#pragma warning disable CA2022 // E2E test
+
 namespace YLproxy.Tests;
 
 /// <summary>
@@ -13,6 +16,7 @@ namespace YLproxy.Tests;
 /// and P3-1 SemaphoreSlim concurrency limit.
 /// </summary>
 [Trait("Category", "Integration")]
+[Trait("Category", "E2E")]
 public sealed class ManagedProxyForwarderStreamTests
 {
     /// <summary>
@@ -36,7 +40,7 @@ public sealed class ManagedProxyForwarderStreamTests
             using var client = await upstream.AcceptTcpClientAsync();
             await using var stream = client.GetStream();
             var buf = new byte[1];
-            await stream.ReadExactlyAsync(buf.AsMemory(0, buf.Length));
+            await stream.ReadAsync(buf.AsMemory(0, buf.Length));
             var respBytes = Encoding.UTF8.GetBytes(response);
             await stream.WriteAsync(respBytes.AsMemory(0, respBytes.Length));
         });
