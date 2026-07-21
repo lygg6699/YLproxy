@@ -35,10 +35,9 @@ runtime/3proxy/logs/
 *.log
 *.txt
 
-# 数据和配置文件（保留模板，忽略实际配置）
+# 数据和配置文件（保留模板和全局配置，忽略本地代理数据）
 data/config.json
 data/config.json.bak
-AppSettings.json
 
 # AI 代理临时文件
 .blackbox/tmp/
