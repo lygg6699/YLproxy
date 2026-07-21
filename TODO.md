@@ -1,13 +1,16 @@
-# TODO
+# TODO - 当前待办
 
-## DevContainer 修复（Phase 1）
-- [x] 1) 在 `.devcontainer/devcontainer.json` 的 `customizations.vscode.extensions` 中追加 `ms-vscode.test-adapter-converter`
-- [x] 2) 在 `.devcontainer/post-create.sh` 中移除 `dotnet build` 的 `--no-restore` 参数，避免还原失败导致构建直接失败
-- [x] 3) 端口转发与 ASP.NET 证书配置项：已确认 forwardPorts=[9100,9001]；DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+> 完整任务追踪请查看 [docs/pending/task-tracking.md](docs/pending/task-tracking.md)
 
-## 安全性优化（Phase 2）
-- [x] remoteUser 已为 `vscode`（已核查：无需在 Codespaces 中以 root 运行）
+## Phase C1 — P0 阻塞性债务清偿
+- [ ] C1.1: 数据持久化策略决策(JSON优化 vs SQLite切换)
+- [ ] C1.2: 空catch块治理(13处审查修复)
 
+## Phase C2 — P1 重要性债务清偿
+- [ ] C2.1: MainViewModel继续拆分(ProxyListViewModel等)
+- [ ] C2.2: CI/CD发布自动化(release.yml workflow)
+- [ ] C2.3: FileSystemWatcher线程安全(ReaderWriterLockSlim引入)
+- [ ] C2.4: 测试覆盖率提升(目标80%)
 
-
-
+## Phase C3 — P2 优化性债务清偿
+- [ ] C3.1-C3.8: REST API、审计日志、配置类迁移等8项

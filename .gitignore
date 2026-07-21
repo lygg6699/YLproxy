@@ -80,3 +80,7 @@ Desktop.ini
 CI修复执行方案_步骤*.md
 完整的工程债与技术债清偿执行方案_*.md
 docs/issues/*执行方案.md
+
+# ====== 覆盖率产物 ======
+reports/coverage/
+tests/TestResults/

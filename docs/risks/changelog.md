@@ -128,3 +128,34 @@
 - 本地已确认两个文件修改生效
 
 关联文档: CI修复执行方案_步骤2.md、CI修复执行方案_步骤3.md
+
+## [Git跟踪清理：移除覆盖率产物和IDE配置] — 2026-07-21
+
+### 变更
+- 使用 `git rm --cached -r` 解除对 `reports/coverage/` 的 Git 跟踪（14 个 coverage.cobertura.xml 文件）
+- 使用 `git rm --cached -r` 解除对 `tests/TestResults/` 的 Git 跟踪（5 个 coverage.cobertura.xml + 1 个 testresults.trx）
+- 使用 `git rm --cached` 解除对 `.vscode/` 目录下 4 个 IDE 配置文件的 Git 跟踪
+- 补充 `.gitignore` 规则：`reports/coverage/` 和 `tests/TestResults/`
+
+### 验证
+- `git status` 显示 20 个文件处于 "deleted" 暂存状态
+- `.gitignore` 已更新，新增覆盖率产物和测试结果规则
+- 本地文件保留，未删除
+
+## [仓库沉积文件清理] — 2026-07-21
+
+### 变更
+- 删除 `reports/` 目录下 14 个过程性检查报告 (check-report-*.md)
+- 删除 `reports/` 目录下 5 个过时汇总报告 (clarification_report.md 等)
+- 保留 `reports/code_sync_summary_report.md` 和 `reports/env_audit_20260716.md`
+- 将 `reports/env_audit_20260716.md` 复制到 `docs/audit/environment-baseline-20260716.md`
+- 删除 `reports/coverage/` 目录下所有覆盖率产物
+- 归档 `TODO_P0-6.md` → `docs/archive/P0-6-execution-tracking.md`
+- 归档 `TODO_cloud_group5.md` → `docs/archive/cloud-group5-execution-tracking.md`
+- 删除已完成的 `TODO_PHASEA.md` 和 `TODO_PHASEA_WORKFLOW.md`
+
+### 验证
+- `reports/` 目录保留 2 个文件 (code_sync_summary_report.md, env_audit_20260716.md)
+- 根目录 `.md` 文件保留: README.md, THIRD-PARTY-NOTICES.md, TODO.md
+- TODO.md 已精简为当前待办事项
+```
