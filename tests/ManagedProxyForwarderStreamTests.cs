@@ -35,8 +35,8 @@ public sealed class ManagedProxyForwarderStreamTests
         {
             using var client = await upstream.AcceptTcpClientAsync();
             await using var stream = client.GetStream();
-            var buf = new byte[4096];
-            await stream.ReadAsync(buf.AsMemory(0, buf.Length));
+            var buf = new byte[1];
+            await stream.ReadExactlyAsync(buf.AsMemory(0, buf.Length));
             var respBytes = Encoding.UTF8.GetBytes(response);
             await stream.WriteAsync(respBytes.AsMemory(0, respBytes.Length));
         });

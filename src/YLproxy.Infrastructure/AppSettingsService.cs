@@ -222,7 +222,7 @@ private static void Validate(AppSettingsConfig config)
             // Relaxed: log directory can be any valid path, not just "logs"
             // Only validate format, not the specific directory name
             var logDir = config.Logging.LogDirectory.Replace('\\', '/').Trim('/');
-            if (logDir.Contains("..") || logDir.Contains("~"))
+            if (logDir.Contains("..") || logDir.Contains('~'))
             {
                 throw new InvalidDataException("Logging.LogDirectory must not contain relative path segments.");
             }
