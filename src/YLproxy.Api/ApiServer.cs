@@ -130,7 +130,11 @@ public sealed class ApiServer
             _app = null;
         }
 
-        try { await (_runTask ?? Task.CompletedTask); } catch (OperationCanceledException) { }
+try { await (_runTask ?? Task.CompletedTask); }
+        catch (OperationCanceledException)
+        {
+            /* 服务器关闭时 CancellationToken 触发，属正常行为 */
+        }
 
         _logger.Info("API server stopped.");
     }

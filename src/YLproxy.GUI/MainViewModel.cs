@@ -767,7 +767,11 @@ public sealed class MainViewModel : ViewModelBase
         });
 
         try { _logger.Info(message); }
-        catch { }
+        catch
+        {
+            // Logging failure is non-critical; swallow to avoid crashing the application.
+            System.Diagnostics.Debug.WriteLine($"AddLog: failed to write log entry: {message}");
+        }
         // Ignore logging failures to prevent logging issues from crashing the application
     }
 

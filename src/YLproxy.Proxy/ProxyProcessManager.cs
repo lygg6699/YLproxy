@@ -449,13 +449,17 @@ public sealed class ProxyProcessManager
                 using var client = new TcpClient();
                 try
                 {
-                    client.Connect(IPAddress.Loopback, port);
+client.Connect(IPAddress.Loopback, port);
                     return;
                 }
-                catch (SocketException) { }
+                catch (SocketException)
+                {
+                    // 端口探测期间 Socket 异常属正常（端口尚未就绪），无需处理
+                }
             }
             catch (SocketException)
             {
+                // WaitForPort 外层 SocketException——端口未就绪，继续轮询
             }
             catch (AggregateException ex) when (ex.InnerException is SocketException)
             {
