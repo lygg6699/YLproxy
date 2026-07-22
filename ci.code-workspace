@@ -157,5 +157,10 @@
         "stopAtEntry": false
       }
     ]
+  },
+  "extensions": {
+    "recommendations": [
+      "davidanson.vscode-markdownlint"
+    ]
   }
 }
