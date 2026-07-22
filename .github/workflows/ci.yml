@@ -103,3 +103,34 @@ jobs:
             TestResults/**/*.trx
           if-no-files-found: warn
           retention-days: 14
+
+  security-check:
+    name: security-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for sensitive files
+        run: |
+          # 检查是否有敏感文件被跟踪
+          if git ls-files | grep -q "AppSettings.json"; then
+            echo "Error: AppSettings.json should not be tracked"
+            exit 1
+          fi
+          if git ls-files | grep -q "data/config.json"; then
+            echo "Error: data/config.json should not be tracked"
+            exit 1
+          fi
+
+      - name: Check .gitignore patterns
+        run: |
+          # 确保.gitignore包含必要的模式
+          if ! grep -q "AppSettings.json" .gitignore; then
+            echo "Error: .gitignore should include AppSettings.json"
+            exit 1
+          fi
+          if ! grep -q "data/config.json" .gitignore; then
+            echo "Error: .gitignore should include data/config.json"
+            exit 1
+          fi
