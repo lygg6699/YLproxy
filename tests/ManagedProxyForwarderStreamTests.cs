@@ -39,8 +39,18 @@ public sealed class ManagedProxyForwarderStreamTests
         {
             using var client = await upstream.AcceptTcpClientAsync();
             await using var stream = client.GetStream();
-            var buf = new byte[1];
-            await stream.ReadAsync(buf.AsMemory(0, buf.Length));
+            // Read the full HTTP request from HttpClient before responding
+            var readBuf = new byte[65536];
+            var totalRead = 0;
+            while (totalRead < readBuf.Length)
+            {
+                var r = await stream.ReadAsync(readBuf.AsMemory(totalRead, readBuf.Length - totalRead));
+                if (r <= 0) break;
+                totalRead += r;
+                // Look for end of headers (\r\n\r\n) to know the request is complete
+                var text = System.Text.Encoding.ASCII.GetString(readBuf, 0, Math.Min(totalRead, 4096));
+                if (text.Contains("\r\n\r\n")) break;
+            }
             var respBytes = Encoding.UTF8.GetBytes(response);
             await stream.WriteAsync(respBytes.AsMemory(0, respBytes.Length));
         });

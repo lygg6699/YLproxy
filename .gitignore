@@ -32,6 +32,7 @@ runtime/3proxy/logs/
 *.log
 
 # ====== 数据和本地配置 ======
+AppSettings.json
 data/config.json
 data/config.json.bak
 AppSettings.local.json

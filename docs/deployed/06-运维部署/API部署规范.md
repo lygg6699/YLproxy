@@ -213,22 +213,35 @@ YLproxy/
 
 ### AppSettings.json 结构
 
+`AppSettings.json` 是应用全局配置文件，首次启动时会自动创建（使用代码默认值），无需手动准备。如需自定义配置，可参考 `AppSettings.example.json` 模板文件。
+
 ```json
 {
-  "App": {
-    "Name": "YLproxy",
-    "Version": "1.0.0",
-    "RuntimePath": "./runtime/3proxy",
-    "ConfigPath": "./data/config.json"
-  },
   "Logging": {
-    "Level": "Info",
-    "MaxFileSize": "10MB",
-    "RetentionDays": 30
+    "LogDirectory": "logs",
+    "RetentionDays": 30,
+    "MinLevel": "Info"
   },
-  "Security": {
-    "EnableEncryption": true,
-    "EncryptionKey": "your-secret-key"
+  "Proxy": {
+    "DataDirectory": "data",
+    "ConfigFileName": "config.json",
+    "PortRangeStart": 9001,
+    "PortRangeEnd": 9099,
+    "CheckIntervalSeconds": 5
+  },
+  "ThreeProxy": {
+    "RuntimeDirectory": "runtime/3proxy",
+    "RequiredDlls": [
+      "FilePlugin.dll",
+      "StringsPlugin.dll"
+    ]
+  },
+  "Api": {
+    "Port": 9100,
+    "AccessToken": ""
+  },
+  "Startup": {
+    "AutoStart": false
   }
 }
 ```
@@ -287,6 +300,7 @@ Write-Host "配置验证成功，代理数: $($config.proxies.Count)"
 ### 代理管理端点
 
 #### 获取代理列表
+
 ```
 GET /api/proxies
 响应：
@@ -307,6 +321,7 @@ GET /api/proxies
 ```
 
 #### 添加代理
+
 ```
 POST /api/proxies
 请求体：
@@ -327,6 +342,7 @@ POST /api/proxies
 ```
 
 #### 测试代理
+
 ```
 POST /api/proxies/{id}/test
 请求体：
@@ -346,6 +362,7 @@ POST /api/proxies/{id}/test
 ```
 
 #### 启动/停止代理
+
 ```
 POST /api/proxies/{id}/start
 POST /api/proxies/{id}/stop
@@ -357,6 +374,7 @@ POST /api/proxies/{id}/stop
 ```
 
 #### 删除代理
+
 ```
 DELETE /api/proxies/{id}
 响应：
@@ -369,6 +387,7 @@ DELETE /api/proxies/{id}
 ### 监控端点
 
 #### 获取实时状态
+
 ```
 GET /api/monitor/status
 响应：
@@ -388,6 +407,7 @@ GET /api/monitor/status
 ```
 
 #### 获取日志
+
 ```
 GET /api/logs?lines=100&level=info
 响应：
@@ -460,6 +480,7 @@ netstat -ano | Select-String "LISTEN"
 ### 常见问题
 
 **Q1：启动失败，报错 "端口已被占用"**
+
 ```powershell
 # 检查占用端口的进程
 netstat -ano | Select-String ":9999"
@@ -474,6 +495,7 @@ Get-Process -Id <PID>
 ```
 
 **Q2：配置文件读取失败**
+
 ```powershell
 # 检查文件权限
 icacls .\data\config.json
@@ -488,6 +510,7 @@ $config = Get-Content .\data\config.json | ConvertFrom-Json -ErrorAction Stop
 ```
 
 **Q3：代理连接测试失败**
+
 ```powershell
 # 检查网络连接
 Test-NetConnection -ComputerName 192.168.1.100 -Port 1080

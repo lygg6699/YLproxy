@@ -71,7 +71,7 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 
 YLproxy/
 ├── .agent                # 第一必读文件，规则与文件放置约束
-├── AppSettings.json                 # 全局运行配置（根目录唯一配置入口）
+├── AppSettings.json                 # 全局运行配置（本地生成，从 AppSettings.example.json 复制）
 ├── global.json                       # .NET SDK 版本约束（10.0.301）
 ├── YLproxy.sln                       # 唯一解决方案入口
 ├── .github/                         # GitHub Copilot/Agent 配置
@@ -104,8 +104,8 @@ YLproxy/
 │       └── logs/                    #   3proxy 自身日志（不提交）
 │
 ├── data/                            # —————— 用户数据目录 ——————
-│   ├── config.example.json          #   脱敏配置模板（提交）
-│   └── config.json                  #   代理配置持久化 JSON（本地忽略）
+│   ├── config.example.json          #   脱敏配置模板（提交到仓库）
+│   └── config.json                  #   代理配置持久化 JSON（本地生成，被 Git 忽略）
 │
 ├── logs/                            # —————— 日志目录（运行时生成） ——————
 │
@@ -151,7 +151,11 @@ YLproxy/
 
 ### AppSettings.json（应用全局配置）
 
-`AppSettings.json` 位于项目根目录，是应用全局配置的唯一入口：
+`AppSettings.json` 位于项目根目录，是应用全局配置的唯一入口。**注意：此文件为本地配置文件，已被 Git 忽略，不应直接提交到仓库。**
+
+应用首次启动时会自动创建 `AppSettings.json`（使用代码默认值），无需手动准备。如需自定义配置，可参考 `AppSettings.example.json` 模板文件手动创建或修改。
+
+模板文件 `AppSettings.example.json` 包含默认配置结构，不含敏感信息：
 
 ```json
 {
@@ -164,12 +168,19 @@ YLproxy/
     "DataDirectory": "data",
     "ConfigFileName": "config.json",
     "PortRangeStart": 9001,
-    "PortRangeEnd": 9100,
+    "PortRangeEnd": 9099,
     "CheckIntervalSeconds": 5
   },
   "ThreeProxy": {
     "RuntimeDirectory": "runtime/3proxy",
     "RequiredDlls": ["FilePlugin.dll", "StringsPlugin.dll"]
+  },
+  "Api": {
+    "Port": 9100,
+    "AccessToken": ""
+  },
+  "Startup": {
+    "AutoStart": false
   }
 }
 ```
@@ -227,8 +238,9 @@ dotnet run --project src/YLproxy.GUI
 
 或双击 `src/YLproxy.GUI/bin/Debug/net10.0-windows/YLproxy.GUI.exe` 直接运行。
 
-首次启动会在 `data/config.json` 中创建本机配置。该文件包含代理凭据，已被 Git 忽略；仓库只提供
-`data/config.example.json`，不要把真实配置强制加入提交。
+首次启动会在 `data/config.json` 中创建本机配置。该文件包含代理凭据，已被 Git 忽略；仓库不提交。
+仓库只提供脱敏配置模板 `data/config.example.json`，不要把包含真实凭据的配置强制加入提交。
+`AppSettings.json` 是应用全局配置的本地文件，已被 Git 忽略，应用首次启动时会自动创建（使用代码默认值），无需手动准备。
 
 ### 界面操作流程
 
