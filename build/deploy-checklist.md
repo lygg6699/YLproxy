@@ -11,6 +11,37 @@
 | 5 | 防火墙允许 TCP 端口 9001-9100 | ☐ |
 | 6 | `data/config.json` 已配置代理 | ☐ |
 | 7 | 3proxy runtime 已就绪 (`runtime/3proxy/bin64/`) | ☐ |
+| 8 | Git pre-commit 钩子已安装 (`scripts/init-environment.ps1 -InstallHooks`) | ☐ |
+| 9 | 日志清理计划任务已注册（可选，`scripts/init-environment.ps1 -InstallScheduledTask`） | ☐ |
+
+## 环境初始化（首次部署必需）
+
+```powershell
+# 一键初始化：安装 Git hooks + 日志清理计划任务
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1
+
+# 仅安装 Git hooks（无需管理员权限，推荐至少执行此步骤）
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -InstallHooks
+
+# 预览模式：查看将要安装的内容
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -WhatIf
+```
+
+### Git Pre-commit 钩子说明
+- **作用**：防止敏感文件（AppSettings.json、data/config.json、*.pem、*.key 等）被意外提交
+- **源文件**：`.githooks/pre-commit`（受版本控制追踪）
+- **安装位置**：`.git/hooks/pre-commit`（本地运行，不会被提交）
+- **手动绕过**：`git commit --no-verify -m "message"`（仅在确认安全时使用）
+
+### 日志轮转策略
+| 策略 | 值 |
+|------|-----|
+| 应用日志保留天数 | 30 天 |
+| 应用日志大小上限 | 100 MB |
+| 3proxy 日志保留天数 | 7 天 |
+| 计划任务执行时间 | 每天 02:00 |
+| 手动执行 | `pwsh .\scripts\cleanup-logs.ps1` |
+| 预览模式 | `pwsh .\scripts\cleanup-logs.ps1 -WhatIf` |
 
 ## 构建发布包
 

@@ -63,7 +63,7 @@ YLproxy 是一款运行在 Windows 平台上的桌面 GUI 应用程序（基于 
 | 代理引擎 | 3proxy 0.9.7（由 `scripts/prepare-runtime.ps1` 准备） |
 | 开发工具 | Visual Studio 2022+ / VS Code    |
 | 版本     | 0.2.0（Phase 7）                |
-| 最后更新 | 2026-07-15                      |
+| 最后更新 | 2026-07-22                      |
 
 ---
 
@@ -153,7 +153,29 @@ YLproxy/
 
 `AppSettings.json` 位于项目根目录，是应用全局配置的唯一入口。**注意：此文件为本地配置文件，已被 Git 忽略，不应直接提交到仓库。**
 
-应用首次启动时会自动创建 `AppSettings.json`（使用代码默认值），无需手动准备。如需自定义配置，可参考 `AppSettings.example.json` 模板文件手动创建或修改。
+#### 本地生成机制
+
+应用首次启动时会自动创建 `AppSettings.json`（使用代码默认值），无需手动准备。如果需要自定义配置：
+
+```powershell
+# 方式一：从模板复制
+Copy-Item AppSettings.example.json AppSettings.json
+
+# 方式二：使用环境初始化脚本（推荐）
+# 该脚本还会安装 Git hooks 等开发基础设施
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1
+
+# 方式三：应用首次启动自动生成（最简单）
+dotnet run --project src/YLproxy.GUI
+```
+
+#### 安全保护
+
+- `AppSettings.json` 已加入 `.gitignore`，不会被意外提交
+- Git pre-commit 钩子（`.githooks/pre-commit`）会在提交时检查是否误将敏感文件纳入暂存区
+- 使用 `scripts/init-environment.ps1 -InstallHooks` 安装钩子后即可生效
+
+#### 配置结构
 
 模板文件 `AppSettings.example.json` 包含默认配置结构，不含敏感信息：
 
@@ -318,6 +340,75 @@ GET  /api/proxy
 
 
 YLproxy **只影响** 那些显式配置了使用本地代理端口的进程。系统全局网络不受任何影响。
+
+---
+
+---
+
+## 清理和维护指南
+
+### 日志轮转与清理
+
+应用日志默认保存在 `logs/` 目录，3proxy 引擎日志保存在 `runtime/3proxy/logs/`。使用以下策略自动控制日志增长：
+
+```powershell
+# 手动执行日志清理
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\cleanup-logs.ps1
+
+# 预览模式（查看将要删除的文件，不实际删除）
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\cleanup-logs.ps1 -WhatIf
+```
+
+| 策略 | 默认值 | 配置位置 |
+|------|--------|----------|
+| 应用日志保留天数 | 30 天 | `AppSettings.json` → `Logging.RetentionDays` |
+| 应用日志大小上限 | 100 MB | `scripts/cleanup-logs.ps1 -MaxSizeMB` |
+| 3proxy 日志保留天数 | 7 天 | `scripts/cleanup-logs.ps1 -ProxyLogMaxAgeDays` |
+
+如需定时自动清理，可以管理员身份注册计划任务：
+
+```powershell
+# 注册每日 02:00 自动清理
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -InstallScheduledTask
+
+# 卸载计划任务
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -UninstallScheduledTask
+```
+
+### Git Pre-commit 安全钩子
+
+`scripts/init-environment.ps1` 提供一键安装 Git pre-commit 钩子的功能，用于防止敏感文件被意外提交：
+
+```powershell
+# 安装 Git 钩子（无需管理员权限）
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -InstallHooks
+```
+
+安装后，执行 `git commit` 时会自动检查暂存区是否包含以下敏感文件：
+- `AppSettings.json` — 全局运行配置
+- `data/config.json` — 代理数据（含 DPAPI 加密凭据）
+- `*.pem`、`*.key`、`*.pfx` — 私钥和证书文件
+
+如需绕过检查（仅在确认安全时）：`git commit --no-verify -m "message"`
+
+### 环境初始化
+
+首次克隆项目后，建议执行一次完整环境初始化：
+
+```powershell
+# 一次性完成：安装 Git 钩子 + 注册日志清理计划任务
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1
+```
+
+### 构建缓存清理
+
+```powershell
+# 清理所有项目的 bin/ 和 obj/ 目录
+dotnet clean
+
+# 或使用验证脚本包含清理步骤
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-workspace.ps1
+```
 
 ---
 

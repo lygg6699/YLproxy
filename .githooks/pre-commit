@@ -1,0 +1,54 @@
+#!/usr/bin/env pwsh
+# YLproxy Pre-commit Hook
+# 防止敏感文件被意外提交到仓库。
+#
+# 安装方式：
+#   pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1
+#
+# 手动安装：
+#   Copy-Item .githooks/pre-commit .git/hooks/pre-commit -Force
+
+# 敏感文件模式列表（支持通配符）
+$sensitivePatterns = @(
+    'AppSettings.json',          # 全局运行配置（含运行时路径等本地信息）
+    'AppSettings.local.json',    # 本地覆盖配置
+    'data/config.json',          # 代理数据（含 DPAPI 加密凭据）
+    'data/config.json.bak',      # 代理数据备份
+    '*.pem',                     # 私钥文件
+    '*.key',                     # 密钥文件
+    '*.pfx',                     # 证书文件
+    '*.cred',                    # 凭据文件
+    'secrets.*',                 # 秘密文件
+    '*.secret.*'                 # 秘密文件
+)
+
+# 获取暂存的文件列表
+$stagedFiles = git diff --cached --name-only
+$blocked = $false
+
+foreach ($file in $stagedFiles) {
+    foreach ($pattern in $sensitivePatterns) {
+        if ($file -like $pattern) {
+            Write-Host "❌ BLOCKED: 敏感文件 '$file' 尝试提交，操作已阻止" -ForegroundColor Red
+            $blocked = $true
+        }
+    }
+}
+
+# 额外检查：确认 data/config.json 未被 --force 添加
+$forceCheck = git diff --cached --name-only | Where-Object { $_ -eq 'data/config.json' }
+if ($forceCheck) {
+    Write-Host "❌ BLOCKED: data/config.json 不应提交到仓库（包含代理凭据）" -ForegroundColor Red
+    $blocked = $true
+}
+
+if ($blocked) {
+    Write-Host ""
+    Write-Host "💡 提示：上述文件应被 .gitignore 忽略。" -ForegroundColor Yellow
+    Write-Host "   如果确实需要提交，请确保文件中不包含敏感信息并手动执行:" -ForegroundColor Yellow
+    Write-Host "    git commit --no-verify -m '...'" -ForegroundColor Yellow
+    exit 1
+}
+
+exit 0
+
