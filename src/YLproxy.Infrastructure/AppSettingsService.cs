@@ -151,7 +151,9 @@ namespace YLproxy.Infrastructure
             try
             {
                 var json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
-                var tempPath = _configFilePath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+                var tempPath = PathHelper.Combine(
+                    PathHelper.GetDirectoryName(_configFilePath),
+                    Guid.NewGuid().ToString("N") + ".tmp");
                 try
                 {
                     var dir = Path.GetDirectoryName(_configFilePath);

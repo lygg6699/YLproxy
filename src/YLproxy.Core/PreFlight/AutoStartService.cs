@@ -52,7 +52,7 @@ public static class AutoStartService
         if (enable)
         {
             var path = executablePath ?? Environment.ProcessPath
-                ?? Path.Combine(AppContext.BaseDirectory, "YLproxy.GUI.exe");
+                ?? PathHelper.Combine(AppContext.BaseDirectory, "YLproxy.GUI.exe");
             EnableAutoStart(path);
         }
         else

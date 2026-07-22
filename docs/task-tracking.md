@@ -6,25 +6,21 @@
 
 ## 已完成
 
-### Phase 6: 安全加固 — pre-commit 钩子 + 日志轮转（2026-07-22）
-- [x] 步骤2.1：建立 pre-commit 钩子
-  - [x] 创建 `.githooks/pre-commit` 钩子模板（版本控制追踪）
-  - [x] 创建 `scripts/init-environment.ps1` 安装脚本
-  - [x] 检查敏感文件：AppSettings.json、data/config.json、*.pem、*.key 等
-- [x] 步骤2.2：实施日志轮转策略
-  - [x] 创建 `scripts/cleanup-logs.ps1` 日志清理脚本
-  - [x] 清理策略：日志30天/100MB、3proxy日志7天
-  - [x] 计划任务注册：每天 02:00 自动执行（可选）
-- [x] 步骤2.3：文档同步 — deployment.md、00-快速开始.md、changelog.md、task-tracking.md
-- [x] 步骤2.4：完善文档
-  - [x] 更新 `README.md`（根目录）：添加清理和维护指南、更新配置说明
-  - [x] 更新 `docs/development/README.md`：修复失效链接、添加开发环境设置指南、pre-commit 钩子配置说明、日志管理说明
-  - [x] 更新 `docs/deployment.md`：添加部署前检查清单、配置文件管理指南、日志轮转配置说明
-
-### Phase 5: Git同步与项目清理维护（2026-07-22）
-- [x] 步骤1.1：Git同步与状态修复（fast-forward合并 + 解决冲突）
-- [x] 步骤1.2：彻底清理构建缓存（bin/、obj/）
-- [x] 步骤1.3：清理残留日志文件（logs/、3proxy/logs/）
-- [x] 步骤1.4：处理本地配置文件（从暂存区移除 AppSettings.json）
-- [x] 步骤1.5：提交并推送所有更改至远程仓库
+### Phase 3: 本月内执行方案（优化）（2026-07-22）
+- [x] 步骤3.1：跨平台路径兼容性改进
+  - [x] 创建 `PathHelper.cs`（Combine, Normalize, EnsureDirectorySeparator）
+  - [x] 替换 6 个文件中的硬编码 `Path.Combine` 调用
+- [x] 步骤3.2：配置管理抽象
+  - [x] 创建 `IConfigurationProvider` 接口
+  - [x] 创建 `JsonConfigurationProvider` + `EnvironmentConfigurationProvider` 实现
+  - [x] 创建 `ConfigurationManager` 多源配置管理器
+- [x] 步骤3.3：模块化重构 — DI 注册扩展
+  - [x] 创建 `ServiceCollectionExtensions`（`AddYLproxyServices` / `AddYLproxyTestServices`）
+- [x] 步骤3.4：测试覆盖改进
+  - [x] 新增 4 个测试文件：PathHelperTests, ConfigurationProviderTests, PerformanceMonitorTests, DependencyInjectionTests
+  - [x] 新增 80+ 测试用例
+- [x] 步骤3.5：监控体系建设
+  - [x] 创建 `PerformanceMonitor` 操作计时器
+  - [x] 创建 `Logger` 结构化日志辅助类
+  - [x] 集成 PerformanceMonitor 到 MonitorService
 

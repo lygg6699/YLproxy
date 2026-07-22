@@ -57,7 +57,7 @@ public sealed class ProxyProcessManager
 
     private string GetConfigPath(ProxyItem proxy)
     {
-        return Path.Combine(GetRuntime3ProxyPath(), "cfg", $"{proxy.Id}.cfg");
+        return PathHelper.Combine(GetRuntime3ProxyPath(), "cfg", $"{proxy.Id}.cfg");
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public sealed class ProxyProcessManager
 
         foreach (var dll in _runtimeConfig.GetRequiredDlls())
         {
-            var dllPath = Path.Combine(dllDirectory, dll);
+            var dllPath = PathHelper.Combine(dllDirectory, dll);
             _logger.Debug($"Checking dependency: {dllPath}");
 
             if (!File.Exists(dllPath))
@@ -156,7 +156,7 @@ public sealed class ProxyProcessManager
         var runtimePath = Get3ProxyDirectory();
         ArgumentNullException.ThrowIfNull(runtimePath);
 
-        var exePath = Path.Combine(runtimePath, "bin64", "3proxy.exe");
+        var exePath = PathHelper.Combine(runtimePath, "bin64", "3proxy.exe");
         _logger.Debug($"Resolved 3proxy.exe path: {exePath}");
         return exePath;
     }
@@ -177,7 +177,7 @@ public sealed class ProxyProcessManager
     private string Get3ProxyConfigDirectory()
     {
         var proxyDir = Get3ProxyDirectory();
-        return Path.Combine(proxyDir, "cfg");
+        return PathHelper.Combine(proxyDir, "cfg");
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ public sealed class ProxyProcessManager
     private string Get3ProxyLogDirectory()
     {
         var proxyDir = Get3ProxyDirectory();
-        return Path.Combine(proxyDir, "logs");
+        return PathHelper.Combine(proxyDir, "logs");
     }
 
     public void Start(ProxyItem proxy)

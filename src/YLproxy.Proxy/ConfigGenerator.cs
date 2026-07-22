@@ -56,7 +56,7 @@ public static class ConfigGenerator
     private static string GetProxyLogPath(int proxyId)
     {
         var runtimePath = GetRuntime3ProxyPath();
-        return Path.Combine(runtimePath, "logs", $"3proxy-{proxyId}.log");
+        return PathHelper.Combine(runtimePath, "logs", $"3proxy-{proxyId}.log");
     }
 
     private static string GetRuntime3ProxyPath()

@@ -84,6 +84,8 @@ public sealed class MonitorService : IDisposable
 
     private void MonitorTick(object? state)
     {
+        using var perfTimer = PerformanceMonitor.MeasureOperation("MonitorService.Tick", thresholdMs: 1000);
+
         try
         {
             IReadOnlyList<ProxyItem> proxies;

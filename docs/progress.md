@@ -6,33 +6,24 @@
 
 ## 最新操作
 
-### Phase 4: Git 仓库同步（2026-07-22）
-- ✅ 提交并推送清理与优化工作至远程仓库
-- 提交: `cd69a44` - chore: 项目全面清理与优化
-- 推送至: `origin/main`
-- 工作区状态: 干净，无未提交更改
-
-### Phase 5: Git同步与项目清理维护（2026-07-22）
-- ✅ 解决本地分支落后远程2个提交的问题（fast-forward合并）
-- ✅ 解决 TODO.md 合并冲突（本地执行方案跟踪 + 远程Phase4记录）
-- ✅ 清理构建缓存（bin/ 和 obj/ 目录已清理）
-- ✅ 清理日志文件（logs/ 和 runtime/3proxy/logs/ 已清理）
-- ✅ 处理 AppSettings.json 从暂存区移除
-- ✅ 提交并推送至远程仓库
-- 提交: `4f50407` - chore: 完成Git同步和项目清理维护
-
-### Phase 6: 安全加固 — pre-commit 钩子 + 日志轮转（2026-07-22）
-- ✅ 步骤 2.1：建立 pre-commit 钩子
-  - 创建 `.githooks/pre-commit`（版本控制追踪的钩子模板）
-  - 创建 `scripts/init-environment.ps1`（一键安装钩子到 `.git/hooks/`）
-  - 敏感文件检查：AppSettings.json、data/config.json、*.pem、*.key 等
-- ✅ 步骤 2.2：实施日志轮转策略
-  - 创建 `scripts/cleanup-logs.ps1`（日志清理脚本，支持 -WhatIf 预览）
-  - 保留策略：应用日志 30天/100MB、3proxy 日志 7天
-  - 计划任务：每天 02:00 自动执行（可选）
-- ✅ 步骤 2.3：文档同步 — 更新 deployment.md、00-快速开始.md、changelog.md、task-tracking.md
-- ✅ 步骤 2.4：完善文档
-  - 更新 `README.md`（根目录）：添加清理和维护指南、更新配置说明
-  - 更新 `docs/development/README.md`：修复失效链接、添加开发环境设置指南、pre-commit 钩子配置说明、日志管理说明
-  - 更新 `docs/deployment.md`：添加部署前检查清单、配置文件管理指南、日志轮转配置说明
+### Phase 3: 本月内执行方案（优化）- 代码实现完成（2026-07-22）
+- ✅ 步骤 3.1：跨平台路径兼容性改进
+  - 创建 `src/YLproxy.Utils/PathHelper.cs` — 抽象路径处理工具类（Combine, Normalize, EnsureDirectorySeparator）
+  - 替换 6 个文件中的硬编码 `Path.Combine` 调用为 `PathHelper.Combine`
+  - 涉及文件：PreFlightChecker.cs, ProxyProcessManager.cs, ConfigGenerator.cs, FileLogger.cs, AutoStartService.cs, AppSettingsService.cs
+- ✅ 步骤 3.2：配置管理抽象
+  - 创建 `IConfigurationProvider` 接口 + `JsonConfigurationProvider` + `EnvironmentConfigurationProvider` 实现
+  - 创建 `ConfigurationManager` — 多源配置管理器（支持缓存、分层覆盖、事件通知）
+  - 添加 `Microsoft.Extensions.Configuration` 依赖
+- ✅ 步骤 3.3：模块化重构 — DI 注册扩展
+  - 创建 `src/YLproxy.Core/DependencyInjection/ServiceCollectionExtensions.cs`
+  - 提供 `AddYLproxyServices()`（完整注册）和 `AddYLproxyTestServices()`（测试注册）
+  - 注册服务：IConfigurationProvider, ConfigurationManager, IAppSettingsService, ILogger, IProxyDataService, IProxyProcessManager, IProxyTester
+- ✅ 步骤 3.4：测试覆盖改进
+  - 创建 4 个新的测试文件：PathHelperTests.cs, ConfigurationProviderTests.cs, PerformanceMonitorTests.cs, DependencyInjectionTests.cs
+  - 总计新增约 80+ 测试用例，覆盖边缘情况、线程安全、DI 注册验证
+- ✅ 步骤 3.5：监控体系建设
+  - 创建 `src/YLproxy.Infrastructure/PerformanceMonitor.cs` — 操作计时器 + 聚合统计 + 阈值告警
+  - 创建 `src/YLproxy.Infrastructure/Logger.cs` — 结构化日志静态辅助类（Info, Warn, Error, Debug, Fatal + 上下文数据）
+  - 集成 `PerformanceMonitor` 到 `MonitorService.cs` 的 MonitorTick 方法
 

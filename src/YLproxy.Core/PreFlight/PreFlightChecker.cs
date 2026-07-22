@@ -32,7 +32,7 @@ public static class PreFlightChecker
         // 2. Config
         try
         {
-            var svc = settingsService ?? new AppSettingsService(Path.Combine(root, "AppSettings.json"));
+            var svc = settingsService ?? new AppSettingsService(PathHelper.Combine(root, "AppSettings.json"));
             var cfg = svc.GetConfig();
             if (cfg is null)
             {
@@ -49,8 +49,8 @@ public static class PreFlightChecker
         }
 
         // 3. 3proxy runtime
-        var threeProxyDir = Path.Combine(root, "runtime", "3proxy", "bin64");
-        var threeProxyExe = Path.Combine(threeProxyDir, "3proxy.exe");
+        var threeProxyDir = PathHelper.Combine(root, "runtime", "3proxy", "bin64");
+        var threeProxyExe = PathHelper.Combine(threeProxyDir, "3proxy.exe");
         if (!File.Exists(threeProxyExe))
         {
             result.Errors.Add($"3proxy.exe 未找到: {threeProxyExe}。请运行 scripts/prepare-runtime.ps1 准备运行时。");
@@ -59,19 +59,19 @@ public static class PreFlightChecker
         string[] requiredDlls = ["FilePlugin.dll", "StringsPlugin.dll"];
         foreach (var dll in requiredDlls)
         {
-            var dllPath = Path.Combine(threeProxyDir, dll);
+            var dllPath = PathHelper.Combine(threeProxyDir, dll);
             if (!File.Exists(dllPath))
                 result.Errors.Add($"{dll} 未找到: {dllPath}");
         }
 
         // 4. Data directory
-        var dataDir = Path.Combine(root, "data");
+        var dataDir = PathHelper.Combine(root, "data");
         try
         {
             if (!Directory.Exists(dataDir))
                 Directory.CreateDirectory(dataDir);
 
-            var configFile = Path.Combine(dataDir, "config.json");
+            var configFile = PathHelper.Combine(dataDir, "config.json");
             if (!File.Exists(configFile))
             {
                 result.Warnings.Add("data/config.json 尚未创建，将在首次添加代理后自动生成。");
@@ -83,7 +83,7 @@ public static class PreFlightChecker
         }
 
         // 5. Logs directory
-        var logsDir = Path.Combine(root, "logs");
+        var logsDir = PathHelper.Combine(root, "logs");
         try
         {
             if (!Directory.Exists(logsDir))
@@ -108,7 +108,7 @@ public static class PreFlightChecker
         }
 
         // 7. 3proxy cfg directory
-        var threeProxyCfg = Path.Combine(root, "runtime", "3proxy", "cfg");
+        var threeProxyCfg = PathHelper.Combine(root, "runtime", "3proxy", "cfg");
         try
         {
             if (!Directory.Exists(threeProxyCfg))

@@ -68,8 +68,8 @@ public partial class App : Application
             _logger.Warn($"Pre-flight warning: {w}");
 
         // Build DI container (Phase A skeleton)
-        var settingsPath = System.IO.Path.Combine(
-            System.IO.Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory,
+        var settingsPath = PathHelper.Combine(
+            Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory,
             "AppSettings.json");
         try
         {

@@ -54,7 +54,7 @@ private readonly string _logDirectory;
         private string GetLogFilePath()
         {
             string datePart = DateTime.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-            return Path.Combine(_logDirectory, $"log_{datePart}.txt");
+            return PathHelper.Combine(_logDirectory, $"log_{datePart}.txt");
         }
 
         private bool IsLogLevelEnabled(string level)
