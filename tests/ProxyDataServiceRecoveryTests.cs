@@ -8,10 +8,10 @@ namespace YLproxy.Tests;
 public sealed class ProxyDataServiceRecoveryTests
 {
     /// <summary>
-    /// Simulates corrupted JSON file: deserialization must throw JsonException.
+    /// Simulates corrupted JSON file: service should return empty config gracefully.
     /// </summary>
     [Fact]
-    public void Load_CorruptedJson_ShouldThrowJsonException()
+    public void Load_CorruptedJson_ShouldReturnEmptyConfig()
     {
         var tempDir = Path.Combine(Path.GetTempPath(), $"ylproxy_corrupt_{Guid.NewGuid():N}");
         Directory.CreateDirectory(tempDir);
@@ -22,7 +22,10 @@ public sealed class ProxyDataServiceRecoveryTests
             File.WriteAllText(configPath, "{this is not valid json!!!");
 
             var svc = new ProxyDataService(configPath, skipPathValidation: true);
-            Assert.Throws<JsonException>(() => svc.Load());
+            var config = svc.Load();
+
+            Assert.NotNull(config);
+            Assert.Empty(config.Proxies);
         }
         finally
         {
@@ -32,10 +35,10 @@ public sealed class ProxyDataServiceRecoveryTests
     }
 
     /// <summary>
-    /// Simulates empty JSON file: deserialization must throw JsonException.
+    /// Simulates empty JSON file: service should return empty config gracefully.
     /// </summary>
     [Fact]
-    public void Load_EmptyFile_ShouldThrowJsonException()
+    public void Load_EmptyFile_ShouldReturnEmptyConfig()
     {
         var tempDir = Path.Combine(Path.GetTempPath(), $"ylproxy_empty_{Guid.NewGuid():N}");
         Directory.CreateDirectory(tempDir);
@@ -46,7 +49,10 @@ public sealed class ProxyDataServiceRecoveryTests
             File.WriteAllText(configPath, "");
 
             var svc = new ProxyDataService(configPath, skipPathValidation: true);
-            Assert.Throws<JsonException>(() => svc.Load());
+            var config = svc.Load();
+
+            Assert.NotNull(config);
+            Assert.Empty(config.Proxies);
         }
         finally
         {
