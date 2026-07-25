@@ -66,6 +66,10 @@ public sealed class ProxyDataService : IProxyDataService
                 var json = File.ReadAllText(_configPath);
                 var requiresMigration = false;
                 var config = _serializer.Deserialize(json, out requiresMigration);
+
+                // Auto-upgrade config version in memory (persisted on next explicit Save)
+                RunUpgradeConfigIfNeeded(config);
+
                 return config;
             }
             catch (FileNotFoundException)
@@ -184,6 +188,32 @@ public sealed class ProxyDataService : IProxyDataService
         {
             _semaphore.Release();
         }
+    }
+
+    /// <summary>
+    /// Checks and upgrades the config version if it's outdated.
+    /// Returns true if an upgrade was performed.
+    /// When upgrading, applies any structural migrations needed for the target version.
+    /// </summary>
+    public static bool RunUpgradeConfigIfNeeded(AppConfig config)
+    {
+        if (string.IsNullOrEmpty(config.Version))
+        {
+            // Legacy config (no version) - mark as 1.0
+            config.Version = "1.0";
+            return true;
+        }
+
+        if (config.Version == "1.0")
+        {
+            // Upgrade from 1.0 to 1.1
+            // No structural changes in this version bump, but this is the extension
+            // point for future data migrations (e.g., field rename, default values)
+            config.Version = "1.1";
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>

@@ -10,6 +10,7 @@
             </ResourceDictionary.MergedDictionaries>
             <conv:InverseBoolConverter x:Key="InverseBoolConverter"/>
             <conv:StatusToColorConverter x:Key="StatusToColorConverter"/>
+            <conv:ApiStatusColorConverter x:Key="ApiStatusColorConverter"/>
             <conv:LogLevelToColorConverter x:Key="LogLevelToColorConverter"/>
         </ResourceDictionary>
     </Application.Resources>

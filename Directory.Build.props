@@ -1,5 +1,11 @@
 <Project>
   <PropertyGroup>
+    <!-- 统一版本号（所有项目自动继承） -->
+    <Version>0.2.0.0</Version>
+    <FileVersion>0.2.0.0</FileVersion>
+    <InformationalVersion Condition="'$(CI_COMMIT_SHORT_SHA)' != ''">0.2.0+$(CI_COMMIT_SHORT_SHA)</InformationalVersion>
+    <InformationalVersion Condition="'$(CI_COMMIT_SHORT_SHA)' == ''">0.2.0-local</InformationalVersion>
+
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AnalysisLevel>latest-recommended</AnalysisLevel>

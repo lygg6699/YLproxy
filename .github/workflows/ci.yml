@@ -134,3 +134,55 @@ jobs:
             echo "Error: .gitignore should include data/config.json"
             exit 1
           fi
+
+  e2e-tests:
+    name: e2e-tests
+    runs-on: windows-latest
+    if: ${{ secrets.REAL_PROXY_CREDENTIALS != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Prepare 3proxy runtime
+        shell: pwsh
+        run: ./scripts/prepare-runtime.ps1
+
+      - name: Restore dependencies
+        shell: pwsh
+        run: dotnet restore YLproxy.sln
+
+      - name: Seed test data
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path data -Force | Out-Null
+          Copy-Item data/config.example.json data/config.json -Force
+
+      - name: Build Debug
+        shell: pwsh
+        run: dotnet build YLproxy.sln --configuration Debug --no-restore -warnaserror
+
+      - name: Run E2E tests
+        shell: pwsh
+        env:
+          REAL_PROXY_CREDENTIALS: ${{ secrets.REAL_PROXY_CREDENTIALS }}
+        run: |
+          dotnet test tests/YLproxy.Tests.csproj `
+            --configuration Debug --no-build --no-restore `
+            --filter "TestCategory=E2E" `
+            --results-directory TestResults `
+            --logger "trx;LogFileName=e2e.trx"
+
+      - name: Upload E2E test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+          retention-days: 14</｜DSML｜parameter>

@@ -29,6 +29,9 @@ public sealed class LoggingAndMonitorTests
             File.WriteAllText(expiredLog, "expired");
             File.WriteAllText(unrelatedFile, "keep");
 
+
+            
+
             File.SetLastWriteTimeUtc(currentLog, DateTime.UtcNow);
             File.SetLastWriteTimeUtc(recentLog, DateTime.UtcNow.AddDays(-10));
             File.SetLastWriteTimeUtc(expiredLog, DateTime.UtcNow.AddDays(-40));

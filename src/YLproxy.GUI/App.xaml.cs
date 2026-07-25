@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using YLproxy.Api;
 using YLproxy.Core.PreFlight;
 using YLproxy.Infrastructure;
 using YLproxy.Models.Config;
@@ -121,6 +122,27 @@ public partial class App : Application
             return new Core.ProxyDataService(configPath);
         });
 
+        // API Server
+        services.AddSingleton<ApiServer>(sp =>
+        {
+            var settingsService = sp.GetRequiredService<AppSettingsService>();
+            var apiConfig = settingsService.GetApiConfig();
+            var proxyConfig = settingsService.GetProxyConfig();
+            var configPath = PathResolver.ResolvePath(proxyConfig.DataDirectory, proxyConfig.ConfigFileName);
+
+            // 生产环境禁用 Swagger
+            var isProduction = string.Equals(
+                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
+                "Production", StringComparison.OrdinalIgnoreCase);
+
+            return new ApiServer(
+                configPath: configPath,
+                proxyConfig: proxyConfig,
+                port: apiConfig.Port,
+                accessToken: apiConfig.AccessToken,
+                enableSwagger: !isProduction);
+        });
+
         // Main VM
         services.AddTransient<MainViewModel>();
 
@@ -131,11 +153,52 @@ public partial class App : Application
         var win = new MainWindow { DataContext = vm };
         win.Show();
 
+        // 启动 API 服务器（非阻塞）
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var apiServer = provider.GetRequiredService<ApiServer>();
+                await apiServer.StartAsync();
+                _logger?.Info($"API server started on http://127.0.0.1:{apiServer.Port}");
+
+                // 更新 UI 上的 API 状态
+                await Current.Dispatcher.BeginInvoke(() =>
+                {
+                    vm.ApiStatus = "Running";
+                    vm.Dashboard.UpdateApiStatus("Running", apiServer.Port);
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger?.Warn($"API server failed to start: {ex.Message}");
+            }
+        });
+
 
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
+        // 停止 API 服务器（作为 ShutdownAsync 的兜底）
+        try
+        {
+            var apiServer = (ApiServer?)Current?.Dispatcher?.Invoke(() =>
+                ((MainWindow?)Current?.MainWindow)?.DataContext is MainViewModel vm
+                    ? vm.GetApiServer()
+                    : null);
+
+            if (apiServer?.IsRunning == true)
+            {
+                apiServer.StopAsync().GetAwaiter().GetResult();
+                _logger?.Info("API server stopped.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger?.Warn($"Failed to stop API server: {ex.Message}");
+        }
+
         _logger?.Info($"Application exiting with code {e.ApplicationExitCode}.");
         base.OnExit(e);
     }

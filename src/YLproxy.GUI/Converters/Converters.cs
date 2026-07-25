@@ -30,6 +30,28 @@ public class StatusToColorConverter : IValueConverter
     }
 }
 
+public class ApiStatusColorConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is string status)
+        {
+            return status.ToUpperInvariant() switch
+            {
+                "RUNNING" => new SolidColorBrush(Color.FromRgb(0x2E, 0x7D, 0x32)),  // Green
+                "STOPPED" => new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)),  // Gray
+                _ => new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC)),
+            };
+        }
+        return new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC));
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
 public class LogLevelToColorConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

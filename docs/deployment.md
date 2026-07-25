@@ -152,6 +152,16 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -Un
 
 ---
 
+## 2026-07-26
+- API 集成到 GUI — 实施完成
+  - `App.xaml.cs`：注册 ApiServer 单例，启动时非阻塞启动，退出时兜底停止
+  - `MainViewModel.cs`：注入 ApiServer，ShutdownAsync 时停止 API
+  - `DashboardViewModel.cs`：添加 ApiStatus/ApiPort 属性
+  - `Converters.cs`：添加 ApiStatusColorConverter
+  - `MainView.xaml`：仪表盘状态栏添加 API 状态指示器
+  - 编译验证：0 errors, 0 warnings
+  - 测试验证：128 passed, 0 failed
+
 ## 2026-07-22
 - `4f50407` — chore: 完成Git同步和项目清理维护
   - 同步远程仓库更改（fast-forward合并 `43bb28d` + `cd69a44`）

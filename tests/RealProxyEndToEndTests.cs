@@ -21,6 +21,7 @@ namespace YLproxy.Tests;
 /// <summary>
 /// 端到端验收测试：5 个真实第三方 HTTP 代理，完整链路验证。结果来自功能真正执行后的动态反馈。
 /// </summary>
+[Trait("TestCategory", "E2E")]
 [SupportedOSPlatform("windows")]
 public sealed class RealProxyEndToEndTests : IAsyncLifetime
 {

@@ -36,7 +36,10 @@ public sealed class ProxyDataSerializer
         ArgumentNullException.ThrowIfNull(json);
 
         var storedConfig = JsonSerializer.Deserialize<StoredAppConfig>(json, _jsonOptions) ?? new StoredAppConfig();
-        var config = new AppConfig();
+        var config = new AppConfig
+        {
+            Version = storedConfig.Version
+        };
         requiresMigration = false;
 
         foreach (var storedProxy in storedConfig.Proxies ?? Enumerable.Empty<StoredProxyItem>())
@@ -75,6 +78,7 @@ public sealed class ProxyDataSerializer
 
         var storedConfig = new StoredAppConfig
         {
+            Version = config.Version ?? AppConfig.CurrentVersion,
             Proxies = config.Proxies.Select(proxy => new StoredProxyItem
             {
                 Id = proxy.Id,
@@ -96,6 +100,7 @@ public sealed class ProxyDataSerializer
 
     private sealed class StoredAppConfig
     {
+        public string? Version { get; set; }
         public List<StoredProxyItem> Proxies { get; set; } = new();
     }
 

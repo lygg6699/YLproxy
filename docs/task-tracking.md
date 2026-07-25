@@ -2,9 +2,19 @@
 
 > 这是根级入口文件。详细任务清单见 [pending/task-tracking.md](pending/task-tracking.md)
 
-**最后更新**：2026-07-22
+**最后更新**：2026-07-26
 
 ## 已完成
+
+### Phase 4: API 集成到 GUI（2026-07-26）
+- [x] `App.xaml.cs` — 注册 ApiServer 单例，启动时 StartAsync，退出时停止
+- [x] `MainViewModel.cs` — 注入 ApiServer，添加 API 属性，Shutdown 时停止
+- [x] `DashboardViewModel.cs` — 添加 ApiStatus/ApiPort 属性和 UpdateApiStatus()
+- [x] `Converters.cs` — 添加 ApiStatusColorConverter
+- [x] `App.xaml` — 注册 ApiStatusColorConverter 全局资源
+- [x] `MainView.xaml` — 仪表盘状态栏添加 API 状态指示器
+- [x] 编译验证：0 errors, 0 warnings
+- [x] 测试验证：128 passed, 0 failed
 
 ### Phase 3: 本月内执行方案（优化）（2026-07-22）
 - [x] 步骤3.1：跨平台路径兼容性改进

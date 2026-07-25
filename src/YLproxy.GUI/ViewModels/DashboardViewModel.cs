@@ -38,5 +38,26 @@ public sealed class DashboardViewModel : ViewModelBase
         get => _statusMessage;
         set => SetProperty(ref _statusMessage, value);
     }
+
+    // --- API 状态 ---
+    private string _apiStatus = "Stopped";
+    public string ApiStatus
+    {
+        get => _apiStatus;
+        set => SetProperty(ref _apiStatus, value);
+    }
+
+    private int _apiPort;
+    public int ApiPort
+    {
+        get => _apiPort;
+        set => SetProperty(ref _apiPort, value);
+    }
+
+    public void UpdateApiStatus(string status, int port)
+    {
+        ApiStatus = status;
+        ApiPort = port;
+    }
 }
 

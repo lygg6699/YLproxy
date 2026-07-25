@@ -2,14 +2,14 @@ namespace YLproxy.Utils;
 
 /// <summary>
 /// Provides cross-platform path manipulation utilities.
-/// Abstracts <see cref="Path.Combine"/>, <see cref="Path.GetFullPath"/> and
+/// Abstracts Path.Combine, Path.GetFullPath and
 /// directory separator handling to improve cross-platform compatibility.
 /// </summary>
 public static class PathHelper
 {
     /// <summary>
     /// Combines multiple path segments into a single path.
-    /// Delegates to <see cref="Path.Combine(string[])"/>.
+    /// Delegates to Path.Combine(string[]).
     /// </summary>
     public static string Combine(params string[] parts)
     {
@@ -19,7 +19,7 @@ public static class PathHelper
 
     /// <summary>
     /// Returns the fully qualified path for the given path.
-    /// Delegates to <see cref="Path.GetFullPath(string)"/>.
+    /// Delegates to Path.GetFullPath(string).
     /// </summary>
     public static string Normalize(string path)
     {
@@ -106,7 +106,7 @@ public static class PathHelper
 
     /// <summary>
     /// Safely combines path segments and normalizes the result.
-    /// Equivalent to calling <see cref="Combine"/> then <see cref="Normalize"/>.
+    /// Equivalent to calling Combine then Normalize.
     /// </summary>
     public static string Resolve(params string[] parts)
     {
