@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -15,10 +16,10 @@ private readonly string _logDirectory;
     private readonly int _retentionDays;
     private readonly string _minLevel;
     private readonly ReaderWriterLockSlim _rwLock = new();
-    private readonly List<string> _cleanupErrors = new();
+    private readonly ConcurrentBag<string> _cleanupErrors = new();
     private int _disposed;
 
-        public IReadOnlyList<string> CleanupErrors => _cleanupErrors.AsReadOnly();
+        public IReadOnlyList<string> CleanupErrors => _cleanupErrors.ToArray();
 
         /// <summary>
         /// Matches DPAPI-encrypted credential blobs that may leak into log output.

@@ -19,6 +19,7 @@ public sealed class ProxyProcessManager
     private readonly ConcurrentDictionary<int, ManagedProxyForwarder> _forwarders = new();
     private readonly ProxyRuntimeConfiguration _runtimeConfig;
     private readonly ILogger _logger;
+    private readonly ReaderWriterLockSlim _processLock = new();
 
     /// <summary>
     /// 默认全局实例，用于向后兼容静态调用。
@@ -136,8 +137,18 @@ public sealed class ProxyProcessManager
                     continue;
 
                 // 如果有活动的进程跟踪记录且进程仍在运行，保留 cfg
-                if (_processes.TryGetValue(proxyId, out var process) && !process.HasExited)
-                    continue;
+                if (_processes.TryGetValue(proxyId, out var process))
+                {
+                    try
+                    {
+                        if (process is not null && !process.HasExited)
+                            continue;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // process was disposed, treat as exited
+                    }
+                }
 
                 TryDeleteConfigFile(cfgFile);
             }
