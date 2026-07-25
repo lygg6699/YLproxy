@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using YLproxy.Core;
 using YLproxy.Core.Abstractions;
 using YLproxy.Infrastructure;
 using YLproxy.Infrastructure.Abstractions;
@@ -50,7 +51,7 @@ public static class ServiceCollectionExtensions
         // --- Proxy Services ---
         services.AddSingleton<ProxyRuntimeConfiguration>();
         services.AddSingleton<ProxyProcessManager>();
-        services.AddSingleton<IProxyProcessManager>(sp =>
+        services.AddSingleton<YLproxy.Proxy.Abstractions.IProxyProcessManager>(sp =>
             new ProxyProcessManagerAdapter(sp.GetRequiredService<ProxyProcessManager>()));
 
         // --- Core Services ---
@@ -83,7 +84,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<ProxyRuntimeConfiguration>();
         services.AddSingleton<ProxyProcessManager>();
-        services.AddSingleton<IProxyProcessManager, ProxyProcessManagerAdapter>();
+        services.AddSingleton<YLproxy.Proxy.Abstractions.IProxyProcessManager, ProxyProcessManagerAdapter>();
         services.AddSingleton<IProxyTester, ProxyTesterAdapter>();
 
         return services;

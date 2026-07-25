@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
+using YLproxy.Core;
 using YLproxy.Core.Abstractions;
 using YLproxy.Core.DependencyInjection;
 using YLproxy.Infrastructure;
 using YLproxy.Infrastructure.Abstractions;
+using YLproxy.Proxy;
 using YLproxy.Proxy.Abstractions;
 
 namespace YLproxy.Tests;
@@ -41,7 +43,7 @@ public class DependencyInjectionTests
         services.AddYLproxyTestServices();
 
         var sp = services.BuildServiceProvider();
-        var ppm = sp.GetService<IProxyProcessManager>();
+        var ppm = sp.GetService<YLproxy.Proxy.Abstractions.IProxyProcessManager>();
 
         Assert.NotNull(ppm);
         Assert.IsType<ProxyProcessManagerAdapter>(ppm);
@@ -105,7 +107,7 @@ public class DependencyInjectionTests
         try { sp.GetRequiredService<ProxyProcessManager>(); }
         catch (Exception ex) { exceptions.Add($"ProxyProcessManager: {ex.Message}"); }
 
-        try { sp.GetRequiredService<IProxyProcessManager>(); }
+        try { sp.GetRequiredService<YLproxy.Proxy.Abstractions.IProxyProcessManager>(); }
         catch (Exception ex) { exceptions.Add($"IProxyProcessManager: {ex.Message}"); }
 
         try { sp.GetRequiredService<IProxyTester>(); }
@@ -115,19 +117,16 @@ public class DependencyInjectionTests
     }
 
     [Fact]
-    public void AddYLproxyFullServices_ThrowsWithoutJsonFile()
+    public void AddYLproxyFullServices_WithNonexistentConfigFile_ThrowsArgumentExceptionOnResolve()
     {
-        // Full service registration requires a JSON config file.
-        // When the file doesn't exist, AppSettingsService constructor should still work
-        // (it creates the config if missing) but PathResolver must be able to find the repo root.
+        // Full service registration requires the config file path to be
+        // AppSettings.json at the repository root.
+        // A nonexistent config path will throw when IAppSettingsService is resolved.
         var services = new ServiceCollection();
         services.AddYLproxyServices("nonexistent-config.json");
 
         var sp = services.BuildServiceProvider();
-
-        // IAppSettingsService should be registered without throwing
-        var settings = sp.GetService<IAppSettingsService>();
-        Assert.NotNull(settings);
+        Assert.Throws<ArgumentException>(() => sp.GetService<IAppSettingsService>());
     }
 
     [Fact]

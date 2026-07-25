@@ -1,10 +1,12 @@
 using System.Collections.Concurrent;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using YLproxy.Core;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
 using YLproxy.Proxy;
+using YLproxy.Utils;
 
 namespace YLproxy.Tests;
 
@@ -13,15 +15,15 @@ public sealed class LoggingAndMonitorTests
     [Fact]
     public void FileLoggerShouldRemoveExpiredLogFilesAndKeepRecentFiles()
     {
-        var directory = Path.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
+        var directory = PathHelper.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
 
         try
         {
-            var currentLog = Path.Combine(directory, $"log_{DateTime.UtcNow:yyyyMMdd}.txt");
-            var recentLog = Path.Combine(directory, $"log_{DateTime.UtcNow.AddDays(-10):yyyyMMdd}.txt");
-            var expiredLog = Path.Combine(directory, $"log_{DateTime.UtcNow.AddDays(-40):yyyyMMdd}.txt");
-            var unrelatedFile = Path.Combine(directory, "notes.json");
+            var currentLog = PathHelper.Combine(directory, $"log_{DateTime.UtcNow:yyyyMMdd}.txt");
+            var recentLog = PathHelper.Combine(directory, $"log_{DateTime.UtcNow.AddDays(-10):yyyyMMdd}.txt");
+            var expiredLog = PathHelper.Combine(directory, $"log_{DateTime.UtcNow.AddDays(-40):yyyyMMdd}.txt");
+            var unrelatedFile = PathHelper.Combine(directory, "notes.json");
             File.WriteAllText(currentLog, "current");
             File.WriteAllText(recentLog, "recent");
             File.WriteAllText(expiredLog, "expired");
@@ -94,17 +96,15 @@ public sealed class LoggingAndMonitorTests
     [Fact]
     public void FileLoggerShouldHandleLogDirectoryCreationFailure()
     {
-        var directory = Path.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
+        var directory = PathHelper.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
         // Pre-create a file with the same name to cause directory creation failure
         File.WriteAllText(directory, "block");
 
         try
         {
-            var exception = Record.Exception(() =>
-                new FileLogger(directory, retentionDays: 30, minLevel: "Info"));
-
             // Should throw due to directory creation failure
-            Assert.NotNull(exception);
+            Assert.ThrowsAny<Exception>(() =>
+                new FileLogger(directory, retentionDays: 30, minLevel: "Info"));
         }
         finally
         {
@@ -161,14 +161,14 @@ public sealed class LoggingAndMonitorTests
     [Fact]
     public void CleanupOldLogs_ShouldHandleLockedFile_Gracefully()
     {
-        var directory = Path.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
+        var directory = PathHelper.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
 
         try
         {
             // Create a file that is 60 days old, then create the logger with retention=30
             // so the file is a cleanup candidate.
-            var expiredFile = Path.Combine(directory, $"log_{DateTime.Now.AddDays(-60):yyyyMMdd}.txt");
+            var expiredFile = PathHelper.Combine(directory, $"log_{DateTime.Now.AddDays(-60):yyyyMMdd}.txt");
             File.WriteAllText(expiredFile, "locked content");
             File.SetLastWriteTime(expiredFile, DateTime.Now.AddDays(-60));
 
@@ -176,8 +176,11 @@ public sealed class LoggingAndMonitorTests
             // so the constructor's cleanup attempt hits a locked file.
             using (var fs = new FileStream(expiredFile, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                var ex = Record.Exception(() => new FileLogger(directory, retentionDays: 30, minLevel: "Info"));
                 // Should not throw — locked files are skipped gracefully.
+                var ex = Record.Exception(() =>
+                {
+                    using var _ = new FileLogger(directory, retentionDays: 30, minLevel: "Info");
+                });
                 Assert.Null(ex);
             }
 
@@ -208,7 +211,7 @@ public sealed class LoggingAndMonitorTests
             debugLogger.Warn("warn message");
         }
 
-        var currentLogPath = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
+        var currentLogPath = PathHelper.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
         Assert.True(File.Exists(currentLogPath));
         var allContent = File.ReadAllText(currentLogPath);
 
@@ -253,7 +256,7 @@ public sealed class LoggingAndMonitorTests
             }
         }
 
-        var currentLogPath = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
+        var currentLogPath = PathHelper.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
         Assert.True(File.Exists(currentLogPath));
         var content = File.ReadAllText(currentLogPath);
 
@@ -266,13 +269,13 @@ public sealed class LoggingAndMonitorTests
     [Fact]
     public void FileLogger_RetentionZero_ShouldNotDeleteCurrentDay()
     {
-        var directory = Path.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
+        var directory = PathHelper.Combine(Path.GetTempPath(), $"YLproxy-logs-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
 
         try
         {
-            var todayLog = Path.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
-            var yesterdayLog = Path.Combine(directory, $"log_{DateTime.Now.AddDays(-1):yyyyMMdd}.txt");
+            var todayLog = PathHelper.Combine(directory, $"log_{DateTime.Now:yyyyMMdd}.txt");
+            var yesterdayLog = PathHelper.Combine(directory, $"log_{DateTime.Now.AddDays(-1):yyyyMMdd}.txt");
             File.WriteAllText(todayLog, "today");
             File.WriteAllText(yesterdayLog, "yesterday");
             File.SetLastWriteTime(todayLog, DateTime.Now);

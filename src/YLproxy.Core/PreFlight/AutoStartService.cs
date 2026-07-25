@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using YLproxy.Utils;
 
 namespace YLproxy.Core.PreFlight;
 

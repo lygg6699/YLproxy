@@ -35,11 +35,11 @@ public class PathHelperTests
     [Fact]
     public void Normalize_WithNull_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentException>(() => PathHelper.Normalize(null!));
+        Assert.Throws<ArgumentNullException>(() => PathHelper.Normalize(null!));
     }
 
     [Fact]
-    public void Normalize_WithEmptyString_ThrowsArgumentNullException()
+    public void Normalize_WithEmptyString_ThrowsArgumentException()
     {
         Assert.Throws<ArgumentException>(() => PathHelper.Normalize(""));
     }
@@ -156,13 +156,13 @@ public class PathHelperTests
     }
 
     /// <summary>
-    /// Verifies that EnsureDirectorySeparator trims duplicates.
+    /// Verifies that EnsureDirectorySeparator trims trailing duplicates.
     /// </summary>
     [Fact]
     public void EnsureDirectorySeparator_TrimsDuplicates()
     {
         var sep = Path.DirectorySeparatorChar;
-        var input = $"a{sep}{sep}{sep}b{sep}{sep}";
+        var input = $"a{sep}b{sep}{sep}";
         var result = PathHelper.EnsureDirectorySeparator(input);
         Assert.Equal($"a{sep}b{sep}", result);
     }

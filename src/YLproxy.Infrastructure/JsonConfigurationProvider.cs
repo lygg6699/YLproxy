@@ -1,7 +1,7 @@
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using YLproxy.Infrastructure.Abstractions;
 using YLproxy.Utils;
-using MicrosoftConfig = Microsoft.Extensions.Configuration;
 
 namespace YLproxy.Infrastructure;
 
@@ -10,10 +10,10 @@ namespace YLproxy.Infrastructure;
 /// Uses <see cref="Microsoft.Extensions.Configuration"/> under the hood for
 /// standard JSON configuration parsing.
 /// </summary>
-public sealed class JsonConfigurationProvider : IConfigurationProvider, IDisposable
+public sealed class JsonConfigurationProvider : Abstractions.IConfigurationProvider, IDisposable
 {
     private readonly string _filePath;
-    private readonly MicrosoftConfig.IConfigurationRoot _configuration;
+    private readonly IConfigurationRoot _configuration;
     private readonly FileSystemWatcher? _watcher;
     private readonly object _reloadLock = new();
     private bool _disposed;
@@ -38,12 +38,12 @@ public sealed class JsonConfigurationProvider : IConfigurationProvider, IDisposa
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
         _filePath = System.IO.Path.IsPathFullyQualified(filePath)
-            ? System.IO.Path.GetFullPath(filePath)
+            ? PathHelper.Normalize(filePath)
             : PathResolver.ResolvePath(filePath);
 
         var configDir = System.IO.Path.GetDirectoryName(_filePath);
 
-        var builder = new MicrosoftConfig.ConfigurationBuilder()
+        var builder = new ConfigurationBuilder()
             .SetBasePath(configDir ?? AppContext.BaseDirectory)
             .AddJsonFile(System.IO.Path.GetFileName(_filePath), optional: optional, reloadOnChange: watchChanges);
 
@@ -101,7 +101,7 @@ public sealed class JsonConfigurationProvider : IConfigurationProvider, IDisposa
     {
         lock (_reloadLock)
         {
-            if (_configuration is MicrosoftConfig.IConfigurationRoot root)
+            if (_configuration is IConfigurationRoot root)
             {
                 root.Reload();
             }

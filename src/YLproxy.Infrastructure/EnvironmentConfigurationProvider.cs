@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using YLproxy.Infrastructure.Abstractions;
 
 namespace YLproxy.Infrastructure;
@@ -7,7 +8,7 @@ namespace YLproxy.Infrastructure;
 /// Supports nested keys using double underscore (__) separator,
 /// e.g., "Logging__LogLevel" maps to Logging:LogLevel.
 /// </summary>
-public sealed class EnvironmentConfigurationProvider : IConfigurationProvider
+public sealed class EnvironmentConfigurationProvider : Abstractions.IConfigurationProvider
 {
     /// <inheritdoc />
     public string Name => "EnvironmentVariables";
@@ -36,7 +37,7 @@ public sealed class EnvironmentConfigurationProvider : IConfigurationProvider
             return null;
 
         // Parse the section from flat key-value pairs
-        var config = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+        var config = new ConfigurationBuilder()
             .AddInMemoryCollection(values)
             .Build();
 

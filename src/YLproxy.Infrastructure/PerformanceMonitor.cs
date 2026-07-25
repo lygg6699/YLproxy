@@ -88,7 +88,9 @@ public static class PerformanceMonitor
     /// </summary>
     public static string GetDiagnosticsReport()
     {
-        if (_stats.IsEmpty)
+        // Take a snapshot to avoid concurrency issues
+        var snapshot = _stats.ToArray();
+        if (snapshot.Length == 0)
             return "No performance data collected.";
 
         var sb = new System.Text.StringBuilder();
@@ -96,7 +98,7 @@ public static class PerformanceMonitor
         sb.AppendLine($"{"Operation",-30} {"Count",8} {"Avg (ms)",12} {"Min (ms)",12} {"Max (ms)",12}");
         sb.AppendLine(new string('-', 74));
 
-        foreach (var kvp in _stats.OrderByDescending(s => s.Value.TotalMilliseconds))
+        foreach (var kvp in snapshot.OrderByDescending(s => s.Value.TotalMilliseconds))
         {
             var s = kvp.Value;
             var avg = s.Count > 0 ? s.TotalMilliseconds / s.Count : 0;

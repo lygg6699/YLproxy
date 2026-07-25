@@ -31,7 +31,7 @@ namespace YLproxy.Infrastructure
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(configFilePath);
             _configFilePath = Path.IsPathFullyQualified(configFilePath)
-                ? Path.GetFullPath(configFilePath)
+                ? PathHelper.Normalize(configFilePath)
                 : PathResolver.ResolvePath(configFilePath);
 
             var canonicalPath = PathResolver.ResolvePath("AppSettings.json");

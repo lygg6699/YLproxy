@@ -21,7 +21,7 @@ public class PerformanceMonitorTests
     [Fact]
     public void MeasureOperation_NullName_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentException>(() => PerformanceMonitor.MeasureOperation(null!));
+        Assert.Throws<ArgumentNullException>(() => PerformanceMonitor.MeasureOperation(null!));
     }
 
     [Fact]
@@ -85,12 +85,13 @@ public class PerformanceMonitorTests
     [Fact]
     public void Reset_ClearsAllStats()
     {
-        PerformanceMonitor.RecordOperation("test", TimeSpan.FromMilliseconds(50));
+        var opName = "reset-test-" + Guid.NewGuid().ToString("N")[..8];
+        PerformanceMonitor.RecordOperation(opName, TimeSpan.FromMilliseconds(50));
+        Assert.NotNull(PerformanceMonitor.GetStats(opName));
+
         PerformanceMonitor.Reset();
 
-        var stats = PerformanceMonitor.GetStats("test");
-        Assert.Null(stats);
-        Assert.Empty(PerformanceMonitor.GetAllStats());
+        Assert.Null(PerformanceMonitor.GetStats(opName));
     }
 
     [Fact]

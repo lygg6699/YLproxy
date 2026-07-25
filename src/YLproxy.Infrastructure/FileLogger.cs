@@ -38,7 +38,7 @@ private readonly string _logDirectory;
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(logDirectory);
             _logDirectory = Path.IsPathFullyQualified(logDirectory)
-                ? Path.GetFullPath(logDirectory)
+                ? PathHelper.Normalize(logDirectory)
                 : PathResolver.ResolvePath(logDirectory);
             _retentionDays = retentionDays;
             _minLevel = minLevel.ToUpper(CultureInfo.InvariantCulture);
