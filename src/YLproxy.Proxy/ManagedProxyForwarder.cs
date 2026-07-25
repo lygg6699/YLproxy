@@ -94,7 +94,11 @@ public sealed class ManagedProxyForwarder : IDisposable
                 catch (OperationCanceledException) { return; }
                 catch (ObjectDisposedException) { return; }
                 catch (SocketException) when (token.IsCancellationRequested) { return; }
-                catch { continue; }
+                catch
+                {
+                    _logger.Debug($"ManagedProxyForwarder [{_proxyName}] accept loop: unexpected error, continuing");
+                    continue;
+                }
 
                 // Acquire semaphore before processing (P3-1 concurrency limit)
                 await _concurrencyLimiter.WaitAsync(token).ConfigureAwait(false);
@@ -238,7 +242,7 @@ await clientStream.FlushAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
-                /* 任务取消，正常行为——由上层 CancellationToken 触发 */
+                _logger.Debug($"ManagedProxyForwarder [{_proxyName}] client task canceled");
             }
             catch (Exception ex)
             {
@@ -308,7 +312,7 @@ await clientStream.FlushAsync(token).ConfigureAwait(false);
     /// <summary>
     /// Parses the HTTP status code from the first response line.
     /// </summary>
-    private static int ParseHttpStatusCode(string responseText)
+    private int ParseHttpStatusCode(string responseText)
     {
         try
         {
@@ -319,7 +323,7 @@ await clientStream.FlushAsync(token).ConfigureAwait(false);
         }
         catch
         {
-            // Fall through to default
+            _logger.Debug("ManagedProxyForwarder: failed to parse HTTP status code, returning 0");
         }
         return 0;
     }
@@ -385,7 +389,11 @@ await clientStream.FlushAsync(token).ConfigureAwait(false);
                 c.Connect(IPAddress.Loopback, LocalPort);
                 return true;
             }
-            catch { return false; }
+            catch
+            {
+                _logger.Debug($"ManagedProxyForwarder [{_proxyName}] IsListening: port {LocalPort} not reachable");
+                return false;
+            }
         }
     }
 

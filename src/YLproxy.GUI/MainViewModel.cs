@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using YLproxy.Api;
 using YLproxy.Core;
 using YLproxy.GUI.ViewModels;
 using YLproxy.Infrastructure;
@@ -36,6 +37,7 @@ public sealed class MainViewModel : ViewModelBase
     private readonly Core.Abstractions.IProxyDataService _proxyDataService;
     private readonly Core.Abstractions.IProxyTester _proxyTester;
     private readonly Proxy.Abstractions.IProxyProcessManager _proxyProcessManager;
+    private readonly ApiServer _apiServer;
 
     // --- Sub-ViewModels ---
     public HostInfoViewModel HostInfo { get; } = new();
@@ -100,6 +102,21 @@ public sealed class MainViewModel : ViewModelBase
     private bool _isImporting;
     public bool IsImporting { get => _isImporting; set => SetProperty(ref _isImporting, value); }
 
+    // --- API 状态 ---
+    private string _apiStatus = "Stopped";
+    public string ApiStatus
+    {
+        get => _apiStatus;
+        set => SetProperty(ref _apiStatus, value);
+    }
+
+    private int _apiPort;
+    public int ApiPort
+    {
+        get => _apiPort;
+        set => SetProperty(ref _apiPort, value);
+    }
+
     private ProxyItem? _selectedProxy;
     public ProxyItem? SelectedProxy
     {
@@ -115,7 +132,8 @@ public sealed class MainViewModel : ViewModelBase
         GlobalThreeProxyConfig threeProxyConfig,
         Core.Abstractions.IProxyDataService proxyDataService,
         Core.Abstractions.IProxyTester proxyTester,
-        Proxy.Abstractions.IProxyProcessManager proxyProcessManager)
+        Proxy.Abstractions.IProxyProcessManager proxyProcessManager,
+        ApiServer apiServer)
     {
         _logger = logger;
         _settingsService = settingsService;
@@ -124,7 +142,13 @@ public sealed class MainViewModel : ViewModelBase
         _proxyDataService = proxyDataService;
         _proxyTester = proxyTester;
         _proxyProcessManager = proxyProcessManager;
+        _apiServer = apiServer;
         _proxyProcessManager.Configure(_threeProxyConfig);
+
+        // 初始化 API 状态
+        _apiPort = apiServer.Port;
+        _apiStatus = apiServer.IsRunning ? "Running" : "Stopped";
+        Dashboard.UpdateApiStatus(_apiStatus, _apiPort);
 
         InitFromConfig();
         LoadHostInfo();
@@ -767,10 +791,11 @@ public sealed class MainViewModel : ViewModelBase
         });
 
         try { _logger.Info(message); }
-        catch
+        catch (Exception ex)
         {
             // Logging failure is non-critical; swallow to avoid crashing the application.
             System.Diagnostics.Debug.WriteLine($"AddLog: failed to write log entry: {message}");
+            _logger.Warn($"AddLog: failed to write log entry: {ex.Message}");
         }
         // Ignore logging failures to prevent logging issues from crashing the application
     }
@@ -797,8 +822,9 @@ public sealed class MainViewModel : ViewModelBase
         {
             return NetworkInterface.GetIsNetworkAvailable() ? "Connected" : "Disconnected";
         }
-        catch
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"GetNetworkStatus: failed to check network: {ex.Message}");
             return "Unknown";
         }
     }
@@ -814,8 +840,30 @@ public sealed class MainViewModel : ViewModelBase
                 _logger.Warn($"Stop proxy {proxy.Id} before removal failed (non-critical): {ex.Message}");
             }
         }
+
+        // 停止 API 服务器
+        try
+        {
+            if (_apiServer.IsRunning)
+            {
+                await _apiServer.StopAsync();
+                ApiStatus = "Stopped";
+                Dashboard.UpdateApiStatus("Stopped", _apiPort);
+                _logger.Info("API server stopped during shutdown.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn($"Failed to stop API server during shutdown: {ex.Message}");
+        }
+
         await Task.CompletedTask;
     }
+
+    /// <summary>
+    /// 返回 ApiServer 实例，供 App.OnExit 在关闭时使用。
+    /// </summary>
+    public ApiServer GetApiServer() => _apiServer;
 
     private void RefreshStats()
     {

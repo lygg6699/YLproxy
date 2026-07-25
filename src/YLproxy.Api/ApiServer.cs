@@ -130,10 +130,10 @@ public sealed class ApiServer
             _app = null;
         }
 
-try { await (_runTask ?? Task.CompletedTask); }
+        try { await (_runTask ?? Task.CompletedTask); }
         catch (OperationCanceledException)
         {
-            /* 服务器关闭时 CancellationToken 触发，属正常行为 */
+            _logger.Debug("ApiServer run task canceled during shutdown");
         }
 
         _logger.Info("API server stopped.");

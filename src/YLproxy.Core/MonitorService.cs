@@ -237,7 +237,7 @@ public sealed class MonitorService : IDisposable
         }
     }
 
-    private static bool IsPortConnectable(int port)
+    private bool IsPortConnectable(int port)
     {
         try
         {
@@ -249,8 +249,9 @@ public sealed class MonitorService : IDisposable
             client.Connect("127.0.0.1", port);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.Debug($"MonitorService: port {port} not reachable: {ex.Message}");
             return false;
         }
     }
