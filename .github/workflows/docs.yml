@@ -1,0 +1,78 @@
+# YLproxy API Documentation Auto-Generation and Deployment
+#
+# Triggers:
+#   - Push to main branch with changes under src/YLproxy.Api/**
+#   - Manual workflow_dispatch
+#
+# What it does:
+#   1. Builds the API project
+#   2. Runs generate-docs.ps1 to produce static HTML + XML docs
+#   3. Uploads artifact
+#   4. Deploys to GitHub Pages
+
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/YLproxy.Api/**'
+      - 'src/YLproxy.Core/**'
+      - 'src/YLproxy.Models/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  DOTNET_CLI_UI_LANGUAGE: en-US
+  DOTNET_NOLOGO: "true"
+
+jobs:
+  build-docs:
+    name: Build API Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore dependencies
+        shell: pwsh
+        run: dotnet restore YLproxy.sln
+
+      - name: Build API project
+        shell: pwsh
+        run: dotnet build src/YLproxy.Api -c Release --no-restore -warnaserror
+
+      - name: Generate documentation site
+        shell: pwsh
+        run: ./scripts/generate-docs.ps1
+
+      - name: Upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/api
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build-docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

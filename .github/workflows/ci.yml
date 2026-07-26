@@ -1,3 +1,14 @@
+# YLproxy CI/CD Quality Gate Workflow
+#
+# Triggers:
+#   - Push / Pull Request to main affecting src/, tests/, scripts/, global.json
+#   - Manual workflow_dispatch
+#
+# Jobs:
+#   quality-gate  – Build Debug + Release, run tests with coverage, check coverage threshold
+#   security-check – Validate no sensitive files tracked
+#   e2e-tests    – Optional end-to-end tests (requires REAL_PROXY_CREDENTIALS secret)
+
 name: CI
 
 on:
@@ -28,7 +39,7 @@ permissions:
 
 env:
   DOTNET_CLI_UI_LANGUAGE: en-US
-  DOTNET_NOLOGO: "true"
+  DOTNET_NOLOGO: 'true'
 
 jobs:
   quality-gate:
@@ -64,19 +75,20 @@ jobs:
 
       - name: Build Debug with warnings as errors
         shell: pwsh
-        run: dotnet build YLproxy.sln --configuration Debug --no-restore -warnaserror
+        run: dotnet build YLproxy.sln -c Debug --no-restore -warnaserror
 
       - name: Build Release with warnings as errors
         shell: pwsh
-        run: dotnet build YLproxy.sln --configuration Release --no-restore -warnaserror
+        run: dotnet build YLproxy.sln -c Release --no-restore -warnaserror
 
-      - name: Run tests (excluding E2E)
+      - name: Run tests with coverage (excluding E2E)
         shell: pwsh
         run: |
           $testOutput = & dotnet test tests/YLproxy.Tests.csproj `
-            --configuration Debug --no-build --no-restore `
+            -c Debug --no-build --no-restore `
             --filter "TestCategory!=E2E" `
-            --results-directory TestResults `
+            --collect:"XPlat Code Coverage" `
+            --results-directory ./coverage `
             --logger "trx;LogFileName=tests.trx" 2>&1
           $testOutput | Out-String | Write-Host
 
@@ -94,6 +106,24 @@ jobs:
           }
           Write-Host "Tests: $passed Passed, 0 Failed"
 
+      - name: Check Coverage Threshold (>= 80%)
+        shell: pwsh
+        run: |
+          $coverageFiles = Get-ChildItem -Recurse -Path ./coverage -Filter "coverage.cobertura.xml" | Select-Object -First 1
+          if (-not $coverageFiles) {
+            Write-Warning "No coverage file found - skipping threshold check"
+            return
+          }
+          $xml = [xml](Get-Content $coverageFiles.FullName)
+          $coverage = [double]$xml.coverage.'line-rate' * 100
+          Write-Host "Line coverage: $([math]::Round($coverage, 2))%"
+          $threshold = 80
+          if ($coverage -lt $threshold) {
+            Write-Error "Coverage $([math]::Round($coverage, 2))% is below threshold $threshold%"
+            exit 1
+          }
+          Write-Host "Coverage $([math]::Round($coverage, 2))% meets threshold $threshold%"
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -101,6 +131,7 @@ jobs:
           name: test-results
           path: |
             TestResults/**/*.trx
+            coverage/**/*
           if-no-files-found: warn
           retention-days: 14
 
@@ -113,7 +144,6 @@ jobs:
 
       - name: Check for sensitive files
         run: |
-          # 检查是否有敏感文件被跟踪
           if git ls-files | grep -q "AppSettings.json"; then
             echo "Error: AppSettings.json should not be tracked"
             exit 1
@@ -125,7 +155,6 @@ jobs:
 
       - name: Check .gitignore patterns
         run: |
-          # 确保.gitignore包含必要的模式
           if ! grep -q "AppSettings.json" .gitignore; then
             echo "Error: .gitignore should include AppSettings.json"
             exit 1
@@ -165,7 +194,7 @@ jobs:
 
       - name: Build Debug
         shell: pwsh
-        run: dotnet build YLproxy.sln --configuration Debug --no-restore -warnaserror
+        run: dotnet build YLproxy.sln -c Debug --no-restore -warnaserror
 
       - name: Run E2E tests
         shell: pwsh
@@ -173,7 +202,7 @@ jobs:
           REAL_PROXY_CREDENTIALS: ${{ secrets.REAL_PROXY_CREDENTIALS }}
         run: |
           dotnet test tests/YLproxy.Tests.csproj `
-            --configuration Debug --no-build --no-restore `
+            -c Debug --no-build --no-restore `
             --filter "TestCategory=E2E" `
             --results-directory TestResults `
             --logger "trx;LogFileName=e2e.trx"
@@ -185,4 +214,5 @@ jobs:
           name: e2e-test-results
           path: TestResults/**/*.trx
           if-no-files-found: warn
-          retention-days: 14</｜DSML｜parameter>
+          retention-days: 14
+

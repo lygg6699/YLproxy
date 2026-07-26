@@ -2,7 +2,7 @@
 
 > 这是根级入口文件。详细部署记录见 [deployed/deployment.md](deployed/deployment.md)
 
-**最后更新**：2026-07-22
+**最后更新**：2026-07-26
 
 ---
 
@@ -28,13 +28,13 @@
 | 7 | 代理数据配置已就绪 | `Test-Path "data/config.json"` | ☐ |
 | 8 | 全局配置已创建 | `Test-Path "AppSettings.json"` | ☐ |
 
-### 安全与维护检查
+### CI/CD 检查
 
 | # | 检查项 | 说明 | 状态 |
 |---|--------|------|------|
-| 9 | Git pre-commit 钩子已安装 | `scripts/init-environment.ps1 -InstallHooks` | ☐ |
-| 10 | 日志清理计划任务已注册 | `scripts/init-environment.ps1 -InstallScheduledTask`（可选） | ☐ |
-| 11 | 验证无敏感文件在暂存区 | `git diff --cached --name-only` | ☐ |
+| 9 | GitHub Actions 工作流就绪 | `ci.yml`, `release.yml`, `codeql.yml`, `docs.yml` | ☐ |
+| 10 | 覆盖率门槛 ≥80% | `dotnet test --collect:"XPlat Code Coverage"` 验证 | ☐ |
+| 11 | CodeQL 安全分析已配置 | `codeql.yml` 在 push/PR 到 main 时触发 | ☐ |
 
 > 详细部署步骤参见 [build/deploy-checklist.md](build/deploy-checklist.md)
 
@@ -153,7 +153,17 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-environment.ps1 -Un
 ---
 
 ## 2026-07-26
-- API 集成到 GUI — 实施完成
+### 阶段三：CI/CD自动化 — 实施完成
+- `.github/workflows/release.yml`：完善 — 添加自动版本号生成、SBOM 生成、覆盖率收集与门槛检查
+- `.github/workflows/ci.yml`：完善 — 添加覆盖率收集（coverlet）+ 覆盖率门槛检查（≥80%）
+- `.github/workflows/codeql.yml`：新建 — CodeQL 安全分析工作流
+- `.github/workflows/docs.yml`：新建 — GitHub Pages 自动部署 API 文档
+- `scripts/generate-docs.ps1`：新建 — API 文档静态站点生成脚本
+- 删除 `jekyll-gh-pages.yml`（不适用于 .NET 项目）
+- 编译验证：0 errors, 0 warnings
+- 文档生成验证：脚本成功运行，生成 `docs/api/index.html`
+
+### API 集成到 GUI — 实施完成
   - `App.xaml.cs`：注册 ApiServer 单例，启动时非阻塞启动，退出时兜底停止
   - `MainViewModel.cs`：注入 ApiServer，ShutdownAsync 时停止 API
   - `DashboardViewModel.cs`：添加 ApiStatus/ApiPort 属性

@@ -6,6 +6,19 @@
 
 ## 2026-07-26
 
+### 阶段三：CI/CD自动化（85% → 90%）— 实施完成
+- ✅ 子阶段 3.1：GitHub Actions 发布工作流完善
+  - `release.yml` — 完善：添加自动版本号生成（Generate Version 步骤）、SBOM 生成（Microsoft.Sbom.DotNetTool）、覆盖率收集与门槛检查（≥80%）
+- ✅ 子阶段 3.2：质量门禁加固
+  - `ci.yml` — 完善：添加覆盖率收集（coverlet XPlat Code Coverage）+ 覆盖率门槛检查（≥80%）
+  - 新建 `codeql.yml` — CodeQL 安全分析工作流（push/PR 到 main 触发）
+- ✅ 子阶段 3.3：文档自动生成
+  - 新建 `scripts/generate-docs.ps1` — API 文档静态站点生成脚本（读取版本号、复制 XML 文档、生成 index.html）
+  - 新建 `docs.yml` — GitHub Pages 自动部署工作流（build → upload → deploy）
+  - 删除旧的 `jekyll-gh-pages.yml`（通用 Jekyll 模板，不适用于 .NET 项目）
+- ✅ 编译验证：0 errors, 0 warnings
+- ✅ 文档生成验证：脚本成功运行，生成 `docs/api/index.html`
+
 ### 子阶段 1.4：配置迁移工具完善 — 实施完成
 - ✅ `ProxyDataService.cs` — `UpgradeConfigIfNeeded` 重命名为 `RunUpgradeConfigIfNeeded`（public），添加版本升级扩展点
 - ✅ `ConfigMigrationTests.cs` — 修复测试调用，从 5 个测试扩展至 9 个（含幂等性、未来版本兼容、序列化回环验证）

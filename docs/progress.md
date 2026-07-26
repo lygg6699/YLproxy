@@ -6,6 +6,18 @@
 
 ## 最新操作
 
+### 阶段三：CI/CD自动化（85% → 90%）— 实施完成（2026-07-26）
+- ✅ 子阶段 3.1：GitHub Actions 发布工作流完善（85% → 87%）
+  - 完善 `release.yml` — 添加自动版本号生成、SBOM 生成、覆盖率收集与门槛检查
+- ✅ 子阶段 3.2：质量门禁加固（87% → 88%）
+  - 完善 `ci.yml` — 添加覆盖率收集（coverlet）+ 覆盖率门槛检查（≥80%）
+  - 新建 `codeql.yml` — CodeQL 安全分析工作流
+- ✅ 子阶段 3.3：文档自动生成（88% → 90%）
+  - 创建 `scripts/generate-docs.ps1` — API 文档静态站点生成脚本
+  - 新建 `docs.yml` — GitHub Pages 自动部署工作流
+  - 删除旧的 `jekyll-gh-pages.yml`
+- ✅ 编译验证：0 errors, 0 warnings
+
 ### 子阶段 1.4：配置迁移工具完善 — 实施完成（2026-07-26）
 - ✅ 添加 Version 字段到模型（`AppConfig.Version` / `CurrentVersion = "1.1"`）
 - ✅ 实现自动版本升级逻辑（`ProxyDataService.RunUpgradeConfigIfNeeded` — null→1.0→1.1）

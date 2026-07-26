@@ -6,6 +6,17 @@
 
 ## 已完成
 
+### 阶段三：CI/CD 自动化（85% → 90%）（2026-07-26）
+- [x] 子阶段 3.1：GitHub Actions 发布工作流完善
+  - [x] `release.yml` — 添加自动版本号生成、SBOM 生成、覆盖率收集与门槛检查
+- [x] 子阶段 3.2：质量门禁加固
+  - [x] `ci.yml` — 添加覆盖率收集（coverlet）+ 覆盖率门槛检查（≥80%）
+  - [x] `codeql.yml` — CodeQL 安全分析工作流
+- [x] 子阶段 3.3：文档自动生成
+  - [x] `scripts/generate-docs.ps1` — API 文档静态站点生成脚本
+  - [x] `docs.yml` — GitHub Pages 自动部署工作流
+  - [x] 删除旧的 `jekyll-gh-pages.yml`
+
 ### Phase 4: API 集成到 GUI（2026-07-26）
 - [x] `App.xaml.cs` — 注册 ApiServer 单例，启动时 StartAsync，退出时停止
 - [x] `MainViewModel.cs` — 注入 ApiServer，添加 API 属性，Shutdown 时停止

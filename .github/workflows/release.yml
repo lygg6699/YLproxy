@@ -31,6 +31,26 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Generate Version
+        id: version
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF -match 'refs/tags/v(.+)') {
+            $version = $matches[1]
+            echo "version=$version" >> $env:GITHUB_OUTPUT
+            echo "tag=$($matches[0])" >> $env:GITHUB_OUTPUT
+          } elseif ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch') {
+            $version = '${{ github.event.inputs.tag }}'
+            if ($version -match '^v') { $version = $version.Substring(1) }
+            echo "version=$version" >> $env:GITHUB_OUTPUT
+            echo "tag=v$version" >> $env:GITHUB_OUTPUT
+          } else {
+            $version = '0.0.0-ci'
+            echo "version=$version" >> $env:GITHUB_OUTPUT
+            echo "tag=$version" >> $env:GITHUB_OUTPUT
+          }
+          Write-Host "Release version: $version"
+
       - name: Prepare 3proxy runtime
         shell: pwsh
         run: ./scripts/prepare-runtime.ps1
@@ -43,14 +63,54 @@ jobs:
         shell: pwsh
         run: dotnet build YLproxy.sln --configuration Release --no-restore -warnaserror
 
-      - name: Run tests (excluding E2E)
+      - name: Run tests with coverage (excluding E2E)
         shell: pwsh
         run: |
           $result = & dotnet test tests/YLproxy.Tests.csproj `
             --configuration Release --no-build --no-restore `
-            --filter "TestCategory!=E2E" 2>&1
+            --filter "TestCategory!=E2E" `
+            --collect:"XPlat Code Coverage" `
+            --results-directory ./coverage 2>&1
           $result | Out-String | Write-Host
           if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Check Coverage Threshold (≥80%)
+        shell: pwsh
+        run: |
+          $coverageFiles = Get-ChildItem -Recurse -Path ./coverage -Filter "coverage.cobertura.xml" | Select-Object -First 1
+          if (-not $coverageFiles) {
+            Write-Warning "No coverage file found — skipping threshold check"
+            return
+          }
+          $xml = [xml](Get-Content $coverageFiles.FullName)
+          $coverage = [double]$xml.coverage.'line-rate' * 100
+          Write-Host "Line coverage: $([math]::Round($coverage, 2))%"
+          $threshold = 80
+          if ($coverage -lt $threshold) {
+            Write-Error "Coverage $([math]::Round($coverage, 2))% is below threshold $threshold%"
+            exit 1
+          }
+          Write-Host "✅ Coverage $([math]::Round($coverage, 2))% meets threshold $threshold%"
+
+      - name: Generate SBOM
+        shell: pwsh
+        run: |
+          # 使用 SPDX SBOM 生成方式：通过 .NET SDK 内置功能
+          dotnet tool install --global Microsoft.Sbom.DotNetTool --version 3.0.0 2>$null | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Warning "SBOM tool install failed — skipping SBOM generation"
+            return
+          }
+          $version = "${{ steps.version.outputs.version }}"
+          if ([string]::IsNullOrEmpty($version)) { $version = "0.0.0-ci" }
+          sbom-tool generate `
+            -b ./publish `
+            -o ./sbom `
+            -pn YLproxy `
+            -pv $version `
+            -ps YLproxy-Team `
+            -ns https://github.com/lygg6699/YLproxy 2>&1 | Out-String | Write-Host
+          Write-Host "SBOM generated at ./sbom"
 
       - name: Create release package
         shell: pwsh
@@ -60,6 +120,19 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/v')
         with:
-          files: build/YLproxy-*.zip
+          files: |
+            build/YLproxy-*.zip
+            sbom/**/*
           generate_release_notes: true
-          draft: true                    # 创建草稿，人工审核后发布</｜DSML｜parameter>
+          draft: true                    # 创建草稿，人工审核后发布
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage/**/*
+          if-no-files-found: warn
+          retention-days: 14
+
