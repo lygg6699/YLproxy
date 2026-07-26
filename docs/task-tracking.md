@@ -6,6 +6,27 @@
 
 ## 已完成
 
+### 阶段四：用户体验增强（90% → 95%）（2026-07-26）
+- [x] 子阶段 4.1：系统托盘功能
+  - [x] 安装 Hardcodet.NotifyIcon.Wpf NuGet 包
+  - [x] 创建 `TrayIconViewModel.cs` — 托盘图标 ViewModel
+  - [x] 更新 `MainWindow.xaml` — 添加 TaskbarIcon + 托盘右键菜单
+  - [x] 重构 `MainWindow.xaml.cs` — 替换 WinForms NotifyIcon 为 WPF TaskbarIcon
+  - [x] 添加最小化到系统托盘逻辑
+- [x] 子阶段 4.2：暗色主题支持
+  - [x] 创建 `Themes/LightTheme.xaml` 浅色主题
+  - [x] 创建 `Services/ThemeService.cs` 主题管理服务
+  - [x] 更新 `App.xaml` — 移除硬编码主题加载，改为运行时动态加载
+  - [x] 在 `MainViewModel` 中添加 ToggleThemeCommand
+  - [x] 在 `MainView.xaml` 添加主题切换按钮
+- [x] 子阶段 4.3：代理分组功能
+  - [x] 创建 `GroupViewModel.cs` — 分组数据管理
+  - [x] 创建 `ManageGroupsWindow.xaml + .xaml.cs` — 分组管理对话框
+  - [x] 创建 `ManageGroupsViewModel.cs` — 对话框 ViewModel
+  - [x] 在 `MainViewModel` 中集成分组功能
+  - [x] 在 `MainView.xaml` 添加分组过滤 ComboBox + 启动组/停止组按钮
+- [x] 编译验证：0 errors, 0 warnings
+
 ### 阶段三：CI/CD 自动化（85% → 90%）（2026-07-26）
 - [x] 子阶段 3.1：GitHub Actions 发布工作流完善
   - [x] `release.yml` — 添加自动版本号生成、SBOM 生成、覆盖率收集与门槛检查
@@ -44,4 +65,3 @@
   - [x] 创建 `PerformanceMonitor` 操作计时器
   - [x] 创建 `Logger` 结构化日志辅助类
   - [x] 集成 PerformanceMonitor 到 MonitorService
-

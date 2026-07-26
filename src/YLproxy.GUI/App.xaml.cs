@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using YLproxy.Api;
 using YLproxy.Core.PreFlight;
+using YLproxy.GUI.Services;
 using YLproxy.Infrastructure;
 using YLproxy.Models.Config;
 using YLproxy.Utils;
@@ -29,8 +30,8 @@ public partial class App : Application
 
         _logger = LoggerFactory.CreateLogger();
 
-
-
+        // 加载默认主题
+        ThemeService.Instance.ApplyTheme("DarkTheme");
 
         ExceptionHandler.OnUserNotification = (context, message) =>
         {
@@ -88,7 +89,7 @@ public partial class App : Application
             _logger.Warn($"Failed to configure auto-start: {ex.Message}");
         }
 
-        // Build DI container (Phase B2: interface alignment + startup chain closure)
+        // Build DI container
         var services = new ServiceCollection();
 
         // Logging
@@ -130,7 +131,6 @@ public partial class App : Application
             var proxyConfig = settingsService.GetProxyConfig();
             var configPath = PathResolver.ResolvePath(proxyConfig.DataDirectory, proxyConfig.ConfigFileName);
 
-            // 生产环境禁用 Swagger
             var isProduction = string.Equals(
                 Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 "Production", StringComparison.OrdinalIgnoreCase);
@@ -148,7 +148,7 @@ public partial class App : Application
 
         var provider = services.BuildServiceProvider();
 
-        // Manual startup window creation (since StartupUri removed)
+        // Manual startup window creation
         var vm = provider.GetRequiredService<MainViewModel>();
         var win = new MainWindow { DataContext = vm };
         win.Show();
@@ -162,7 +162,6 @@ public partial class App : Application
                 await apiServer.StartAsync();
                 _logger?.Info($"API server started on http://127.0.0.1:{apiServer.Port}");
 
-                // 更新 UI 上的 API 状态
                 await Current.Dispatcher.BeginInvoke(() =>
                 {
                     vm.ApiStatus = "Running";
@@ -174,8 +173,6 @@ public partial class App : Application
                 _logger?.Warn($"API server failed to start: {ex.Message}");
             }
         });
-
-
     }
 
     protected override void OnExit(ExitEventArgs e)

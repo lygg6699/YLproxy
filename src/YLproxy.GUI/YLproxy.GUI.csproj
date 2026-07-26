@@ -13,6 +13,10 @@
       <None Include="..\..\runtime\3proxy\bin64\**" Link="runtime\3proxy\bin64\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+    </ItemGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>

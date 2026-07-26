@@ -3,13 +3,33 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:views="clr-namespace:YLproxy.GUI.Views"
         mc:Ignorable="d"
         Title="YLXCX 本地代理管理器"
         Height="630" Width="960"
         MinHeight="500" MinWidth="800"
+        StateChanged="OnStateChanged"
         Closing="Window_Closing">
     <Grid>
         <views:MainView DataContext="{Binding}"/>
+
+        <!-- 系统托盘图标 -->
+        <tb:TaskbarIcon x:Name="TrayIcon"
+                        IconSource="/Assets/app.ico"
+                        ToolTipText="YLproxy - 代理管理工具"
+                        Visibility="Visible">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="显示窗口" Command="{Binding TrayIcon.ShowWindowCommand}"/>
+                    <MenuItem Header="隐藏窗口" Command="{Binding TrayIcon.HideWindowCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="启动所有代理" Command="{Binding TrayIcon.StartAllCommand}"/>
+                    <MenuItem Header="停止所有代理" Command="{Binding TrayIcon.StopAllCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="退出" Command="{Binding TrayIcon.ExitCommand}"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>

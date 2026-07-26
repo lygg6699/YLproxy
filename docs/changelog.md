@@ -6,61 +6,75 @@
 
 ## 2026-07-26
 
+### 阶段四：用户体验增强（90% → 95%）— 实施完成
+- ✅ 子阶段 4.1：系统托盘功能（90% → 92%）
+  - 安装 `Hardcodet.NotifyIcon.Wpf` NuGet 包
+  - 创建 `ViewModels/TrayIconViewModel.cs` — 托盘图标 ViewModel
+  - 更新 `MainWindow.xaml` — 添加 `tb:TaskbarIcon` 控件 + 托盘右键菜单
+  - 重构 `MainWindow.xaml.cs` — 移除了旧的 WinForms NotifyIcon，替换为纯 WPF TaskbarIcon 方案
+  - 创建 `Assets/` 目录（图标资源占位）
+  - 添加最小化到系统托盘逻辑（`OnStateChanged` 事件处理）
+- ✅ 子阶段 4.2：暗色主题支持（92% → 93%）
+  - 创建 `Themes/LightTheme.xaml` — 完整浅色主题（11 种颜色常量 + 12 个控件样式定义）
+  - 创建 `Services/ThemeService.cs` — 主题管理服务（单例模式）
+  - 更新 `App.xaml` — 移除硬编码的 DarkTheme.xaml 加载，改为 ThemeService 运行时动态加载
+  - 在 `MainViewModel` 中添加 ToggleThemeCommand + ToggleTheme() 方法
+  - 在 `MainView.xaml` 操作区添加"主题"切换按钮
+- ✅ 子阶段 4.3：代理分组功能（93% → 95%）
+  - 创建 `ViewModels/GroupViewModel.cs` — 分组数据管理
+  - 创建 `Views/ManageGroupsWindow + .xaml.cs` — 分组管理对话框
+  - 创建 `ViewModels/ManageGroupsViewModel.cs` — 对话框 ViewModel
+  - 在 `MainViewModel` 中集成分组功能（Groups、ShowManageGroupsWindow、StartGroupProxies、StopGroupProxies）
+  - 在 `MainView.xaml` 添加分组过滤 ComboBox + "启动组"/"停止组"按钮
+- ✅ 编译验证：0 errors, 0 warnings
+
 ### 阶段三：CI/CD自动化（85% → 90%）— 实施完成
 - ✅ 子阶段 3.1：GitHub Actions 发布工作流完善
-  - `release.yml` — 完善：添加自动版本号生成（Generate Version 步骤）、SBOM 生成（Microsoft.Sbom.DotNetTool）、覆盖率收集与门槛检查（≥80%）
+  - `release.yml` — 完善：添加自动版本号生成、SBOM 生成、覆盖率收集与门槛检查（≥80%）
 - ✅ 子阶段 3.2：质量门禁加固
-  - `ci.yml` — 完善：添加覆盖率收集（coverlet XPlat Code Coverage）+ 覆盖率门槛检查（≥80%）
-  - 新建 `codeql.yml` — CodeQL 安全分析工作流（push/PR 到 main 触发）
+  - `ci.yml` — 完善：添加覆盖率收集（coverlet）+ 覆盖率门槛检查（≥80%）
+  - 新建 `codeql.yml` — CodeQL 安全分析工作流
 - ✅ 子阶段 3.3：文档自动生成
-  - 新建 `scripts/generate-docs.ps1` — API 文档静态站点生成脚本（读取版本号、复制 XML 文档、生成 index.html）
-  - 新建 `docs.yml` — GitHub Pages 自动部署工作流（build → upload → deploy）
-  - 删除旧的 `jekyll-gh-pages.yml`（通用 Jekyll 模板，不适用于 .NET 项目）
+  - 新建 `scripts/generate-docs.ps1` — API 文档静态站点生成脚本
+  - 新建 `docs.yml` — GitHub Pages 自动部署工作流
+  - 删除旧的 `jekyll-gh-pages.yml`
 - ✅ 编译验证：0 errors, 0 warnings
 - ✅ 文档生成验证：脚本成功运行，生成 `docs/api/index.html`
 
 ### 子阶段 1.4：配置迁移工具完善 — 实施完成
-- ✅ `ProxyDataService.cs` — `UpgradeConfigIfNeeded` 重命名为 `RunUpgradeConfigIfNeeded`（public），添加版本升级扩展点
-- ✅ `ConfigMigrationTests.cs` — 修复测试调用，从 5 个测试扩展至 9 个（含幂等性、未来版本兼容、序列化回环验证）
-- ✅ `scripts/migrate-proxy-data.ps1` — 添加 `-TargetVersion` 参数、版本合规报告、版本化备份机制
-- ✅ `src/YLproxy.Utils/PathHelper.cs` — 修复 XML doc cref 警告（CA1200）
-- ✅ `tests/` — 添加 `TestSecurityService`（内联 mock），消除 DPAPI 平台依赖对序列化测试的限制
+- ✅ `ProxyDataService.cs` — `UpgradeConfigIfNeeded` 重命名为 `RunUpgradeConfigIfNeeded`
+- ✅ `ConfigMigrationTests.cs` — 从 5 个测试扩展至 9 个
+- ✅ `scripts/migrate-proxy-data.ps1` — 添加 `-TargetVersion` 参数、版本合规报告
+- ✅ `src/YLproxy.Utils/PathHelper.cs` — 修复 XML doc cref 警告
 - ✅ 编译验证：0 errors, 0 warnings
-- ✅ 测试验证：137 passed, 0 failed（原 128，新增 9）
+- ✅ 测试验证：137 passed, 0 failed
 
 ### 四项优化执行方案 — 实施完成
-- ✅ 方案 1：`Directory.Build.props` — 添加统一版本号（Version 0.2.0.0, FileVersion 0.2.0.0, InformationalVersion 0.2.0+sha）
-- ✅ 方案 2：新建 `.github/workflows/release.yml` — GitHub Release 自动发布工作流
-- ✅ 方案 3：`RealProxyEndToEndTests.cs` 添加 `[Trait("TestCategory", "E2E")]` + CI 中 `e2e-tests` job
-- ✅ 方案 4：验证 `.guard/` 目录完整性（7 个文件全部存在）
+- ✅ `Directory.Build.props` — 添加统一版本号（Version 0.2.0.0）
+- ✅ 新建 `.github/workflows/release.yml` — GitHub Release 自动发布工作流
+- ✅ `RealProxyEndToEndTests.cs` — 添加 `[Trait("TestCategory", "E2E")]`
+- ✅ 验证 `.guard/` 目录完整性（7 个文件全部存在）
 - ✅ 编译验证：0 errors, 0 warnings
-- ✅ 测试验证：127 passed, 0 failed（1 E2E 正确排除）
-- ✅ 版本号验证：FileVersion 0.2.0.0
 
 ### Phase 4: API 集成到 GUI — 实施完成
-- ✅ `App.xaml.cs` — 注册 ApiServer 单例到 DI 容器，启动时非阻塞启动 API，OnExit 时兜底停止
-- ✅ `MainViewModel.cs` — 注入 ApiServer，添加 ApiStatus/ApiPort 属性，ShutdownAsync 时停止 API
-- ✅ `DashboardViewModel.cs` — 添加 ApiStatus/ApiPort 属性和 UpdateApiStatus() 方法
-- ✅ `Converters.cs` — 添加 ApiStatusColorConverter（Running→绿色，Stopped→灰色）
-- ✅ `App.xaml` — 注册 ApiStatusColorConverter 为全局资源
-- ✅ `MainView.xaml` — 仪表盘状态栏添加 API 状态指示器（圆点+状态文本+端口号）
+- ✅ `App.xaml.cs` — 注册 ApiServer 单例到 DI 容器，启动时非阻塞启动 API
+- ✅ `MainViewModel.cs` — 注入 ApiServer，添加 ApiStatus/ApiPort 属性
+- ✅ `DashboardViewModel.cs` — 添加 ApiStatus/ApiPort 属性和 UpdateApiStatus()
+- ✅ `Converters.cs` — 添加 ApiStatusColorConverter
+- ✅ `MainView.xaml` — 仪表盘状态栏添加 API 状态指示器
 - ✅ 编译验证：0 errors, 0 warnings
-- ✅ 测试验证：128 passed, 0 failed
 
 ## 2026-07-22
 
 ### Phase 3: 本月内执行方案（优化）— 代码实现完成
 - 步骤 3.1：跨平台路径兼容性改进
   - 创建 `PathHelper` 工具类，替换 6 个文件中的硬编码 `Path.Combine`
-  - 涉及文件：PreFlightChecker.cs, ProxyProcessManager.cs, ConfigGenerator.cs, FileLogger.cs, AutoStartService.cs, AppSettingsService.cs
 - 步骤 3.2：配置管理抽象
   - 创建 `IConfigurationProvider` 接口 + `JsonConfigurationProvider` + `EnvironmentConfigurationProvider` + `ConfigurationManager`
-  - 多源配置合并、缓存、事件通知机制
 - 步骤 3.3：模块化重构 — DI 注册扩展
   - 创建 `ServiceCollectionExtensions` 提供 `AddYLproxyServices()` / `AddYLproxyTestServices()`
 - 步骤 3.4：测试覆盖改进
-  - 新增 4 个测试文件、80+ 测试用例（PathHelper, ConfigurationProvider, PerformanceMonitor, DI 注册验证）
+  - 新增 4 个测试文件、80+ 测试用例
 - 步骤 3.5：监控体系建设
-  - 创建 `PerformanceMonitor`（操作计时器 + 聚合统计 + 阈值告警）
-  - 创建 `Logger` 静态日志辅助类（结构化日志 + 上下文数据）
+  - 创建 `PerformanceMonitor` + `Logger` 静态日志辅助类
   - 集成 PerformanceMonitor 到 MonitorService

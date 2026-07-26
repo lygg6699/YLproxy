@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
+using YLproxy.GUI.ViewModels;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -10,13 +10,27 @@ namespace YLproxy.GUI;
 
 public partial class MainWindow : Window
 {
-    private System.Windows.Forms.NotifyIcon? _notifyIcon;
-
     public MainWindow()
     {
         InitializeComponent();
-        InitializeTrayIcon();
+        InitializeTrayIconViewModel();
         InitializeKeyboardShortcuts();
+    }
+
+    private void InitializeTrayIconViewModel()
+    {
+        if (DataContext is MainViewModel vm)
+        {
+            vm.TrayIcon = new TrayIconViewModel(TrayIcon, vm);
+        }
+
+        DataContextChanged += (_, args) =>
+        {
+            if (args.NewValue is MainViewModel newVm)
+            {
+                newVm.TrayIcon = new TrayIconViewModel(TrayIcon, newVm);
+            }
+        };
     }
 
     private void InitializeKeyboardShortcuts()
@@ -50,29 +64,19 @@ public partial class MainWindow : Window
         };
     }
 
-    private void InitializeTrayIcon()
+    /// <summary>
+    /// 最小化时隐藏到系统托盘
+    /// </summary>
+    private void OnStateChanged(object sender, EventArgs e)
     {
-        _notifyIcon = new System.Windows.Forms.NotifyIcon
+        if (WindowState == WindowState.Minimized)
         {
-            Icon = System.Drawing.SystemIcons.Application,
-            Visible = true,
-            Text = "YLproxy - 本地代理管理器"
-        };
-
-        _notifyIcon.DoubleClick += (_, _) => RestoreFromTray();
-
-        var contextMenu = new System.Windows.Forms.ContextMenuStrip();
-        contextMenu.Items.Add("显示窗口", null, (_, _) => RestoreFromTray());
-        contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-        contextMenu.Items.Add("退出", null, (_, _) => ExitApplication());
-        _notifyIcon.ContextMenuStrip = contextMenu;
-    }
-
-    private void RestoreFromTray()
-    {
-        Show();
-        WindowState = WindowState.Normal;
-        Activate();
+            Hide();
+            if (DataContext is MainViewModel vm && vm.TrayIcon != null)
+            {
+                vm.TrayIcon.IsMinimized = true;
+            }
+        }
     }
 
     private async void ExitApplication()
@@ -87,7 +91,7 @@ public partial class MainWindow : Window
         {
             if (DataContext is MainViewModel vm)
                 await vm.ShutdownAsync();
-            _notifyIcon?.Dispose();
+            TrayIcon?.Dispose();
             Application.Current.Shutdown();
         }
     }
@@ -101,7 +105,7 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        _notifyIcon?.Dispose();
+        TrayIcon?.Dispose();
         base.OnClosed(e);
     }
 }

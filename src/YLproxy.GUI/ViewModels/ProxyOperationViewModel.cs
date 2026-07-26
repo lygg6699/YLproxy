@@ -53,7 +53,7 @@ public sealed class ProxyOperationViewModel : ViewModelBase
     /// <summary>
     /// 测试选中的代理
     /// </summary>
-    public async Task TestSelectedProxyAsync(ProxyItem proxy)
+    public async Task TestSelectedProxyAsync(ProxyItem? proxy)
     {
         if (proxy == null) return;
 
@@ -87,7 +87,7 @@ public sealed class ProxyOperationViewModel : ViewModelBase
     /// <summary>
     /// 启动选中的代理
     /// </summary>
-    public void StartSelectedProxy(ProxyItem proxy)
+    public void StartSelectedProxy(ProxyItem? proxy)
     {
         if (proxy == null) return;
 
@@ -112,7 +112,7 @@ public sealed class ProxyOperationViewModel : ViewModelBase
     /// <summary>
     /// 停止选中的代理
     /// </summary>
-    public void StopSelectedProxy(ProxyItem proxy)
+    public void StopSelectedProxy(ProxyItem? proxy)
     {
         if (proxy == null) return;
 
@@ -136,7 +136,7 @@ public sealed class ProxyOperationViewModel : ViewModelBase
     /// <summary>
     /// 批量启动选中的代理
     /// </summary>
-    public void BatchStart(List<ProxyItem> proxies)
+    public void BatchStart(List<ProxyItem>? proxies)
     {
         if (proxies == null || proxies.Count == 0) return;
 
@@ -149,7 +149,7 @@ public sealed class ProxyOperationViewModel : ViewModelBase
     /// <summary>
     /// 批量停止选中的代理
     /// </summary>
-    public void BatchStop(List<ProxyItem> proxies)
+    public void BatchStop(List<ProxyItem>? proxies)
     {
         if (proxies == null || proxies.Count == 0) return;
 
