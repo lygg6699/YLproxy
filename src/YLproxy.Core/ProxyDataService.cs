@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using YLproxy.Core.Abstractions;
@@ -34,68 +37,43 @@ public sealed class ProxyDataService : IProxyDataService
         _serializer = new ProxyDataSerializer();
         _logger = logger ?? LoggerFactory.CreateLogger();
 
-        // Validate path is canonical (not GUI-relative)
         if (!_skipPathValidation && _configPath.Contains("src/YLproxy.GUI", StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException("Cannot use GUI-relative paths. Use repository-relative paths instead.", nameof(configPath));
         }
 
-        // Convert to absolute path using PathResolver for repository-relative paths
         if (!Path.IsPathRooted(_configPath))
         {
-            // Split path segments for PathResolver
             var segments = _configPath.Split('/', '\\');
             _configPath = PathResolver.ResolvePath(segments);
         }
     }
 
-    /// <summary>
-    /// Loads the proxy configuration from the file system.
-    /// Uses file lock to prevent concurrent access and handles file-not-found gracefully.
-    /// </summary>
     public AppConfig Load()
     {
         _semaphore.Wait();
         try
         {
-            // Use file lock for cross-process safety
             using var fileLock = new FileLock(_configPath, FileLockTimeoutMs);
-
             try
             {
                 var json = File.ReadAllText(_configPath);
                 var requiresMigration = false;
                 var config = _serializer.Deserialize(json, out requiresMigration);
-
-                // Auto-upgrade config version in memory (persisted on next explicit Save)
                 RunUpgradeConfigIfNeeded(config);
-
                 return config;
             }
-            catch (FileNotFoundException)
-            {
-                // File was deleted externally (e.g., log cleanup), return empty config
-                return new AppConfig();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return new AppConfig();
-            }
+            catch (FileNotFoundException) { return new AppConfig(); }
+            catch (DirectoryNotFoundException) { return new AppConfig(); }
             catch (JsonException ex)
             {
                 _logger.Warn($"ProxyDataService: config file corrupted, returning empty config: {ex.Message}");
                 return new AppConfig();
             }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        finally { _semaphore.Release(); }
     }
 
-    /// <summary>
-    /// Performs migration if needed (separate from Load to avoid unexpected writes).
-    /// </summary>
     public void MigrateIfNeeded()
     {
         _semaphore.Wait();
@@ -106,163 +84,92 @@ public sealed class ProxyDataService : IProxyDataService
                 var json = File.ReadAllText(_configPath);
                 var requiresMigration = false;
                 var config = _serializer.Deserialize(json, out requiresMigration);
-
-                if (requiresMigration)
-                {
-                    _logger.Info("ProxyDataService: config migration required, re-encrypting credentials");
-                    Save(config);
-                }
+                if (requiresMigration) { Save(config); }
             }
-            catch (FileNotFoundException)
-            {
-                return;
-            }
-            catch (JsonException ex)
-            {
-                _logger.Warn($"ProxyDataService: cannot migrate corrupted config: {ex.Message}");
-                return;
-            }
+            catch (FileNotFoundException) { return; }
+            catch (JsonException ex) { _logger.Warn($"ProxyDataService: cannot migrate corrupted config: {ex.Message}"); return; }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        finally { _semaphore.Release(); }
     }
 
-    /// <summary>
-    /// Saves the proxy configuration to the file system atomically.
-    /// Includes: pre-write backup, file lock, atomic replace with retry, and post-write validation.
-    /// </summary>
+    public List<string> GetGroups()
+    {
+        var config = Load();
+        return config.Proxies
+            .Select(p => p.Group)
+            .Where(g => !string.IsNullOrWhiteSpace(g))
+            .Distinct()
+            .OrderBy(g => g)
+            .ToList();
+    }
+
     public void Save(AppConfig config)
     {
         ArgumentNullException.ThrowIfNull(config);
-
         _semaphore.Wait();
         try
         {
-            // 1. Pre-write backup (keep last MaxBackups versions)
             BackupIfNeeded(_configPath);
-
-            // 2. Serialize
             var json = _serializer.Serialize(config);
             var tempPath = _configPath + ".tmp";
-
             try
             {
-                // 3. Write to temp file with file lock
                 using (var fileLock = new FileLock(_configPath, FileLockTimeoutMs))
-                {
-                    File.WriteAllText(tempPath, json);
-                }
-
-                // 4. Atomic replace with retry
+                { File.WriteAllText(tempPath, json); }
                 SimpleRetry.Execute(() =>
                 {
-                    if (File.Exists(_configPath))
-                    {
-                        File.Replace(tempPath, _configPath, null);
-                    }
-                    else
-                    {
-                        File.Move(tempPath, _configPath);
-                    }
+                    if (File.Exists(_configPath)) { File.Replace(tempPath, _configPath, null); }
+                    else { File.Move(tempPath, _configPath); }
                 }, maxAttempts: 3, delayMs: 50, logger: _logger);
-
-                // 5. Post-write integrity validation
                 ValidateConfigIntegrity(_configPath);
-
                 _logger.Debug($"ProxyDataService: saved config ({json.Length} bytes)");
             }
             catch
             {
-                // Clean up temp file on failure
-                if (File.Exists(tempPath))
-                {
-                    try { File.Delete(tempPath); }
-                    catch { /* Best-effort cleanup */ }
-                }
+                if (File.Exists(tempPath)) { try { File.Delete(tempPath); } catch { } }
                 throw;
             }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        finally { _semaphore.Release(); }
     }
 
-    /// <summary>
-    /// Checks and upgrades the config version if it's outdated.
-    /// Returns true if an upgrade was performed.
-    /// When upgrading, applies any structural migrations needed for the target version.
-    /// </summary>
     public static bool RunUpgradeConfigIfNeeded(AppConfig config)
     {
         if (string.IsNullOrEmpty(config.Version))
         {
-            // Legacy config (no version) - mark as 1.0
             config.Version = "1.0";
             return true;
         }
-
         if (config.Version == "1.0")
         {
-            // Upgrade from 1.0 to 1.1
-            // No structural changes in this version bump, but this is the extension
-            // point for future data migrations (e.g., field rename, default values)
             config.Version = "1.1";
             return true;
         }
-
         return false;
     }
 
-    /// <summary>
-    /// Creates a backup of the config file before write, maintaining a rolling window of backups.
-    /// </summary>
     private void BackupIfNeeded(string configPath)
     {
-        if (!File.Exists(configPath))
-            return;
-
+        if (!File.Exists(configPath)) return;
         try
         {
-            var backupDir = PathHelper.Combine(
-                Path.GetDirectoryName(configPath) ?? "data",
-                "backups");
-
+            var backupDir = PathHelper.Combine(Path.GetDirectoryName(configPath) ?? "data", "backups");
             Directory.CreateDirectory(backupDir);
-
             var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
             var backupPath = PathHelper.Combine(backupDir, $"config_{timestamp}.json");
-
             File.Copy(configPath, backupPath, overwrite: false);
-
-            // Rotate old backups: keep only the last MaxBackups
             var backupFiles = Directory.GetFiles(backupDir, "config_*.json")
-                .OrderByDescending(f => f)
-                .ToList();
-
+                .OrderByDescending(f => f).ToList();
             if (backupFiles.Count > MaxBackups)
             {
                 foreach (var oldFile in backupFiles.Skip(MaxBackups))
-                {
-                    try { File.Delete(oldFile); }
-                    catch { /* Best-effort cleanup */ }
-                }
+                { try { File.Delete(oldFile); } catch { } }
             }
-
             _logger.Debug($"ProxyDataService: backup created at {backupPath}");
         }
-        catch (Exception ex)
-        {
-            // Backup failure should not block the save operation
-            _logger.Warn($"ProxyDataService: backup failed (non-critical): {ex.Message}");
-        }
+        catch (Exception ex) { _logger.Warn($"ProxyDataService: backup failed (non-critical): {ex.Message}"); }
     }
 
-    /// <summary>
-    /// Validates the integrity of a saved config file by attempting to deserialize it.
-    /// </summary>
     private void ValidateConfigIntegrity(string configPath)
     {
         try
@@ -270,12 +177,7 @@ public sealed class ProxyDataService : IProxyDataService
             var json = File.ReadAllText(configPath);
             var requiresMigration = false;
             var config = _serializer.Deserialize(json, out requiresMigration);
-
-            if (config is null)
-            {
-                throw new InvalidDataException("Deserialized config is null after save");
-            }
-
+            if (config is null) { throw new InvalidDataException("Deserialized config is null after save"); }
             _logger.Debug($"ProxyDataService: integrity check passed ({config.Proxies.Count} proxies)");
         }
         catch (Exception ex)

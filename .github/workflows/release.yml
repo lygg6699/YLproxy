@@ -116,12 +116,77 @@ jobs:
         shell: pwsh
         run: ./build/publish.ps1 -Configuration Release -CreateZip
 
+      - name: Generate Installer (WiX)
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          # 安装 WiX 工具集
+          dotnet tool install --global wix --version 5.0.0 2>$null | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Warning "WiX toolset install failed — skipping installer generation"
+            return
+          }
+          
+          $version = "${{ steps.version.outputs.version }}"
+          if ([string]::IsNullOrEmpty($version)) { $version = "0.0.0" }
+          
+          # 创建 WiX 项目文件
+          $wixProjectPath = "./installer/Product.wxs"
+          $installerDir = "./installer"
+          if (-not (Test-Path $installerDir)) { New-Item -ItemType Directory -Path $installerDir | Out-Null }
+          
+          @"
+          <?xml version="1.0" encoding="UTF-8"?>
+          <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+            <Product Id="*" Name="YLproxy" Language="1033" Version="$($version)" Manufacturer="YLproxy-Team" UpgradeCode="d1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6">
+              <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+              
+              <MajorUpgrade DowngradeErrorMessage="A newer version of YLproxy is already installed." />
+              
+              <MediaTemplate />
+              
+              <Feature Id="ProductFeature" Title="YLproxy" Level="1">
+                <ComponentGroupRef Id="ProductComponents" />
+              </Feature>
+            </Product>
+            
+            <Fragment>
+              <Directory Id="TARGETDIR" Name="SourceDir">
+                <Directory Id="ProgramFilesFolder">
+                  <Directory Id="INSTALLFOLDER" Name="YLproxy" />
+                </Directory>
+              </Directory>
+            </Fragment>
+            
+            <Fragment>
+              <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+                <Component Id="MainExecutable">
+                  <File Source="$(var.publish)\YLproxy.GUI.exe" />
+                </Component>
+                <Component Id="ConfigurationFiles">
+                  <File Source="$(var.publish)\AppSettings.example.json" />
+                  <File Source="$(var.publish)\global.json" />
+                </Component>
+                <Component Id="RuntimeFiles">
+                  <File Source="$(var.publish)\runtime\3proxy\bin64\3proxy.exe" />
+                  <File Source="$(var.publish)\runtime\3proxy\cfg\*.cfg" />
+                </Component>
+              </ComponentGroup>
+            </Fragment>
+          "@ | Out-File -FilePath $wixProjectPath -Encoding UTF8
+          
+          # 编译安装包
+          wix project build $wixProjectPath -c release -o ./installer
+          
+          Write-Host "Installer generated at ./installer/YLproxy.msi"
+
       - name: Upload release asset
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           files: |
             build/YLproxy-*.zip
+            installer/*.msi
             sbom/**/*
           generate_release_notes: true
           draft: true                    # 创建草稿，人工审核后发布

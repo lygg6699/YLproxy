@@ -9,7 +9,8 @@
       <RowDefinition Height="160" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="180" />
+      <RowDefinition Height="140" />
+      <RowDefinition Height="120" />
     </Grid.RowDefinitions>
 
     <!-- Row 0: Host Info -->
@@ -181,6 +182,19 @@
         </ListView>
         <Button Grid.Row="2" Content="清空日志" Width="80" Height="24" Command="{Binding LogPanel.ClearLogCommand}" />
       </Grid>
+    </GroupBox>
+
+    <!-- Row 4: Traffic Statistics -->
+    <GroupBox Grid.Row="4" Margin="10" Header="流量统计">
+      <DataGrid ItemsSource="{Binding TrafficStats.Stats}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="代理名称" Binding="{Binding ProxyName}" Width="*"/>
+          <DataGridTextColumn Header="发送字节" Binding="{Binding BytesSent, StringFormat={}{0:N0}}" Width="120"/>
+          <DataGridTextColumn Header="接收字节" Binding="{Binding BytesReceived, StringFormat={}{0:N0}}" Width="120"/>
+          <DataGridTextColumn Header="最后活动" Binding="{Binding LastActivity, StringFormat={}{0:HH:mm:ss}}" Width="100"/>
+          <DataGridTextColumn Header="速度" Binding="{Binding SpeedBps, StringFormat={}{0:N1} B/s}" Width="100"/>
+        </DataGrid.Columns>
+      </DataGrid>
     </GroupBox>
   </Grid>
 </UserControl>

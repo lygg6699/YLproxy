@@ -1,0 +1,14 @@
+  YLproxy.Models -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Models\bin\Debug\net10.0\YLproxy.Models.dll
+  YLproxy.Utils -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Utils\bin\Debug\net10.0\YLproxy.Utils.dll
+  YLproxy.Infrastructure -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Infrastructure\bin\Debug\net10.0\YLproxy.Infrastructure.dll
+  YLproxy.Proxy -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Proxy\bin\Debug\net10.0\YLproxy.Proxy.dll
+  YLproxy.Core -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Core\bin\Debug\net10.0\YLproxy.Core.dll
+  YLproxy.Api -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.Api\bin\Debug\net10.0\YLproxy.Api.dll
+  YLproxy.GUI -> E:\GZQ\YLXCX\YLproxy\src\YLproxy.GUI\bin\Debug\net10.0-windows\YLproxy.GUI.dll
+  YLproxy.Tests -> E:\GZQ\YLXCX\YLproxy\tests\bin\Debug\net10.0-windows\YLproxy.Tests.dll
+
+宸叉垚鍔熺敓鎴愩€?
+    0 涓鍛?
+    0 涓敊璇?
+
+宸茬敤鏃堕棿 00:00:01.80

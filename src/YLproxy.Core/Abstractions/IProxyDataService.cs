@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using YLproxy.Models;
 
 namespace YLproxy.Core.Abstractions;
@@ -16,4 +17,9 @@ public interface IProxyDataService
     /// Saves the proxy configuration to the file system.
     /// </summary>
     void Save(AppConfig config);
+
+    /// <summary>
+    /// Gets a list of distinct proxy groups.
+    /// </summary>
+    List<string> GetGroups();
 }

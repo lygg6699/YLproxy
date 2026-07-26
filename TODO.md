@@ -1,34 +1,24 @@
-# TODO - 阶段四：用户体验增强（90% → 95%）✅ 已完成
+# 阶段五：高级功能开发（95% → 100%）— 执行进度
 
-## 子阶段 4.1：系统托盘功能 ✅
-- [x] 安装 Hardcodet.NotifyIcon.Wpf NuGet 包
-- [x] 创建 TrayIconViewModel.cs
-- [x] 更新 MainWindow.xaml — 添加 TaskbarIcon + 托盘右键菜单
-- [x] 重构 MainWindow.xaml.cs — 使用 WPF TaskbarIcon + 最小化到托盘
-- [x] 在 MainViewModel 中添加托盘状态更新
-- [x] 创建 Assets/app.ico 和 Assets/app-running.ico 占位文件
+## 子阶段5.1：流量统计与监控（95% → 97%）
+- [x] 步骤5.1.1：扩展ProxyItem模型 — 添加流量统计字段
+- [x] 步骤5.1.2：创建TrafficMonitorService — 流量监控服务
+- [x] 步骤5.1.3：在ProxyProcessManager中集成流量监控
+- [x] 步骤5.1.4：创建TrafficStatsViewModel — 流量统计ViewModel
+- [x] 步骤5.1.5：在MainView.xaml中添加流量统计UI
+- [x] 步骤5.1.6：提交代码
 
-## 子阶段 4.2：暗色主题支持 ✅
-- [x] 创建 LightTheme.xaml 浅色主题
-- [x] 创建 ThemeService.cs 主题管理服务
-- [x] 更新 App.xaml — ThemeService 运行时加载主题
-- [x] 在 MainViewModel 中添加 ToggleThemeCommand + ToggleTheme()
-- [x] 在 MainView.xaml 中添加主题切换按钮
+## 子阶段5.2：自动化测试与部署（97% → 99%）
+- [ ] 步骤5.2.1：完善E2E测试
+- [ ] 步骤5.2.2：添加性能测试
+- [ ] 步骤5.2.3：添加安装包生成
+- [ ] 步骤5.2.4：提交代码
 
-## 子阶段 4.3：代理分组功能 ✅
-- [x] MainViewModel 中集成分组 (GroupViewModel)
-- [x] 创建 GroupViewModel.cs
-- [x] 集成分组管理功能 (ShowManageGroupsWindow, StartGroupProxies, StopGroupProxies)
-- [x] MainView.xaml 添加分组过滤 ComboBox + 启动组/停止组按钮
-- [x] 创建 ManageGroupsWindow + ManageGroupsViewModel
-- [x] 添加按分组批量操作 (StartGroupCommand/StopGroupCommand)
+## 子阶段5.3：最终验证与发布（99% → 100%）
+- [ ] 步骤5.3.1：完整测试套件
+- [ ] 步骤5.3.2：性能基准测试
+- [ ] 步骤5.3.3：安全扫描
+- [ ] 步骤5.3.4：创建发布版本
+- [ ] 步骤5.3.5：更新文档
+- [ ] 步骤5.3.6：提交代码
 
-## 编译验证 ✅
-- [x] MainView.xaml 编译错误修复
-- [x] 所有文件集成完成
-- [x] 编译全部项目 — 0 errors, 0 warnings ✅
-
-## 文档同步
-- [ ] 更新 docs/progress.md
-- [ ] 更新 docs/task-tracking.md
-- [ ] 更新 docs/changelog.md

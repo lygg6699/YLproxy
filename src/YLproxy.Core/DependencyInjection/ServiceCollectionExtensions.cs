@@ -3,6 +3,7 @@ using YLproxy.Core;
 using YLproxy.Core.Abstractions;
 using YLproxy.Infrastructure;
 using YLproxy.Infrastructure.Abstractions;
+using YLproxy.Infrastructure.Services;
 using YLproxy.Proxy;
 using YLproxy.Proxy.Abstractions;
 using YLproxy.Utils;
@@ -48,9 +49,18 @@ public static class ServiceCollectionExtensions
         // --- Logging ---
         services.AddSingleton<ILogger>(_ => LoggerFactory.CreateLogger());
 
+        // --- Traffic Monitor Service ---
+        services.AddSingleton<ITrafficMonitorService, TrafficMonitorService>();
+
         // --- Proxy Services ---
         services.AddSingleton<ProxyRuntimeConfiguration>();
-        services.AddSingleton<ProxyProcessManager>();
+        services.AddSingleton<ProxyProcessManager>(sp =>
+        {
+            var runtimeConfig = sp.GetRequiredService<ProxyRuntimeConfiguration>();
+            var logger = sp.GetRequiredService<ILogger>();
+            var trafficMonitor = sp.GetRequiredService<ITrafficMonitorService>();
+            return new ProxyProcessManager(runtimeConfig, logger, trafficMonitor);
+        });
         services.AddSingleton<YLproxy.Proxy.Abstractions.IProxyProcessManager>(sp =>
             new ProxyProcessManagerAdapter(sp.GetRequiredService<ProxyProcessManager>()));
 

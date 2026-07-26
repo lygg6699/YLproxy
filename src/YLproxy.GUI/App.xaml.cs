@@ -9,6 +9,8 @@ using YLproxy.Api;
 using YLproxy.Core.PreFlight;
 using YLproxy.GUI.Services;
 using YLproxy.Infrastructure;
+using YLproxy.Infrastructure.Abstractions;
+using YLproxy.Infrastructure.Services;
 using YLproxy.Models.Config;
 using YLproxy.Utils;
 using GlobalConfigService = YLproxy.Infrastructure.AppSettingsService;
@@ -113,7 +115,18 @@ public partial class App : Application
             return sp.GetRequiredService<AppSettingsService>().GetThreeProxyConfig();
         });
 
-        // Core abstractions → adapters
+        // Traffic Monitor Service
+        services.AddSingleton<ITrafficMonitorService, TrafficMonitorService>();
+
+        // Proxy Services
+        services.AddSingleton<Proxy.ProxyRuntimeConfiguration>();
+        services.AddSingleton<Proxy.ProxyProcessManager>(sp =>
+        {
+            var runtimeConfig = sp.GetRequiredService<Proxy.ProxyRuntimeConfiguration>();
+            var logger = sp.GetRequiredService<ILogger>();
+            var trafficMonitor = sp.GetRequiredService<ITrafficMonitorService>();
+            return new Proxy.ProxyProcessManager(runtimeConfig, logger, trafficMonitor);
+        });
         services.AddSingleton<Proxy.Abstractions.IProxyProcessManager, Proxy.ProxyProcessManagerAdapter>();
         services.AddSingleton<Core.Abstractions.IProxyTester, Core.ProxyTesterAdapter>();
         services.AddSingleton<Core.Abstractions.IProxyDataService>(sp =>

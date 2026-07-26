@@ -14,6 +14,7 @@ using YLproxy.Core;
 using YLproxy.GUI.ViewModels;
 using YLproxy.GUI.Services;
 using YLproxy.Infrastructure;
+using YLproxy.Infrastructure.Abstractions;
 using YLproxy.Models;
 using YLproxy.Models.Config;
 using YLproxy.Utils;
@@ -49,6 +50,7 @@ public sealed class MainViewModel : ViewModelBase
     public ImportExportViewModel ImportExport { get; }
     public ViewModels.TrayIconViewModel? TrayIcon { get; set; }
     public GroupViewModel Groups { get; } = new();
+    public TrafficStatsViewModel TrafficStats { get; }
 
     // --- Proxy Collections ---
     public ObservableCollection<ProxyItem> Proxies => ProxyList.Proxies;
@@ -126,7 +128,8 @@ public sealed class MainViewModel : ViewModelBase
         Core.Abstractions.IProxyDataService proxyDataService,
         Core.Abstractions.IProxyTester proxyTester,
         Proxy.Abstractions.IProxyProcessManager proxyProcessManager,
-        ApiServer apiServer)
+        ApiServer apiServer,
+        ITrafficMonitorService trafficMonitorService)
     {
         _logger = logger;
         _settingsService = settingsService;
@@ -137,6 +140,8 @@ public sealed class MainViewModel : ViewModelBase
         _proxyProcessManager = proxyProcessManager;
         _apiServer = apiServer;
         _proxyProcessManager.Configure(_threeProxyConfig);
+
+        TrafficStats = new TrafficStatsViewModel(trafficMonitorService);
 
         _apiPort = apiServer.Port;
         _apiStatus = apiServer.IsRunning ? "Running" : "Stopped";

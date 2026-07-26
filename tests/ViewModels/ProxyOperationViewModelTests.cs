@@ -104,7 +104,7 @@ public class ProxyOperationViewModelTests
             .Setup(t => t.TestAsync(
                 proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
                 It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new System.Exception("Test exception"));
+            .ThrowsAsync(new System.InvalidOperationException("Test exception"));
 
         // Act
         await _viewModel.TestSelectedProxyAsync(proxy);
@@ -150,7 +150,7 @@ public class ProxyOperationViewModelTests
         var proxy = new ProxyItem { Id = 1, Name = "Test Proxy" };
         _mockProxyProcessManager
             .Setup(p => p.Start(It.IsAny<ProxyItem>()))
-            .Throws(new System.Exception("Start exception"));
+            .Throws(new System.InvalidOperationException("Start exception"));
 
         // Act
         _viewModel.StartSelectedProxy(proxy);
@@ -194,7 +194,7 @@ public class ProxyOperationViewModelTests
         var proxy = new ProxyItem { Id = 1, Name = "Test Proxy" };
         _mockProxyProcessManager
             .Setup(p => p.Stop(It.IsAny<ProxyItem>()))
-            .Throws(new System.Exception("Stop exception"));
+            .Throws(new System.InvalidOperationException("Stop exception"));
 
         // Act
         _viewModel.StopSelectedProxy(proxy);
