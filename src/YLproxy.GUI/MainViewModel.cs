@@ -23,6 +23,7 @@ using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Threading.Timer;
 
+// MainViewModel refactored to use sub-ViewModels
 namespace YLproxy.GUI;
 
 public sealed class MainViewModel : ViewModelBase
@@ -39,16 +40,25 @@ public sealed class MainViewModel : ViewModelBase
     private readonly Proxy.Abstractions.IProxyProcessManager _proxyProcessManager;
     private readonly ApiServer _apiServer;
 
+
+
     // --- Sub-ViewModels ---
     public HostInfoViewModel HostInfo { get; } = new();
     public DashboardViewModel Dashboard { get; } = new();
     public LogPanelViewModel LogPanel { get; } = new();
+    public ProxyListViewModel ProxyList { get; }
+    public ProxyOperationViewModel ProxyOperations { get; }
+    public ImportExportViewModel ImportExport { get; }
 
     // --- Proxy Collections ---
-    public ObservableCollection<ProxyItem> Proxies { get; } = new();
+    public ObservableCollection<ProxyItem> Proxies => ProxyList.Proxies;
+    public ObservableCollection<ProxyItem> FilteredProxies => ProxyList.FilteredProxies;
 
-    private readonly ObservableCollection<ProxyItem> _filteredProxies = new();
-    public ObservableCollection<ProxyItem> FilteredProxies => _filteredProxies;
+    public string SearchText
+    {
+        get => ProxyList.SearchText;
+        set => ProxyList.SearchText = value;
+    }
 
     public List<ProxyItem> SelectedProxies { get; set; } = new();
 
@@ -67,16 +77,6 @@ public sealed class MainViewModel : ViewModelBase
     public RelayCommand ClearSearchCommand { get; }
 
     // --- Search / Filter ---
-    private string _searchText = string.Empty;
-    public string SearchText
-    {
-        get => _searchText;
-        set
-        {
-            SetProperty(ref _searchText, value, nameof(SearchText));
-            ApplyProxyFilter();
-        }
-    }
 
     // --- Status Message ---
     private string _statusMessage = string.Empty;
@@ -169,6 +169,11 @@ public sealed class MainViewModel : ViewModelBase
         ImportCommand = new RelayCommand(ImportFromJson);
         ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
 
+        // Initialize sub-ViewModels
+        ProxyList = new ProxyListViewModel();
+        ProxyOperations = new ProxyOperationViewModel(proxyTester, proxyProcessManager, _logger);
+        ImportExport = new ImportExportViewModel(_logger);
+
         _monitorService = new MonitorService(
             getProxies: () => Proxies.ToList(),
             logAction: (msg) => AddLog(msg),
@@ -186,19 +191,7 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private void ApplyProxyFilter()
     {
-        _filteredProxies.Clear();
-        var query = string.IsNullOrWhiteSpace(_searchText)
-            ? Proxies
-            : Proxies.Where(p =>
-                (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (p.RemoteHost?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                p.RemotePort.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
-                (p.Username?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (p.Group?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                p.LocalPort.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase));
-
-        foreach (var p in query)
-            _filteredProxies.Add(p);
+        ProxyList.RefreshFilter();
     }
 
     // ================================================================
@@ -235,14 +228,14 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private void InitFromConfig()
     {
-        Proxies.Clear();
-        _filteredProxies.Clear();
+        ProxyList.Proxies.Clear();
+        ProxyList.FilteredProxies.Clear();
         try
         {
             var cfg = _proxyDataService.Load();
 
             foreach (var p in cfg.Proxies)
-                Proxies.Add(p);
+                ProxyList.Proxies.Add(p);
 
             ApplyProxyFilter();
 
@@ -385,43 +378,9 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private async Task TestSelectedProxyAsync()
     {
-        if (IsTesting) return;
-        IsTesting = true;
-
-        try
+        if (SelectedProxy is not null)
         {
-            if (SelectedProxy is null)
-            {
-                SetStatus("Test failed: no proxy selected");
-                IsTesting = false;
-                return;
-            }
-
-            var p = SelectedProxy;
-            SetStatus($"Testing {p.Name}...");
-
-            var (success, latency, error) = await _proxyTester.TestAsync(
-                p.RemoteHost, p.RemotePort, p.Username, p.Password);
-
-            if (success)
-            {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Test OK — {p.Name}: {latency}ms");
-                SetStatus($"{p.Name}: test passed ({latency}ms)");
-            }
-            else
-            {
-                AddLog($"[{DateTime.Now:HH:mm:ss}] Test FAILED — {p.Name}: {error}");
-                SetStatus($"{p.Name}: test failed — {error}");
-            }
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Test exception: {ex.Message}");
-            SetStatus($"Test error: {ex.Message}");
-        }
-        finally
-        {
-            IsTesting = false;
+            await ProxyOperations.TestSelectedProxyAsync(SelectedProxy);
         }
     }
 
@@ -430,87 +389,17 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private void StartSelectedProxy()
     {
-        if (IsStarting) return;
-        IsStarting = true;
-
-        try
+        if (SelectedProxy is not null)
         {
-            if (SelectedProxy is null)
-            {
-                SetStatus("Start failed: no proxy selected");
-                IsStarting = false;
-                return;
-            }
-
-            var p = SelectedProxy;
-            _ = Task.Run(() =>
-            {
-                try
-                {
-                    p.Status = ProxyStatus.Running;
-                    _proxyProcessManager.Start(p);
-                    Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Started: {p.LocalHost}:{p.LocalPort} -> {p.RemoteHost}:{p.RemotePort}");
-                    SetStatus($"{p.Name}: started on port {p.LocalPort}");
-                }
-                catch (Exception ex)
-                {
-                    p.Status = ProxyStatus.Failed;
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Start failed: {ex.Message}");
-                }
-                finally
-                {
-                    IsStarting = false;
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Start failed: {ex.Message}");
-            IsStarting = false;
+            ProxyOperations.StartSelectedProxy(SelectedProxy);
         }
     }
 
     private void StopSelectedProxy()
     {
-        if (IsStopping) return;
-        IsStopping = true;
-
-        try
+        if (SelectedProxy is not null)
         {
-            if (SelectedProxy is null)
-            {
-                SetStatus("Stop failed: no proxy selected");
-                IsStopping = false;
-                return;
-            }
-
-            var p = SelectedProxy;
-            _ = Task.Run(() =>
-            {
-                try
-                {
-                    _proxyProcessManager.Stop(p);
-                    p.Status = ProxyStatus.Stopped;
-                    Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Stopped: {p.LocalHost}:{p.LocalPort}");
-                    SetStatus($"{p.Name}: stopped");
-                }
-                catch (Exception ex)
-                {
-                    p.Status = ProxyStatus.Failed;
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: {ex.Message}");
-                }
-                finally
-                {
-                    IsStopping = false;
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Stop failed: {ex.Message}");
-            IsStopping = false;
+            ProxyOperations.StopSelectedProxy(SelectedProxy);
         }
     }
 
@@ -519,82 +408,18 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private void BatchStart()
     {
-        if (IsStarting) return;
-        IsStarting = true;
-
-        var targets = SelectedProxies
-            .Where(p => p.Status != ProxyStatus.Running)
-            .ToList();
-
-        if (targets.Count == 0)
+        if (SelectedProxies.Count > 0)
         {
-            SetStatus("No stopped proxies selected for batch start.");
-            IsStarting = false;
-            return;
+            ProxyOperations.BatchStart(SelectedProxies.ToList());
         }
-
-        _ = Task.Run(() =>
-        {
-            var started = 0;
-            foreach (var p in targets)
-            {
-                try
-                {
-                    p.Status = ProxyStatus.Running;
-                    _proxyProcessManager.Start(p);
-                    started++;
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch start: {p.Name} ({p.LocalPort})");
-                }
-                catch (Exception ex)
-                {
-                    p.Status = ProxyStatus.Failed;
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch start failed — {p.Name}: {ex.Message}");
-                }
-            }
-            Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
-            SetStatus($"Batch started: {started}/{targets.Count} proxies");
-            IsStarting = false;
-        });
     }
 
     private void BatchStop()
     {
-        if (IsStopping) return;
-        IsStopping = true;
-
-        var targets = SelectedProxies
-            .Where(p => p.Status == ProxyStatus.Running)
-            .ToList();
-
-        if (targets.Count == 0)
+        if (SelectedProxies.Count > 0)
         {
-            SetStatus("No running proxies selected for batch stop.");
-            IsStopping = false;
-            return;
+            ProxyOperations.BatchStop(SelectedProxies.ToList());
         }
-
-        _ = Task.Run(() =>
-        {
-            var stopped = 0;
-            foreach (var p in targets)
-            {
-                try
-                {
-                    _proxyProcessManager.Stop(p);
-                    p.Status = ProxyStatus.Stopped;
-                    stopped++;
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stop: {p.Name} ({p.LocalPort})");
-                }
-                catch (Exception ex)
-                {
-                    p.Status = ProxyStatus.Failed;
-                    AddLog($"[{DateTime.Now:HH:mm:ss}] Batch stop failed — {p.Name}: {ex.Message}");
-                }
-            }
-            Application.Current?.Dispatcher.BeginInvoke(() => RefreshStats());
-            SetStatus($"Batch stopped: {stopped}/{targets.Count} proxies");
-            IsStopping = false;
-        });
     }
 
     // ================================================================
@@ -602,160 +427,17 @@ public sealed class MainViewModel : ViewModelBase
     // ================================================================
     private void ExportToJson()
     {
-        if (IsExporting) return;
-        IsExporting = true;
-
-        try
-        {
-            var dialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
-                DefaultExt = ".json",
-                FileName = $"ylproxy_export_{DateTime.Now:yyyyMMdd_HHmmss}.json"
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                IsExporting = false;
-                return;
-            }
-
-            var exportProxies = SelectedProxies.Count > 0
-                ? SelectedProxies
-                : Proxies.ToList();
-
-            var exportData = new
-            {
-                ExportedAt = DateTime.UtcNow.ToString("O"),
-                Count = exportProxies.Count,
-                Proxies = exportProxies.Select(p => new
-                {
-                    p.Name, p.RemoteHost, p.RemotePort,
-                    Username = string.IsNullOrWhiteSpace(p.Username) ? "" : "(exported)",
-                    Password = string.IsNullOrWhiteSpace(p.Password) ? "" : "(exported)",
-                    p.Group, p.LocalHost, p.LocalPort
-                })
-            };
-
-            var json = JsonSerializer.Serialize(exportData,
-                new JsonSerializerOptions { WriteIndented = true });
-
-            File.WriteAllText(dialog.FileName, json, System.Text.Encoding.UTF8);
-
-            SetStatus($"Exported {exportProxies.Count} proxies to {Path.GetFileName(dialog.FileName)}");
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Export: {exportProxies.Count} proxies → {Path.GetFileName(dialog.FileName)}");
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Export failed: {ex.Message}");
-        }
-        finally
-        {
-            IsExporting = false;
-        }
+        var exportProxies = SelectedProxies.Count > 0
+            ? SelectedProxies
+            : Proxies.ToList();
+        ImportExport.ExportToJson(exportProxies);
     }
 
     private void ImportFromJson()
     {
-        if (IsImporting) return;
-        IsImporting = true;
-
-        try
-        {
-            var dialog = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
-                Multiselect = false
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                IsImporting = false;
-                return;
-            }
-
-            var json = File.ReadAllText(dialog.FileName, System.Text.Encoding.UTF8);
-            using var doc = JsonDocument.Parse(json);
-
-            if (!doc.RootElement.TryGetProperty("Proxies", out var proxiesEl)
-                || proxiesEl.ValueKind != JsonValueKind.Array)
-            {
-                SetStatus("Invalid export file: missing 'Proxies' array.");
-                IsImporting = false;
-                return;
-            }
-
-            var cfg = _proxyDataService.Load();
-
-            var maxId = cfg.Proxies.Count > 0 ? cfg.Proxies.Max(p => p.Id) : 0;
-            var usedPorts = new HashSet<int>(cfg.Proxies.Select(p => p.LocalPort));
-
-            var imported = 0;
-            foreach (var proxyEl in proxiesEl.EnumerateArray())
-            {
-                try
-                {
-                    var name = proxyEl.TryGetProperty("Name", out var n) ? n.GetString() ?? "" : "";
-                    if (string.IsNullOrWhiteSpace(name)) continue;
-
-                    var host = proxyEl.TryGetProperty("RemoteHost", out var rh) ? rh.GetString() ?? "" : "";
-                    var port = proxyEl.TryGetProperty("RemotePort", out var rp) ? rp.GetInt32() : 0;
-                    var group = proxyEl.TryGetProperty("Group", out var gr) ? gr.GetString() ?? "" : "";
-
-                    if (string.IsNullOrWhiteSpace(host) || port <= 0) continue;
-
-                    var localPort = _proxyConfig.PortRangeStart;
-                    while (usedPorts.Contains(localPort))
-                    {
-                        localPort++;
-                        if (localPort > _proxyConfig.PortRangeEnd) break;
-                    }
-
-                    if (localPort > _proxyConfig.PortRangeEnd) break;
-
-                    usedPorts.Add(localPort);
-                    maxId++;
-
-                    cfg.Proxies.Add(new ProxyItem
-                    {
-                        Id = maxId,
-                        Name = name,
-                        RemoteHost = host,
-                        RemotePort = port,
-                        Username = "",
-                        Password = "",
-                        Group = group,
-                        LocalHost = "127.0.0.1",
-                        LocalPort = localPort,
-                        Status = ProxyStatus.Stopped,
-                        CreateTime = DateTime.UtcNow
-                    });
-
-                    imported++;
-                }
-                // Skip invalid proxy entries and continue with the next one
-                catch (Exception ex)
-                {
-                    _logger.Warn($"Skipped invalid proxy entry during import: {ex.Message}");
-                }
-            }
-
-            _proxyDataService.Save(cfg);
-            InitFromConfig();
-            RefreshStats();
-
-            SetStatus($"Imported {imported} proxies from {Path.GetFileName(dialog.FileName)}");
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Import: {imported} proxies from {Path.GetFileName(dialog.FileName)}");
-        }
-        catch (Exception ex)
-        {
-            AddLog($"[{DateTime.Now:HH:mm:ss}] Import failed: {ex.Message}");
-            SetStatus($"Import failed: {ex.Message}");
-        }
-        finally
-        {
-            IsImporting = false;
-        }
+        ImportExport.ImportFromJson(Proxies.ToList());
+        InitFromConfig();
+        RefreshStats();
     }
 
     // ================================================================
