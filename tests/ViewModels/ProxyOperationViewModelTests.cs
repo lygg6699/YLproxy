@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using YLproxy.Core.Abstractions;
@@ -6,20 +7,21 @@ using YLproxy.GUI.ViewModels;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
 using Xunit;
+using ProxyProcessManagerInterface = YLproxy.Proxy.Abstractions.IProxyProcessManager;
 
 namespace YLproxy.Tests.ViewModels;
 
 public class ProxyOperationViewModelTests
 {
     private readonly Mock<IProxyTester> _mockProxyTester;
-    private readonly Mock<IProxyProcessManager> _mockProxyProcessManager;
+    private readonly Mock<ProxyProcessManagerInterface> _mockProxyProcessManager;
     private readonly Mock<ILogger> _mockLogger;
     private readonly ProxyOperationViewModel _viewModel;
 
     public ProxyOperationViewModelTests()
     {
         _mockProxyTester = new Mock<IProxyTester>();
-        _mockProxyProcessManager = new Mock<IProxyProcessManager>();
+        _mockProxyProcessManager = new Mock<ProxyProcessManagerInterface>();
         _mockLogger = new Mock<ILogger>();
         _viewModel = new ProxyOperationViewModel(
             _mockProxyTester.Object,
@@ -43,7 +45,9 @@ public class ProxyOperationViewModelTests
         await _viewModel.TestSelectedProxyAsync(null);
 
         // Assert
-        _mockProxyTester.Verify(t => t.TestProxyAsync(It.IsAny<ProxyItem>()), Times.Never);
+        _mockProxyTester.Verify(t => t.TestAsync(
+            It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string?>(), It.IsAny<string?>(),
+            It.IsAny<CancellationToken>()), Times.Never);
         Assert.False(_viewModel.IsTesting);
     }
 
@@ -51,17 +55,21 @@ public class ProxyOperationViewModelTests
     public async Task TestSelectedProxyAsync_SuccessfulTest_SetsStatusToRunning()
     {
         // Arrange
-        var proxy = new ProxyItem { Id = 1, Name = "Test Proxy" };
+        var proxy = new ProxyItem { Id = 1, Name = "Test Proxy", RemoteHost = "1.2.3.4", RemotePort = 8080 };
         _mockProxyTester
-            .Setup(t => t.TestProxyAsync(It.IsAny<ProxyItem>()))
-            .ReturnsAsync(new ProxyTestResult { Success = true, Message = "Test passed" });
+            .Setup(t => t.TestAsync(
+                proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((true, 100L, (string?)null));
 
         // Act
         await _viewModel.TestSelectedProxyAsync(proxy);
 
         // Assert
         Assert.Equal(ProxyStatus.Running, proxy.Status);
-        _mockProxyTester.Verify(t => t.TestProxyAsync(proxy), Times.Once);
+        _mockProxyTester.Verify(t => t.TestAsync(
+            proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
+            It.IsAny<CancellationToken>()), Times.Once);
         Assert.False(_viewModel.IsTesting);
     }
 
@@ -69,17 +77,21 @@ public class ProxyOperationViewModelTests
     public async Task TestSelectedProxyAsync_FailedTest_SetsStatusToFailed()
     {
         // Arrange
-        var proxy = new ProxyItem { Id = 1, Name = "Test Proxy" };
+        var proxy = new ProxyItem { Id = 1, Name = "Test Proxy", RemoteHost = "1.2.3.4", RemotePort = 8080 };
         _mockProxyTester
-            .Setup(t => t.TestProxyAsync(It.IsAny<ProxyItem>()))
-            .ReturnsAsync(new ProxyTestResult { Success = false, Message = "Test failed" });
+            .Setup(t => t.TestAsync(
+                proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((false, 0L, (string?)"Connection timeout"));
 
         // Act
         await _viewModel.TestSelectedProxyAsync(proxy);
 
         // Assert
         Assert.Equal(ProxyStatus.Failed, proxy.Status);
-        _mockProxyTester.Verify(t => t.TestProxyAsync(proxy), Times.Once);
+        _mockProxyTester.Verify(t => t.TestAsync(
+            proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
+            It.IsAny<CancellationToken>()), Times.Once);
         Assert.False(_viewModel.IsTesting);
     }
 
@@ -87,9 +99,11 @@ public class ProxyOperationViewModelTests
     public async Task TestSelectedProxyAsync_Exception_SetsStatusToFailed()
     {
         // Arrange
-        var proxy = new ProxyItem { Id = 1, Name = "Test Proxy" };
+        var proxy = new ProxyItem { Id = 1, Name = "Test Proxy", RemoteHost = "1.2.3.4", RemotePort = 8080 };
         _mockProxyTester
-            .Setup(t => t.TestProxyAsync(It.IsAny<ProxyItem>()))
+            .Setup(t => t.TestAsync(
+                proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
+                It.IsAny<CancellationToken>()))
             .ThrowsAsync(new System.Exception("Test exception"));
 
         // Act
@@ -97,7 +111,9 @@ public class ProxyOperationViewModelTests
 
         // Assert
         Assert.Equal(ProxyStatus.Failed, proxy.Status);
-        _mockProxyTester.Verify(t => t.TestProxyAsync(proxy), Times.Once);
+        _mockProxyTester.Verify(t => t.TestAsync(
+            proxy.RemoteHost, proxy.RemotePort, proxy.Username, proxy.Password,
+            It.IsAny<CancellationToken>()), Times.Once);
         Assert.False(_viewModel.IsTesting);
     }
 
@@ -252,3 +268,4 @@ public class ProxyOperationViewModelTests
         Assert.False(_viewModel.IsStopping);
     }
 }
+

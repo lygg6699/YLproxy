@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using YLproxy.Models;
+using YLproxy.GUI.ViewModels;
 using DataGrid = System.Windows.Controls.DataGrid;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -70,3 +71,4 @@ public partial class MainView : UserControl
         return null;
     }
 }
+

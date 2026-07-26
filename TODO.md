@@ -1,23 +1,22 @@
-# 子阶段 1.4：配置迁移工具完善 — 执行追踪
+# 阶段二：代码质量提升 - 执行进度跟踪
 
-> 授权时间：2026-07-26
-> 授权来源：用户确认"开始执行"
-> 执行范围：配置迁移工具完善（Version 字段 → 自动升级 → 迁移脚本 → 迁移测试 → 编译验证）
+> 授权时间：用户确认 "确认开始执行"
+> 当前分支：phase2-code-quality-improvement
 
-## 执行步骤
+## 执行状态总览
 
-- [x] **步骤 0**：创建 TODO.md 追踪文件
-- [x] **步骤 1**：`ProxyDataService.cs` — 重命名 UpgradeConfigIfNeeded → RunUpgradeConfigIfNeeded（public），添加日志
-- [x] **步骤 2**：`ConfigMigrationTests.cs` — 修复部分测试，添加新测试用例（增加至9个测试）
-- [x] **步骤 3**：`migrate-proxy-data.ps1` — 添加版本检测和版本升级逻辑（-TargetVersion 参数、版本合规报告、版本化备份）
-- [x] **步骤 4**：编译验证 — `dotnet build` **0 errors, 0 warnings** ✅
-- [x] **步骤 5**：测试运行 — `dotnet test` **137 passed, 0 failed** ✅
-- [x] **步骤 6**：文档同步 — 更新 docs/progress.md, docs/task-tracking.md, docs/changelog.md
-- [x] **步骤 7**：Git 提交
+| 步骤 | 任务 | 状态 |
+|------|------|------|
+| ✅ 步骤1 | 提交子阶段2.1的更改 | ✅ 已完成 (commit e9b90fe) |
+| ✅ 步骤2.1 | 安装 coverlet.msbuild | ✅ 已完成 |
+| ⏳ 步骤2.2 | 生成覆盖率报告 | ⏳ 运行中 |
+| ⏳ 步骤2.3 | 补充边缘情况测试 | ⏳ 与步骤2.2同时进行 |
+| ⏳ 步骤3.1 | dotnet format 代码清理 | ⏳ 开始执行 |
+| ⏳ 步骤3.2 | 命名规范检查 | ⏳ 待执行 |
+| ⏳ 步骤4.1 | 完整编译验证 | ⏳ 待执行 |
+| ⏳ 步骤4.2 | 运行所有测试 | ⏳ 待执行 |
+| ⏳ 步骤4.3 | 合并到 main | ⏳ 待执行 |
 
-## 状态
+## 进度：2/9 (22%)
 
-- 编译：✅ 0 errors, 0 warnings
-- 测试：✅ 137 passed, 0 failed（原 128，新增 9）
-- 文档：✅ 已更新
 

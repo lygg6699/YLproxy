@@ -2,9 +2,10 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
-using Microsoft.Win32;
-using YLproxy.Models;
 using YLproxy.Infrastructure;
+using YLproxy.Models;
+using WinForms = System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace YLproxy.GUI.ViewModels;
 
@@ -31,7 +32,7 @@ public sealed class ImportExportViewModel : ViewModelBase
             return;
         }
 
-        var saveFileDialog = new SaveFileDialog
+        var saveFileDialog = new WinForms.SaveFileDialog
         {
             Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
             DefaultExt = "json",
@@ -39,7 +40,7 @@ public sealed class ImportExportViewModel : ViewModelBase
             InitialDirectory = initialDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         };
 
-        if (saveFileDialog.ShowDialog() != true)
+        if (saveFileDialog.ShowDialog() != WinForms.DialogResult.OK)
             return;
 
         try
@@ -79,13 +80,13 @@ public sealed class ImportExportViewModel : ViewModelBase
     /// </summary>
     public void ImportFromJson(List<ProxyItem> proxiesCollection, string? initialDirectory = null)
     {
-        var openFileDialog = new OpenFileDialog
+        var openFileDialog = new WinForms.OpenFileDialog
         {
             Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
             InitialDirectory = initialDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         };
 
-        if (openFileDialog.ShowDialog() != true)
+        if (openFileDialog.ShowDialog() != WinForms.DialogResult.OK)
             return;
 
         try
