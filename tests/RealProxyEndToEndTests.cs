@@ -120,14 +120,16 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             var cfgDir = PathResolver.ResolvePath("runtime", "3proxy", "cfg");
             if (Directory.Exists(cfgDir))
                 foreach (var f in Directory.GetFiles(cfgDir, "*.cfg"))
-                    try { File.Delete(f); } catch (Exception)
+                    try { File.Delete(f); }
+                    catch (Exception)
                     {
                         // Ignore errors deleting individual config files
                     }
         }
         catch { }
 
-        try { Directory.Delete(_tempDir, true); } catch (Exception)
+        try { Directory.Delete(_tempDir, true); }
+        catch (Exception)
         {
             // Ignore errors during temp directory cleanup
         }
@@ -151,8 +153,11 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
 
             var resp = await _client!.PostAsJsonAsync("/api/proxies", new ProxyDto
             {
-                Name = name, RemoteHost = host, RemotePort = port,
-                Username = user, Password = pass,
+                Name = name,
+                RemoteHost = host,
+                RemotePort = port,
+                Username = user,
+                Password = pass,
             });
             Assert.True(resp.IsSuccessStatusCode, $"添加 {name} 失败: {resp.StatusCode}");
 
@@ -198,11 +203,16 @@ public sealed class RealProxyEndToEndTests : IAsyncLifetime
             var t = addedProxies.First(p => p.Name == firstOk.Name);
             var fp = new ProxyItem
             {
-                Id = t.Id, Name = t.Name,
-                RemoteHost = t.Host, RemotePort = t.Port,
-                Username = t.User, Password = t.Pass,
-                LocalHost = "127.0.0.1", LocalPort = forwardLocalPort,
-                Status = ProxyStatus.Stopped, CreateTime = DateTime.UtcNow,
+                Id = t.Id,
+                Name = t.Name,
+                RemoteHost = t.Host,
+                RemotePort = t.Port,
+                Username = t.User,
+                Password = t.Pass,
+                LocalHost = "127.0.0.1",
+                LocalPort = forwardLocalPort,
+                Status = ProxyStatus.Stopped,
+                CreateTime = DateTime.UtcNow,
             };
 
             var cfgPath = PathResolver.ResolvePath("runtime", "3proxy", "cfg", $"{fp.Id}.cfg");

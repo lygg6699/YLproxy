@@ -13,7 +13,10 @@ public sealed class MonitorServiceBackoffTests
     {
         var proxy = new ProxyItem
         {
-            Id = 801, Name = "b0", LocalHost = "127.0.0.1", LocalPort = 0,
+            Id = 801,
+            Name = "b0",
+            LocalHost = "127.0.0.1",
+            LocalPort = 0,
             Status = ProxyStatus.Running,
         };
 
@@ -45,7 +48,10 @@ public sealed class MonitorServiceBackoffTests
     {
         var proxy = new ProxyItem
         {
-            Id = 802, Name = "b1", LocalHost = "127.0.0.1", LocalPort = 0,
+            Id = 802,
+            Name = "b1",
+            LocalHost = "127.0.0.1",
+            LocalPort = 0,
             Status = ProxyStatus.Running,
         };
 
@@ -70,7 +76,7 @@ public sealed class MonitorServiceBackoffTests
         Assert.True(restartCalls >= 2, $"Expected >= 2 restarts, got {restartCalls}");
     }
 
-/// <summary>
+    /// <summary>
     /// Verifies that backoff implementation doesn't overflow or crash with many failures.
     /// The backoff cap prevents unbounded growth. Uses zero backoff to ensure rapid restarts.
     /// </summary>
@@ -79,7 +85,10 @@ public sealed class MonitorServiceBackoffTests
     {
         var proxy = new ProxyItem
         {
-            Id = 803, Name = "b8", LocalHost = "127.0.0.1", LocalPort = 0,
+            Id = 803,
+            Name = "b8",
+            LocalHost = "127.0.0.1",
+            LocalPort = 0,
             Status = ProxyStatus.Running,
         };
 

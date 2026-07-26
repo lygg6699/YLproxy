@@ -10,8 +10,12 @@ public sealed class ConfigGeneratorValidationTests
     {
         var proxy = new ProxyItem
         {
-            Id = 1, Name = "test", RemoteHost = "", RemotePort = 8080,
-            LocalHost = "127.0.0.1", LocalPort = 9001,
+            Id = 1,
+            Name = "test",
+            RemoteHost = "",
+            RemotePort = 8080,
+            LocalHost = "127.0.0.1",
+            LocalPort = 9001,
         };
 
         var ex = Assert.Throws<ArgumentException>(() => ConfigGenerator.Generate(proxy));
@@ -23,8 +27,12 @@ public sealed class ConfigGeneratorValidationTests
     {
         var proxy = new ProxyItem
         {
-            Id = 2, Name = "test", RemoteHost = "1.2.3.4", RemotePort = 0,
-            LocalHost = "127.0.0.1", LocalPort = 9001,
+            Id = 2,
+            Name = "test",
+            RemoteHost = "1.2.3.4",
+            RemotePort = 0,
+            LocalHost = "127.0.0.1",
+            LocalPort = 9001,
         };
 
         var ex = Assert.Throws<ArgumentException>(() => ConfigGenerator.Generate(proxy));
@@ -36,8 +44,12 @@ public sealed class ConfigGeneratorValidationTests
     {
         var proxy = new ProxyItem
         {
-            Id = 3, Name = "test", RemoteHost = "1.2.3.4", RemotePort = 8080,
-            LocalHost = "127.0.0.1", LocalPort = 0,
+            Id = 3,
+            Name = "test",
+            RemoteHost = "1.2.3.4",
+            RemotePort = 8080,
+            LocalHost = "127.0.0.1",
+            LocalPort = 0,
         };
 
         var ex = Assert.Throws<ArgumentException>(() => ConfigGenerator.Generate(proxy));
@@ -49,9 +61,14 @@ public sealed class ConfigGeneratorValidationTests
     {
         var proxy = new ProxyItem
         {
-            Id = 4, Name = "test", RemoteHost = "1.2.3.4", RemotePort = 8080,
-            Username = "user", Password = "",
-            LocalHost = "127.0.0.1", LocalPort = 9001,
+            Id = 4,
+            Name = "test",
+            RemoteHost = "1.2.3.4",
+            RemotePort = 8080,
+            Username = "user",
+            Password = "",
+            LocalHost = "127.0.0.1",
+            LocalPort = 9001,
         };
 
         var ex = Assert.Throws<ArgumentException>(() => ConfigGenerator.Generate(proxy));
@@ -63,9 +80,14 @@ public sealed class ConfigGeneratorValidationTests
     {
         var proxy = new ProxyItem
         {
-            Id = 5, Name = "test", RemoteHost = "1.2.3.4", RemotePort = 8080,
-            Username = "", Password = "pass",
-            LocalHost = "127.0.0.1", LocalPort = 9001,
+            Id = 5,
+            Name = "test",
+            RemoteHost = "1.2.3.4",
+            RemotePort = 8080,
+            Username = "",
+            Password = "pass",
+            LocalHost = "127.0.0.1",
+            LocalPort = 9001,
         };
 
         var ex = Assert.Throws<ArgumentException>(() => ConfigGenerator.Generate(proxy));
@@ -77,9 +99,14 @@ public sealed class ConfigGeneratorValidationTests
     {
         var proxy = new ProxyItem
         {
-            Id = 6, Name = "valid", RemoteHost = "example.com", RemotePort = 3128,
-            Username = "user", Password = "pass",
-            LocalHost = "127.0.0.1", LocalPort = 9002,
+            Id = 6,
+            Name = "valid",
+            RemoteHost = "example.com",
+            RemotePort = 3128,
+            Username = "user",
+            Password = "pass",
+            LocalHost = "127.0.0.1",
+            LocalPort = 9002,
         };
 
         var cfg = ConfigGenerator.Generate(proxy);

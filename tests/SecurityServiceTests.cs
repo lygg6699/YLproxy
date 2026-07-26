@@ -78,9 +78,9 @@ public sealed class SecurityServiceTests
         Assert.Equal("legacy-password", roundTripped.Proxies[0].Password);
     }
 
-      [Fact]
-      public void DpapiSecurityService_ShouldRejectMalformedProtectedPayload()
-      {
+    [Fact]
+    public void DpapiSecurityService_ShouldRejectMalformedProtectedPayload()
+    {
         if (!OperatingSystem.IsWindows())
             return; // DPAPI is Windows-only
 
@@ -92,5 +92,5 @@ public sealed class SecurityServiceTests
         Assert.NotEqual($"{DpapiSecurityService.Prefix}not-base64", reEncrypted);
         // Decrypt still throws for invalid base64
         Assert.Throws<CryptographicException>(() => service.Decrypt($"{DpapiSecurityService.Prefix}not-base64"));
-      }
+    }
 }

@@ -77,8 +77,13 @@ public sealed class ProxyDataServiceRecoveryTests
             var config = new AppConfig();
             config.Proxies.Add(new ProxyItem
             {
-                Id = 1, Name = "test", RemoteHost = "1.2.3.4", RemotePort = 8080,
-                LocalHost = "127.0.0.1", LocalPort = 9001, Status = ProxyStatus.Stopped,
+                Id = 1,
+                Name = "test",
+                RemoteHost = "1.2.3.4",
+                RemotePort = 8080,
+                LocalHost = "127.0.0.1",
+                LocalPort = 9001,
+                Status = ProxyStatus.Stopped,
             });
 
             svc.Save(config);

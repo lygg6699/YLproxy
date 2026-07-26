@@ -30,15 +30,24 @@ public sealed class ApiIntegrationTests : IAsyncLifetime
         var cfg = new YLproxy.Models.AppConfig();
         cfg.Proxies.Add(new YLproxy.Models.ProxyItem
         {
-            Id = 1, Name = "TestProxy1", RemoteHost = "1.2.3.4", RemotePort = 8080,
-            Username = "user1", Password = "pass1",
-            LocalHost = "0.0.0.0", LocalPort = 9001,
+            Id = 1,
+            Name = "TestProxy1",
+            RemoteHost = "1.2.3.4",
+            RemotePort = 8080,
+            Username = "user1",
+            Password = "pass1",
+            LocalHost = "0.0.0.0",
+            LocalPort = 9001,
             Status = YLproxy.Models.ProxyStatus.Stopped
         });
         cfg.Proxies.Add(new YLproxy.Models.ProxyItem
         {
-            Id = 2, Name = "TestProxy2", RemoteHost = "5.6.7.8", RemotePort = 3128,
-            LocalHost = "0.0.0.0", LocalPort = 9002,
+            Id = 2,
+            Name = "TestProxy2",
+            RemoteHost = "5.6.7.8",
+            RemotePort = 3128,
+            LocalHost = "0.0.0.0",
+            LocalPort = 9002,
             Status = YLproxy.Models.ProxyStatus.Stopped
         });
 
@@ -56,7 +65,8 @@ public sealed class ApiIntegrationTests : IAsyncLifetime
         if (_server is not null)
             await _server.StopAsync();
 
-        try { Directory.Delete(_tempDir, true); } catch (Exception)
+        try { Directory.Delete(_tempDir, true); }
+        catch (Exception)
         {
             // Ignore cleanup errors during test cleanup
         }
@@ -141,7 +151,8 @@ public sealed class ApiIntegrationTests : IAsyncLifetime
             Name = "NewProxy",
             RemoteHost = "10.0.0.1",
             RemotePort = 8080,
-            Username = "u", Password = "p"
+            Username = "u",
+            Password = "p"
         };
 
         var response = await client.PostAsJsonAsync("/api/proxies", dto);

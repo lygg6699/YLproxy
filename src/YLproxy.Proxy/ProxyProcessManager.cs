@@ -460,7 +460,7 @@ public sealed class ProxyProcessManager
                 using var client = new TcpClient();
                 try
                 {
-client.Connect(IPAddress.Loopback, port);
+                    client.Connect(IPAddress.Loopback, port);
                     return;
                 }
                 catch (SocketException)

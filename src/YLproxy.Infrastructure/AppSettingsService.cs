@@ -212,7 +212,7 @@ namespace YLproxy.Infrastructure
             _lastConfigLoad = DateTime.UtcNow;
         }
 
-private static void Validate(AppSettingsConfig config)
+        private static void Validate(AppSettingsConfig config)
         {
             ArgumentNullException.ThrowIfNull(config);
 

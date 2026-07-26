@@ -238,7 +238,7 @@ public sealed class ManagedProxyForwarder : IDisposable
 
                 using var respStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
                 await respStream.CopyToAsync(clientStream, token).ConfigureAwait(false);
-await clientStream.FlushAsync(token).ConfigureAwait(false);
+                await clientStream.FlushAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

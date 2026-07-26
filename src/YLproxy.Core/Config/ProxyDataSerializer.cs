@@ -22,7 +22,7 @@ public sealed class ProxyDataSerializer
         {
             if (!OperatingSystem.IsWindows())
                 throw new PlatformNotSupportedException("DPAPI credential storage requires Windows platform.");
-            
+
             _securityService = new DpapiSecurityService();
         }
         else

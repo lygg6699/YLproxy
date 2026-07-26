@@ -12,12 +12,12 @@ namespace YLproxy.Infrastructure
 {
     public class FileLogger : ILogger, IDisposable
     {
-private readonly string _logDirectory;
-    private readonly int _retentionDays;
-    private readonly string _minLevel;
-    private readonly ReaderWriterLockSlim _rwLock = new();
-    private readonly ConcurrentBag<string> _cleanupErrors = new();
-    private int _disposed;
+        private readonly string _logDirectory;
+        private readonly int _retentionDays;
+        private readonly string _minLevel;
+        private readonly ReaderWriterLockSlim _rwLock = new();
+        private readonly ConcurrentBag<string> _cleanupErrors = new();
+        private int _disposed;
 
         public IReadOnlyList<string> CleanupErrors => _cleanupErrors.ToArray();
 
@@ -151,7 +151,7 @@ private readonly string _logDirectory;
                 Log((LogLevel)ordinal, message);
         }
 
-public void Dispose()
+        public void Dispose()
         {
             if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
             _rwLock.Dispose();

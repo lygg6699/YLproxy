@@ -57,8 +57,14 @@ public sealed class ManagedProxyForwarderStreamTests
 
         var proxy = new ProxyItem
         {
-            Id = 901, Name = "stream-test", RemoteHost = "127.0.0.1", RemotePort = upstreamPort,
-            Username = "", Password = "", LocalHost = "127.0.0.1", LocalPort = localPort,
+            Id = 901,
+            Name = "stream-test",
+            RemoteHost = "127.0.0.1",
+            RemotePort = upstreamPort,
+            Username = "",
+            Password = "",
+            LocalHost = "127.0.0.1",
+            LocalPort = localPort,
         };
 
         using var forwarder = new ManagedProxyForwarder(proxy);

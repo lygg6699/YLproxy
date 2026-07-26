@@ -30,7 +30,7 @@ public sealed class LoggingAndMonitorTests
             File.WriteAllText(unrelatedFile, "keep");
 
 
-            
+
 
             File.SetLastWriteTimeUtc(currentLog, DateTime.UtcNow);
             File.SetLastWriteTimeUtc(recentLog, DateTime.UtcNow.AddDays(-10));

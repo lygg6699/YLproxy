@@ -1,25 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <NoWarn>$(NoWarn);CA1707;CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
-      <PrivateAssets>all</PrivateAssets>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="coverlet.msbuild" Version="10.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.3.25171.5" />
+    <PackageReference Include="Moq" Version="4.20.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +28,7 @@
     <ProjectReference Include="..\src\YLproxy.Proxy\YLproxy.Proxy.csproj" />
     <ProjectReference Include="..\src\YLproxy.Api\YLproxy.Api.csproj" />
     <ProjectReference Include="..\src\YLproxy.Infrastructure\YLproxy.Infrastructure.csproj" />
+    <ProjectReference Include="..\src\YLproxy.GUI\YLproxy.GUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +38,7 @@
   <!-- tests project: exclude console runner Program.cs to avoid multiple entry points -->
   <ItemGroup>
     <Compile Remove="Program.cs" />
+    <Compile Include="ViewModels\*\*.cs" />
   </ItemGroup>
 
 </Project>
