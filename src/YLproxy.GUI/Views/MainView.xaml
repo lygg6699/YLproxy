@@ -38,15 +38,15 @@
           <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0,0,0,4">
             <Button Content="添加" Width="72" Margin="0,0,6,0" Command="{Binding AddCommand}" ToolTip="添加新代理" />
             <Button Content="删除" Width="72" Margin="0,0,6,0" Command="{Binding RemoveCommand}" ToolTip="删除选中的代理" />
-            <Button Content="测试" Width="72" Margin="0,0,6,0" Command="{Binding TestCommand}" IsEnabled="{Binding IsTesting, Converter={StaticResource InverseBoolConverter}}" />
-            <Button Content="启动" Width="72" Margin="0,0,6,0" Command="{Binding StartCommand}" IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBoolConverter}}" />
-            <Button Content="停止" Width="72" Margin="0,0,6,0" Command="{Binding StopCommand}" IsEnabled="{Binding IsStopping, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="测试" Width="72" Margin="0,0,6,0" Command="{Binding TestCommand}" IsEnabled="{Binding ProxyOperations.IsTesting, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="启动" Width="72" Margin="0,0,6,0" Command="{Binding StartCommand}" IsEnabled="{Binding ProxyOperations.IsStarting, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="停止" Width="72" Margin="0,0,6,0" Command="{Binding StopCommand}" IsEnabled="{Binding ProxyOperations.IsStopping, Converter={StaticResource InverseBoolConverter}}" />
           </StackPanel>
           <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0,4,0,4">
-            <Button Content="批量启动" Width="72" Margin="0,0,6,0" Command="{Binding BatchStartCommand}" IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBoolConverter}}" />
-            <Button Content="批量停止" Width="72" Margin="0,0,6,0" Command="{Binding BatchStopCommand}" IsEnabled="{Binding IsStopping, Converter={StaticResource InverseBoolConverter}}" />
-            <Button Content="导出" Width="56" Margin="0,0,6,0" Command="{Binding ExportCommand}" IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}" />
-            <Button Content="导入" Width="56" Margin="0,0,6,0" Command="{Binding ImportCommand}" IsEnabled="{Binding IsImporting, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="批量启动" Width="72" Margin="0,0,6,0" Command="{Binding BatchStartCommand}" IsEnabled="{Binding ProxyOperations.IsStarting, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="批量停止" Width="72" Margin="0,0,6,0" Command="{Binding BatchStopCommand}" IsEnabled="{Binding ProxyOperations.IsStopping, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="导出" Width="56" Margin="0,0,6,0" Command="{Binding ExportCommand}" IsEnabled="{Binding ImportExport.IsExporting, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="导入" Width="56" Margin="0,0,6,0" Command="{Binding ImportCommand}" IsEnabled="{Binding ImportExport.IsImporting, Converter={StaticResource InverseBoolConverter}}" />
             <Button Content="主题" Width="72" Margin="0,0,6,0" Command="{Binding ToggleThemeCommand}" />
             <Button Content="分组管理" Width="80" Margin="0,0,6,0" Command="{Binding ManageGroupsCommand}" />
           </StackPanel>

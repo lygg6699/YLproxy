@@ -1,6 +1,5 @@
 using System.IO;
 using System.Text.Json;
-using System.Windows;
 using Moq;
 using YLproxy.GUI.ViewModels;
 using YLproxy.Infrastructure;
@@ -12,16 +11,20 @@ namespace YLproxy.Tests.ViewModels;
 public class ImportExportViewModelTests
 {
     private readonly Mock<ILogger> _mockLogger;
+    private readonly FakeFileDialogService _dialog;
+    private readonly FakeNotificationService _notifications;
     private readonly ImportExportViewModel _viewModel;
 
     public ImportExportViewModelTests()
     {
         _mockLogger = new Mock<ILogger>();
-        _viewModel = new ImportExportViewModel(_mockLogger.Object);
+        _dialog = new FakeFileDialogService();
+        _notifications = new FakeNotificationService();
+        _viewModel = new ImportExportViewModel(_mockLogger.Object, _dialog, _notifications);
     }
 
     [Fact]
-    public void ExportToJson_NullOrEmptyList_ShowsMessageAndReturnsEarly()
+    public void ExportToJson_EmptyList_ShowsInfoAndReturnsEarly()
     {
         // Arrange
         var proxies = new List<ProxyItem>();
@@ -30,8 +33,8 @@ public class ImportExportViewModelTests
         _viewModel.ExportToJson(proxies);
 
         // Assert
-        // In a real test, we would verify that a message box was shown
-        // For now, we just verify it doesn't throw an exception
+        Assert.Contains(_notifications.InfoMessages, m => m.Contains("没有可导出的代理"));
+        Assert.False(_viewModel.IsExporting);
     }
 
     [Fact]
@@ -55,16 +58,22 @@ public class ImportExportViewModelTests
                 CreateTime = DateTime.UtcNow
             }
         };
-        var tempFile = Path.Combine(Path.GetTempPath(), $"test_export_{System.Guid.NewGuid()}.json");
+        var tempFile = Path.Combine(Path.GetTempPath(), $"test_export_{Guid.NewGuid()}.json");
+        _dialog.SavePath = tempFile;
 
         try
         {
             // Act
-            _viewModel.ExportToJson(proxies, Path.GetDirectoryName(tempFile));
+            _viewModel.ExportToJson(proxies);
 
             // Assert
-            // Note: We can't easily test the actual file dialog interaction in unit tests
-            // In a real scenario, we would mock the SaveFileDialog or use integration tests
+            Assert.True(File.Exists(tempFile));
+            var json = File.ReadAllText(tempFile);
+            using var doc = JsonDocument.Parse(json);
+            Assert.True(doc.RootElement.TryGetProperty("Proxies", out var proxiesElement));
+            Assert.Equal(1, proxiesElement.GetArrayLength());
+            Assert.False(_viewModel.IsExporting);
+            Assert.Contains(_notifications.InfoMessages, m => m.Contains("成功导出"));
         }
         finally
         {
@@ -75,16 +84,21 @@ public class ImportExportViewModelTests
     }
 
     [Fact]
-    public void ImportFromJson_NullOrEmptyList_DoesNothing()
+    public void ExportToJson_WhenDialogCanceled_DoesNotWriteFile()
     {
         // Arrange
-        var proxies = new List<ProxyItem>();
+        var proxies = new List<ProxyItem>
+        {
+            new() { Id = 1, Name = "Test", RemoteHost = "1.1.1.1", RemotePort = 8080, LocalHost = "127.0.0.1", LocalPort = 9001 }
+        };
+        _dialog.SavePath = null;
 
         // Act
-        _viewModel.ImportFromJson(proxies);
+        _viewModel.ExportToJson(proxies);
 
         // Assert
-        // Just verify it doesn't throw
+        Assert.False(_viewModel.IsExporting);
+        Assert.DoesNotContain(_notifications.InfoMessages, m => m.Contains("成功导出"));
     }
 
     [Fact]
@@ -130,11 +144,12 @@ public class ImportExportViewModelTests
 
         var json = JsonSerializer.Serialize(exportData, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(tempFile, json);
+        _dialog.OpenPath = tempFile;
 
         try
         {
             // Act
-            _viewModel.ImportFromJson(proxies, Path.GetDirectoryName(tempFile));
+            _viewModel.ImportFromJson(proxies);
 
             // Assert
             Assert.Equal(2, proxies.Count);
@@ -144,6 +159,8 @@ public class ImportExportViewModelTests
             Assert.Equal("Imported Proxy 2", proxies[1].Name);
             Assert.Equal("3.3.3.3", proxies[1].RemoteHost);
             Assert.Equal(8082, proxies[1].RemotePort);
+            Assert.False(_viewModel.IsImporting);
+            Assert.Contains(_notifications.InfoMessages, m => m.Contains("成功导入"));
         }
         finally
         {
@@ -164,15 +181,17 @@ public class ImportExportViewModelTests
         var invalidData = new { Message = "Invalid data" };
         var json = JsonSerializer.Serialize(invalidData);
         File.WriteAllText(tempFile, json);
+        _dialog.OpenPath = tempFile;
 
         try
         {
             // Act
-            _viewModel.ImportFromJson(proxies, Path.GetDirectoryName(tempFile));
+            _viewModel.ImportFromJson(proxies);
 
             // Assert
-            // Just verify it doesn't throw and doesn't add any proxies
             Assert.Empty(proxies);
+            Assert.Contains(_notifications.ErrorMessages, m => m.Contains("缺少 'Proxies' 数组"));
+            Assert.False(_viewModel.IsImporting);
         }
         finally
         {
@@ -213,23 +232,50 @@ public class ImportExportViewModelTests
 
         var json = JsonSerializer.Serialize(exportData, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(tempFile, json);
+        _dialog.OpenPath = tempFile;
 
         try
         {
             // Act
-            _viewModel.ImportFromJson(proxies, Path.GetDirectoryName(tempFile));
+            _viewModel.ImportFromJson(proxies);
 
             // Assert
             Assert.Single(proxies);
             Assert.Equal("Valid Proxy", proxies[0].Name);
             Assert.Equal("4.4.4.4", proxies[0].RemoteHost);
             Assert.Equal(8083, proxies[0].RemotePort);
+            Assert.False(_viewModel.IsImporting);
         }
         finally
         {
             // Cleanup
             if (File.Exists(tempFile))
                 File.Delete(tempFile);
+        }
+    }
+
+    private sealed class FakeFileDialogService : IFileDialogService
+    {
+        public string? SavePath { get; set; }
+        public string? OpenPath { get; set; }
+
+        public string? ShowSaveJsonPath(string? initialDirectory) => SavePath;
+        public string? ShowOpenJsonPath(string? initialDirectory) => OpenPath;
+    }
+
+    private sealed class FakeNotificationService : IUserNotificationService
+    {
+        public List<string> InfoMessages { get; } = new();
+        public List<string> ErrorMessages { get; } = new();
+
+        public void ShowInfo(string message, string title)
+        {
+            InfoMessages.Add($"{title}:{message}");
+        }
+
+        public void ShowError(string message, string title)
+        {
+            ErrorMessages.Add($"{title}:{message}");
         }
     }
 }

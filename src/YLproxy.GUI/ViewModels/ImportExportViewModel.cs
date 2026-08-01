@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using System.Windows;
 using YLproxy.Infrastructure;
 using YLproxy.Models;
 using WinForms = System.Windows.Forms;
@@ -9,29 +8,22 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace YLproxy.GUI.ViewModels;
 
-/// <summary>
-/// 负责导入导出功能
-/// </summary>
-public sealed class ImportExportViewModel : ViewModelBase
+public interface IFileDialogService
 {
-    private readonly ILogger _logger;
+    string? ShowSaveJsonPath(string? initialDirectory);
+    string? ShowOpenJsonPath(string? initialDirectory);
+}
 
-    public ImportExportViewModel(ILogger logger)
+public interface IUserNotificationService
+{
+    void ShowInfo(string message, string title);
+    void ShowError(string message, string title);
+}
+
+internal sealed class WinFormsFileDialogService : IFileDialogService
+{
+    public string? ShowSaveJsonPath(string? initialDirectory)
     {
-        _logger = logger;
-    }
-
-    /// <summary>
-    /// 导出代理到JSON文件
-    /// </summary>
-    public void ExportToJson(List<ProxyItem> proxies, string? initialDirectory = null)
-    {
-        if (proxies == null || proxies.Count == 0)
-        {
-            MessageBox.Show("没有可导出的代理。", "导出", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
-        }
-
         var saveFileDialog = new WinForms.SaveFileDialog
         {
             Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
@@ -40,11 +32,92 @@ public sealed class ImportExportViewModel : ViewModelBase
             InitialDirectory = initialDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         };
 
-        if (saveFileDialog.ShowDialog() != WinForms.DialogResult.OK)
+        return saveFileDialog.ShowDialog() == WinForms.DialogResult.OK
+            ? saveFileDialog.FileName
+            : null;
+    }
+
+    public string? ShowOpenJsonPath(string? initialDirectory)
+    {
+        var openFileDialog = new WinForms.OpenFileDialog
+        {
+            Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+            InitialDirectory = initialDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        };
+
+        return openFileDialog.ShowDialog() == WinForms.DialogResult.OK
+            ? openFileDialog.FileName
+            : null;
+    }
+}
+
+internal sealed class MessageBoxNotificationService : IUserNotificationService
+{
+    public void ShowInfo(string message, string title)
+    {
+        MessageBox.Show(message, title, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+    }
+
+    public void ShowError(string message, string title)
+    {
+        MessageBox.Show(message, title, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+    }
+}
+
+/// <summary>
+/// 负责导入导出功能
+/// </summary>
+public sealed class ImportExportViewModel : ViewModelBase
+{
+    private readonly ILogger _logger;
+    private readonly IFileDialogService _fileDialogService;
+    private readonly IUserNotificationService _notificationService;
+    private bool _isExporting;
+    private bool _isImporting;
+
+    public bool IsExporting
+    {
+        get => _isExporting;
+        private set => SetProperty(ref _isExporting, value);
+    }
+
+    public bool IsImporting
+    {
+        get => _isImporting;
+        private set => SetProperty(ref _isImporting, value);
+    }
+
+    public ImportExportViewModel(
+        ILogger logger,
+        IFileDialogService? fileDialogService = null,
+        IUserNotificationService? notificationService = null)
+    {
+        _logger = logger;
+        _fileDialogService = fileDialogService ?? new WinFormsFileDialogService();
+        _notificationService = notificationService ?? new MessageBoxNotificationService();
+    }
+
+    /// <summary>
+    /// 导出代理到JSON文件
+    /// </summary>
+    public void ExportToJson(List<ProxyItem> proxies, string? initialDirectory = null)
+    {
+        if (IsExporting)
             return;
 
+        IsExporting = true;
         try
         {
+        if (proxies == null || proxies.Count == 0)
+        {
+            _notificationService.ShowInfo("没有可导出的代理。", "导出");
+            return;
+        }
+
+        var targetPath = _fileDialogService.ShowSaveJsonPath(initialDirectory);
+        if (string.IsNullOrWhiteSpace(targetPath))
+            return;
+
             var exportData = new
             {
                 Proxies = proxies.Select(p => new
@@ -64,14 +137,18 @@ public sealed class ImportExportViewModel : ViewModelBase
             };
 
             var json = JsonSerializer.Serialize(exportData, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(saveFileDialog.FileName, json);
+            File.WriteAllText(targetPath, json);
 
-            MessageBox.Show($"成功导出 {proxies.Count} 个代理到 {Path.GetFileName(saveFileDialog.FileName)}", "导出成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            _notificationService.ShowInfo($"成功导出 {proxies.Count} 个代理到 {Path.GetFileName(targetPath)}", "导出成功");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"导出失败: {ex.Message}", "导出错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            _notificationService.ShowError($"导出失败: {ex.Message}", "导出错误");
             _logger.Error($"Export failed: {ex.Message}");
+        }
+        finally
+        {
+            IsExporting = false;
         }
     }
 
@@ -80,24 +157,23 @@ public sealed class ImportExportViewModel : ViewModelBase
     /// </summary>
     public void ImportFromJson(List<ProxyItem> proxiesCollection, string? initialDirectory = null)
     {
-        var openFileDialog = new WinForms.OpenFileDialog
-        {
-            Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
-            InitialDirectory = initialDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-        };
-
-        if (openFileDialog.ShowDialog() != WinForms.DialogResult.OK)
+        if (IsImporting)
             return;
 
+        IsImporting = true;
         try
         {
-            var json = File.ReadAllText(openFileDialog.FileName);
+            var sourcePath = _fileDialogService.ShowOpenJsonPath(initialDirectory);
+            if (string.IsNullOrWhiteSpace(sourcePath))
+                return;
+
+            var json = File.ReadAllText(sourcePath);
             using var doc = JsonDocument.Parse(json);
 
             if (!doc.RootElement.TryGetProperty("Proxies", out var proxiesEl) ||
                 proxiesEl.ValueKind != JsonValueKind.Array)
             {
-                MessageBox.Show("无效的导出文件: 缺少 'Proxies' 数组。", "导入错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError("无效的导出文件: 缺少 'Proxies' 数组。", "导入错误");
                 return;
             }
 
@@ -125,7 +201,7 @@ public sealed class ImportExportViewModel : ViewModelBase
 
                     if (localPort > 9999)
                     {
-                        MessageBox.Show("无法分配本地端口，端口范围已用完。", "导入错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _notificationService.ShowError("无法分配本地端口，端口范围已用完。", "导入错误");
                         break;
                     }
 
@@ -152,12 +228,16 @@ public sealed class ImportExportViewModel : ViewModelBase
                 }
             }
 
-            MessageBox.Show($"成功导入 {imported} 个代理从 {Path.GetFileName(openFileDialog.FileName)}", "导入成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            _notificationService.ShowInfo($"成功导入 {imported} 个代理从 {Path.GetFileName(sourcePath)}", "导入成功");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"导入失败: {ex.Message}", "导入错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            _notificationService.ShowError($"导入失败: {ex.Message}", "导入错误");
             _logger.Error($"Import failed: {ex.Message}");
+        }
+        finally
+        {
+            IsImporting = false;
         }
     }
 }

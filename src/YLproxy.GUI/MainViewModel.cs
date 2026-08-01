@@ -90,18 +90,6 @@ public sealed class MainViewModel : ViewModelBase
         set => SetProperty(ref _statusMessage, value);
     }
 
-    // --- Operation Guards ---
-    private bool _isTesting;
-    public bool IsTesting { get => _isTesting; set => SetProperty(ref _isTesting, value); }
-    private bool _isStarting;
-    public bool IsStarting { get => _isStarting; set => SetProperty(ref _isStarting, value); }
-    private bool _isStopping;
-    public bool IsStopping { get => _isStopping; set => SetProperty(ref _isStopping, value); }
-    private bool _isExporting;
-    public bool IsExporting { get => _isExporting; set => SetProperty(ref _isExporting, value); }
-    private bool _isImporting;
-    public bool IsImporting { get => _isImporting; set => SetProperty(ref _isImporting, value); }
-
     // --- API 状态 ---
     private string _apiStatus = "Stopped";
     public string ApiStatus { get => _apiStatus; set => SetProperty(ref _apiStatus, value); }
