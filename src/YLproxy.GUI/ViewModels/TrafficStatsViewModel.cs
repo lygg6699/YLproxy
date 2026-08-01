@@ -36,7 +36,7 @@ public sealed class TrafficStatsViewModel : ViewModelBase
     /// <summary>
     /// 从已设置的代理集合刷新统计数据。
     /// </summary>
-    public void RefreshStats()
+    public static void RefreshStats()
     {
         // Refresh is triggered externally via SetProxies or OnStatsUpdated
     }
