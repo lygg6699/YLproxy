@@ -2,9 +2,21 @@
 
 > 这是根级入口文件。详细任务清单见 [pending/task-tracking.md](pending/task-tracking.md)
 
-**最后更新**：2026-07-26
+**最后更新**：2026-08-02
 
 ## 已完成
+
+### 阶段二：代码质量提升复核收口（2026-08-02）
+- [x] 子阶段 2.1 架构复核
+  - [x] MainViewModel 子 ViewModel 拆分结构已落地并可编译
+  - [x] 操作状态绑定与导入导出状态绑定使用子 ViewModel 状态
+- [x] 子阶段 2.2 质量验证
+  - [x] Release 编译通过
+  - [x] 非 E2E 自动化测试通过（169 passed, 0 failed）
+  - [x] 生成覆盖率报告（`coverage.cobertura.xml`）
+- [x] 子阶段 2.3 清理复核
+  - [x] ServiceLocator 残留扫描完成（未发现引用）
+  - [x] 记录历史不稳定测试风险：`PerformanceMonitor_IsThreadSafe`
 
 ### 阶段四：用户体验增强（90% → 95%）（2026-07-26）
 - [x] 子阶段 4.1：系统托盘功能

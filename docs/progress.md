@@ -2,9 +2,22 @@
 
 > 这是根级入口文件。当前进度详情见 [development/progress.md](development/progress.md)
 
-**最后更新**：2026-07-26
+**最后更新**：2026-08-02
 
 ## 最新操作
+
+### 阶段二：代码质量提升复核收口（2026-08-02）
+- ✅ 子阶段 2.1 结构复核：MainViewModel 子 ViewModel 拆分架构已在主干落地
+  - 操作状态绑定使用 `ProxyOperations.IsTesting/IsStarting/IsStopping`
+  - 导入导出状态绑定使用 `ImportExport.IsExporting/IsImporting`
+- ✅ 子阶段 2.2 测试与覆盖率复核：
+  - Release 编译通过（0 error）
+  - 非 E2E 测试通过：169 passed, 0 failed
+  - 覆盖率基线（非 E2E）：line-rate = 46.98%（`coverage.cobertura.xml`）
+- ✅ 子阶段 2.3 清理复核：
+  - ServiceLocator 未发现残留引用
+  - 阶段门禁可通过（串行执行下无文件锁）
+- ⚠️ 风险记录：历史测试 `PerformanceMonitor_IsThreadSafe` 存在偶发不稳定，需要在后续阶段单独治理
 
 ### 阶段四：用户体验增强（90% → 95%）— 实施完成（2026-07-26）
 - ✅ 子阶段 4.1：系统托盘功能（90% → 92%）

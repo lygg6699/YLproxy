@@ -2,7 +2,17 @@
 
 > 这是根级入口文件。详细部署记录见 [deployed/deployment.md](deployed/deployment.md)
 
-**最后更新**：2026-07-26
+**最后更新**：2026-08-02
+
+---
+
+## 2026-08-02
+### 阶段二代码质量提升复核收口（无新增部署变更）
+- 执行内容：阶段二（结构拆分、测试与清理）落地状态复核
+- 构建结果：`dotnet build YLproxy.sln -c Release` 通过
+- 测试结果：`dotnet test tests/YLproxy.Tests.csproj -c Release --no-build --filter "TestCategory!=E2E"` 通过（169/169）
+- 覆盖率：生成 `coverage/c687d43e-e160-44b9-8040-69b81f80dca4/coverage.cobertura.xml`，line-rate=46.98%
+- 部署影响：无运行时配置、端口、发布流程变更
 
 ---
 

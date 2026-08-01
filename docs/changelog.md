@@ -2,7 +2,17 @@
 
 > 这是根级入口文件。详细变更历史见 [risks/changelog.md](risks/changelog.md)
 
-**最后更新**：2026-07-26
+**最后更新**：2026-08-02
+
+## 2026-08-02
+
+### 阶段二：代码质量提升复核收口
+- 完成阶段二落地复核：MainViewModel 子 ViewModel 拆分结构、状态绑定与导入导出状态管理均已在主干生效。
+- 完成质量门禁验证：
+  - Release 编译通过（`dotnet build YLproxy.sln -c Release`）
+  - 非 E2E 自动化测试通过（169 passed, 0 failed）
+  - 覆盖率报告已生成（`coverage.cobertura.xml`，line-rate=46.98%）
+- 记录风险：历史测试 `PerformanceMonitor_IsThreadSafe` 存在偶发不稳定，需要后续单独治理。
 
 ## 2026-07-26
 
