@@ -161,8 +161,10 @@ if ($CreateZip) {
         $ylproxyVer = "0.0.0"
         if (Test-Path $propsPath) {
             $propsXml = [xml](Get-Content $propsPath)
-            $versionNode = $propsXml.Project.PropertyGroup.Version
-            if ($versionNode) { $ylproxyVer = $versionNode.InnerText.Trim() }
+            $versionNode = $propsXml.SelectSingleNode('/Project/PropertyGroup/Version')
+            if ($versionNode -and -not [string]::IsNullOrWhiteSpace($versionNode.InnerText)) {
+                $ylproxyVer = $versionNode.InnerText.Trim()
+            }
         }
         $ZipOutput = Join-Path $ProjectRoot "build\YLproxy-v${ylproxyVer}-win-x64.zip"
     }
