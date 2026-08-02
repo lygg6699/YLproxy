@@ -38,6 +38,11 @@
   <!-- tests project: exclude console runner Program.cs to avoid multiple entry points -->
   <ItemGroup>
     <Compile Remove="Program.cs" />
+    <Compile Include="ViewModels\**\*.cs" />
+    <Compile Include="Core\**\*.cs" />
+    <Compile Include="GUI\**\*.cs" />
+    <Compile Include="Infrastructure\**\*.cs" />
+    <Compile Include="Proxy\**\*.cs" />
   </ItemGroup>
 
 </Project>
