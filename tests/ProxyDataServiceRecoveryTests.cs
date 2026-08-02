@@ -1,5 +1,6 @@
 using System.Text.Json;
 using YLproxy.Core;
+using YLproxy.Core.Concurrency;
 using YLproxy.Core.Config;
 using YLproxy.Models;
 
@@ -115,6 +116,68 @@ public sealed class ProxyDataServiceRecoveryTests
         var json = "{\"Proxies\": [{\"Id\": \"not-an-int\"}]}";
 
         Assert.Throws<JsonException>(() => serializer.Deserialize(json, out _));
+    }
+
+    [Fact]
+    public async Task Save_ConcurrentWrites_ShouldNotCorruptData()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), $"ylproxy_concurrent_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+        var configPath = Path.Combine(tempDir, "config.json");
+
+        try
+        {
+            var svc = new ProxyDataService(configPath, skipPathValidation: true);
+            var tasks = Enumerable.Range(1, 10).Select(i => Task.Run(() =>
+            {
+                var cfg = new AppConfig();
+                cfg.Proxies.Add(new ProxyItem
+                {
+                    Id = 1,
+                    Name = $"Proxy-{i}",
+                    RemoteHost = "1.2.3.4",
+                    RemotePort = 8080 + i,
+                    LocalHost = "127.0.0.1",
+                    LocalPort = 9000 + i,
+                    Status = ProxyStatus.Stopped,
+                    CreateTime = DateTime.UtcNow,
+                });
+                svc.Save(cfg);
+            })).ToArray();
+
+            await Task.WhenAll(tasks);
+
+            var loaded = svc.Load();
+            Assert.Single(loaded.Proxies);
+            Assert.StartsWith("Proxy-", loaded.Proxies[0].Name);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+                Directory.Delete(tempDir, true);
+        }
+    }
+
+    [Fact]
+    public void Load_FileLockTimeout_ShouldThrowTimeoutException()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), $"ylproxy_lock_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+        var configPath = Path.Combine(tempDir, "config.json");
+        File.WriteAllText(configPath, "{\"Proxies\":[]}");
+
+        try
+        {
+            using var holdLock = new FileLock(configPath, timeoutMs: 200);
+            var svc = new ProxyDataService(configPath, skipPathValidation: true);
+
+            Assert.Throws<TimeoutException>(() => svc.Load());
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+                Directory.Delete(tempDir, true);
+        }
     }
 }
 

@@ -3,6 +3,7 @@ using YLproxy.Infrastructure;
 namespace YLproxy.Tests;
 
 [Trait("Category", "Unit")]
+[Collection("PerformanceMonitorSequential")]
 public class PerformanceMonitorTests
 {
     public PerformanceMonitorTests()
