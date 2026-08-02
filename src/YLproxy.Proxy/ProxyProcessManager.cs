@@ -487,7 +487,7 @@ public sealed class ProxyProcessManager
     }
 
     /// <summary>
-    /// 流量监控后台任务：定期读取端口流量统计并更新到 TrafficMonitorService。
+    /// 流量监控后台任务：定期从 ManagedProxyForwarder 读取真实流量计数并更新到 TrafficMonitorService。
     /// </summary>
     private async Task MonitorTrafficAsync(ProxyItem proxy, CancellationToken token)
     {
@@ -495,8 +495,15 @@ public sealed class ProxyProcessManager
         {
             try
             {
-                // 读取 3proxy 日志文件获取流量统计
-                var (sent, received) = ReadTrafficFromLogs(proxy);
+                long sent = 0;
+                long received = 0;
+
+                // 优先从 ManagedProxyForwarder 读取真实计数（认证代理路径）
+                if (_forwarders.TryGetValue(proxy.Id, out var forwarder))
+                {
+                    sent = forwarder.TotalBytesSent;
+                    received = forwarder.TotalBytesReceived;
+                }
 
                 // 计算增量流量
                 var deltaSent = sent - proxy.TotalBytesSent;
@@ -522,19 +529,6 @@ public sealed class ProxyProcessManager
                 await Task.Delay(TimeSpan.FromSeconds(10), token).ConfigureAwait(false);
             }
         }
-    }
-
-    /// <summary>
-    /// 从 3proxy 日志文件读取当前代理的流量统计（近似值）。
-    /// 实际生产环境应使用 3proxy 的内置统计功能或端口数据。
-    /// </summary>
-    private static (long sent, long received) ReadTrafficFromLogs(ProxyItem proxy)
-    {
-        // 基于时间的近似统计——在实际生产环境中,
-        // 应使用 3proxy 的 -s 统计模式或网络接口流量计数。
-        // 此处返回模拟的增长值用于 UI 演示。
-        var baseBytes = DateTime.UtcNow.Ticks % 1000;
-        return (baseBytes * 100, baseBytes * 200);
     }
 
     private static bool IsPortAvailable(int port)

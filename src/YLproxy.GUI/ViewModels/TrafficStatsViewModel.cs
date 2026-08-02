@@ -14,6 +14,7 @@ public sealed class TrafficStatsViewModel : ViewModelBase
 {
     private readonly ITrafficMonitorService _trafficMonitor;
     private readonly ObservableCollection<TrafficStatItem> _stats = new();
+    private IReadOnlyList<ProxyItem> _proxies = Array.Empty<ProxyItem>();
 
     public ObservableCollection<TrafficStatItem> Stats => _stats;
 
@@ -24,7 +25,7 @@ public sealed class TrafficStatsViewModel : ViewModelBase
         {
             try
             {
-                WpfApplication.Current?.Dispatcher?.BeginInvoke(() => RefreshStats());
+                WpfApplication.Current?.Dispatcher?.BeginInvoke(() => RefreshStats(_proxies));
             }
             catch
             {
@@ -34,11 +35,12 @@ public sealed class TrafficStatsViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 从已设置的代理集合刷新统计数据。
+    /// 设置当前代理列表（在代理集合变化时调用）。
     /// </summary>
-    public static void RefreshStats()
+    public void SetProxies(IEnumerable<ProxyItem> proxies)
     {
-        // Refresh is triggered externally via SetProxies or OnStatsUpdated
+        _proxies = proxies?.ToList() as IReadOnlyList<ProxyItem> ?? Array.Empty<ProxyItem>();
+        RefreshStats(_proxies);
     }
 
     /// <summary>

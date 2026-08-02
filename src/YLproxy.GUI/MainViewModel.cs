@@ -140,6 +140,7 @@ public sealed class MainViewModel : ViewModelBase
         ImportExport = new ImportExportViewModel(_logger);
 
         InitFromConfig();
+        TrafficStats.SetProxies(ProxyList.Proxies);
         LoadHostInfo();
         RefreshStats();
 
@@ -326,6 +327,7 @@ public sealed class MainViewModel : ViewModelBase
         Dashboard.RunningCount = Proxies.Count(p => p.Status == ProxyStatus.Running);
         Dashboard.StoppedCount = Proxies.Count(p => p.Status == ProxyStatus.Stopped);
         Dashboard.FailedCount = Proxies.Count(p => p.Status == ProxyStatus.Failed);
+        TrafficStats.RefreshStats(Proxies);
     }
 
     private void PersistProxyState()

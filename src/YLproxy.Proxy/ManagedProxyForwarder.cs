@@ -24,9 +24,21 @@ public sealed class ManagedProxyForwarder : IDisposable
     private readonly string _proxyName;
     private readonly CancellationTokenSource _cts = new();
     private readonly SemaphoreSlim _concurrencyLimiter;
+    private long _bytesSent;
+    private long _bytesReceived;
     private int _disposed;
 
     private const int MaxConcurrentClients = 100;
+
+    /// <summary>
+    /// 累计上行字节数（客户端 → 上游代理）。
+    /// </summary>
+    public long TotalBytesSent => Interlocked.Read(ref _bytesSent);
+
+    /// <summary>
+    /// 累计下行字节数（上游代理 → 客户端）。
+    /// </summary>
+    public long TotalBytesReceived => Interlocked.Read(ref _bytesReceived);
 
     public ManagedProxyForwarder(ProxyItem proxy, ILogger? logger = null)
     {
@@ -224,6 +236,9 @@ public sealed class ManagedProxyForwarder : IDisposable
 
                 using var response = await _upstreamClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
 
+                // 请求头与已读入的 body 计入上行流量
+                Interlocked.Add(ref _bytesSent, totalRead);
+
                 // 将响应写回客户端
                 var respSb = new StringBuilder();
                 respSb.Append(CultureInfo.InvariantCulture, $"HTTP/1.1 {(int)response.StatusCode} {response.ReasonPhrase}\r\n");
@@ -235,9 +250,10 @@ public sealed class ManagedProxyForwarder : IDisposable
 
                 var respBytes = Encoding.ASCII.GetBytes(respSb.ToString());
                 await clientStream.WriteAsync(respBytes, token).ConfigureAwait(false);
+                Interlocked.Add(ref _bytesReceived, respBytes.Length);
 
                 using var respStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
-                await respStream.CopyToAsync(clientStream, token).ConfigureAwait(false);
+                await CopyWithCountAsync(respStream, clientStream, b => Interlocked.Add(ref _bytesReceived, b), token).ConfigureAwait(false);
                 await clientStream.FlushAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -264,6 +280,7 @@ public sealed class ManagedProxyForwarder : IDisposable
 
         var connectReq = BuildConnectRequest(target, addAuth: !string.IsNullOrEmpty(_username));
         var connectBytes = Encoding.ASCII.GetBytes(connectReq);
+        byte[]? retryBytes = null;
         await upstreamStream.WriteAsync(connectBytes, token).ConfigureAwait(false);
 
         var respBuf = new byte[4096];
@@ -285,7 +302,7 @@ public sealed class ManagedProxyForwarder : IDisposable
             retryReq.Append(CultureInfo.InvariantCulture, $"Proxy-Authorization: {basicAuth}\r\n");
             retryReq.Append("\r\n");
 
-            var retryBytes = Encoding.ASCII.GetBytes(retryReq.ToString());
+            retryBytes = Encoding.ASCII.GetBytes(retryReq.ToString());
             await upstreamStream.WriteAsync(retryBytes, token).ConfigureAwait(false);
             respLen = await upstreamStream.ReadAsync(respBuf.AsMemory(0, respBuf.Length), token).ConfigureAwait(false);
             respText = Encoding.ASCII.GetString(respBuf, 0, respLen);
@@ -297,9 +314,12 @@ public sealed class ManagedProxyForwarder : IDisposable
             var ok = "HTTP/1.1 200 Connection Established\r\n\r\n"u8;
             await clientStream.WriteAsync(ok.ToArray(), token).ConfigureAwait(false);
 
+            var connectReqBytes = connectBytes.Length + (retryBytes?.Length ?? 0);
+            Interlocked.Add(ref _bytesSent, connectReqBytes);
+
             await Task.WhenAny(
-                clientStream.CopyToAsync(upstreamStream, token),
-                upstreamStream.CopyToAsync(clientStream, token)
+                CopyWithCountAsync(clientStream, upstreamStream, b => Interlocked.Add(ref _bytesSent, b), token),
+                CopyWithCountAsync(upstreamStream, clientStream, b => Interlocked.Add(ref _bytesReceived, b), token)
             ).ConfigureAwait(false);
         }
         else
@@ -345,6 +365,21 @@ public sealed class ManagedProxyForwarder : IDisposable
 
         sb.Append("\r\n");
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// 带字节统计的流复制（用于真实流量计数）。
+    /// </summary>
+    private static async Task CopyWithCountAsync(Stream source, Stream destination, Action<long> countBytes, CancellationToken token)
+    {
+        var buffer = new byte[81920];
+        int read;
+        while (!token.IsCancellationRequested &&
+               (read = await source.ReadAsync(buffer.AsMemory(0, buffer.Length), token).ConfigureAwait(false)) > 0)
+        {
+            await destination.WriteAsync(buffer.AsMemory(0, read), token).ConfigureAwait(false);
+            countBytes(read);
+        }
     }
 
     private async Task WriteError(NetworkStream stream, int code, string msg)
