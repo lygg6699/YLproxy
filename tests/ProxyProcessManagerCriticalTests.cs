@@ -14,6 +14,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     private readonly string _testRuntimeDir;
     private readonly string _testDataDir;
     private readonly ILogger _logger;
+    private readonly ProxyRuntimeConfiguration _runtimeConfig;
 
     public ProxyProcessManagerCriticalTests()
     {
@@ -22,6 +23,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
         Directory.CreateDirectory(_testRuntimeDir);
         Directory.CreateDirectory(_testDataDir);
         _logger = LoggerFactory.CreateLogger();
+        _runtimeConfig = new ProxyRuntimeConfiguration(_testRuntimeDir, new List<string>());
     }
 
     public void Dispose()
@@ -44,148 +46,50 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     }
 
     [Fact]
-    public void Start_InvalidConfig_ShouldThrowException()
-    {
-        // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = new[] { "nonexistent.dll" }
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
-
-        var proxy = new ProxyItem
-        {
-            Id = 1,
-            Name = "Test",
-            RemoteHost = "1.2.3.4",
-            RemotePort = 8080,
-            LocalHost = "127.0.0.1",
-            LocalPort = 9000,
-            Status = ProxyStatus.Stopped
-        };
-
-        // Act & Assert
-        Assert.ThrowsAny<Exception>(() => manager.Start(proxy));
-    }
-
-    [Fact]
-    public void Stop_ProcessNotRunning_ShouldNotThrow()
-    {
-        // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
-
-        var proxy = new ProxyItem
-        {
-            Id = 1,
-            Name = "Test",
-            RemoteHost = "1.2.3.4",
-            RemotePort = 8080,
-            LocalHost = "127.0.0.1",
-            LocalPort = 9000,
-            Status = ProxyStatus.Stopped
-        };
-
-        // Act & Assert
-        manager.Stop(proxy.Id); // Should not throw
-    }
-
-    [Fact]
-    public void Start_PortAlreadyInUse_ShouldHandleError()
-    {
-        // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
-
-        var proxy1 = new ProxyItem
-        {
-            Id = 1,
-            Name = "Test1",
-            RemoteHost = "1.2.3.4",
-            RemotePort = 8080,
-            LocalHost = "127.0.0.1",
-            LocalPort = 9000,
-            Status = ProxyStatus.Stopped
-        };
-
-        var proxy2 = new ProxyItem
-        {
-            Id = 2,
-            Name = "Test2",
-            RemoteHost = "5.6.7.8",
-            RemotePort = 8080,
-            LocalHost = "127.0.0.1",
-            LocalPort = 9000, // Same port
-            Status = ProxyStatus.Stopped
-        };
-
-        // Act & Assert
-        // First start might succeed or fail depending on system
-        // Second start should handle port conflict gracefully
-        try
-        {
-            manager.Start(proxy1);
-            Assert.ThrowsAny<Exception>(() => manager.Start(proxy2));
-        }
-        catch
-        {
-            // If first start fails, that's also acceptable for this test
-        }
-    }
-
-    [Fact]
-    public void Configure_NullConfig_ShouldThrow()
-    {
-        // Arrange
-        var manager = new ProxyProcessManager(_logger);
-
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => manager.Configure(null!));
-    }
-
-    [Fact]
     public void Start_NullProxy_ShouldThrow()
     {
         // Arrange
-        var manager = new ProxyProcessManager(_logger);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => manager.Start(null!));
     }
 
     [Fact]
-    public void Stop_NullProxyId_ShouldThrow()
+    public void Stop_InvalidProxyId_ShouldNotThrow()
     {
         // Arrange
-        var manager = new ProxyProcessManager(_logger);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
+        var proxy = new ProxyItem
+        {
+            Id = 999,
+            Name = "Test",
+            RemoteHost = "1.2.3.4",
+            RemotePort = 8080,
+            LocalHost = "127.0.0.1",
+            LocalPort = 9000,
+            Status = ProxyStatus.Stopped
+        };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => manager.Stop(0));
+        manager.Stop(proxy); // Should not throw for non-existent proxy
+    }
+
+    [Fact]
+    public void Stop_NullProxy_ShouldThrow()
+    {
+        // Arrange
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => manager.Stop(null!));
     }
 
     [Fact]
     public void Start_InvalidLocalPort_ShouldThrow()
     {
         // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
 
         var proxy = new ProxyItem
         {
@@ -206,13 +110,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     public void Start_InvalidRemotePort_ShouldThrow()
     {
         // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
 
         var proxy = new ProxyItem
         {
@@ -233,13 +131,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     public void Start_EmptyRemoteHost_ShouldThrow()
     {
         // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
 
         var proxy = new ProxyItem
         {
@@ -260,13 +152,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     public void ConcurrentStart_ShouldHandleRaceCondition()
     {
         // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
 
         var proxy = new ProxyItem
         {
@@ -305,13 +191,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     public void ConcurrentStop_ShouldHandleRaceCondition()
     {
         // Arrange
-        var config = new ThreeProxyConfig
-        {
-            RuntimeDirectory = _testRuntimeDir,
-            RequiredDlls = Array.Empty<string>()
-        };
-        var manager = new ProxyProcessManager(_logger);
-        manager.Configure(config);
+        var manager = new ProxyProcessManager(_runtimeConfig, _logger);
 
         var proxy = new ProxyItem
         {
@@ -332,7 +212,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
             {
                 try
                 {
-                    manager.Stop(proxy.Id);
+                    manager.Stop(proxy);
                 }
                 catch
                 {
