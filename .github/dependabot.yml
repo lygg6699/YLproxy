@@ -1,26 +1,37 @@
 version: 2
 updates:
-  # 仅安全更新：不再自动创建版本升级分支和 PR
+  # .NET NuGet 依赖检查
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
-      timezone: "Asia/Shanghai"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
-      - "security"
+      - "nuget"
+    commit-message:
+      prefix: "deps"
+    groups:
+      microsoft-extensions:
+        patterns:
+          - "Microsoft.Extensions.*"
+      xunit:
+        patterns:
+          - "xunit*"
+      coverlet:
+        patterns:
+          - "coverlet*"
 
+  # GitHub Actions 依赖检查
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
-      timezone: "Asia/Shanghai"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
-      - "ci"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"

@@ -92,10 +92,14 @@ jobs:
           }
           Write-Host "✅ Coverage $([math]::Round($coverage, 2))% meets threshold $threshold%"
 
-      - name: Generate SBOM
+      - name: Create release package
+        shell: pwsh
+        run: ./build/publish.ps1 -Configuration Release -CreateZip
+
+      - name: Generate SBOM (after publish)
         shell: pwsh
         run: |
-          # 使用 SPDX SBOM 生成方式：通过 .NET SDK 内置功能
+          # SBOM 必须在 publish 之后生成，确保 -b ./build/publish 目录非空
           dotnet tool install --global Microsoft.Sbom.DotNetTool --version 3.0.0 2>$null | Out-Null
           if ($LASTEXITCODE -ne 0) {
             Write-Warning "SBOM tool install failed — skipping SBOM generation"
@@ -104,7 +108,7 @@ jobs:
           $version = "${{ steps.version.outputs.version }}"
           if ([string]::IsNullOrEmpty($version)) { $version = "0.0.0-ci" }
           sbom-tool generate `
-            -b ./publish `
+            -b ./build/publish `
             -o ./sbom `
             -pn YLproxy `
             -pv $version `
@@ -112,73 +116,37 @@ jobs:
             -ns https://github.com/lygg6699/YLproxy 2>&1 | Out-String | Write-Host
           Write-Host "SBOM generated at ./sbom"
 
-      - name: Create release package
-        shell: pwsh
-        run: ./build/publish.ps1 -Configuration Release -CreateZip
-
-      - name: Generate Installer (WiX)
+      - name: Generate Installer (WiX v4)
         if: startsWith(github.ref, 'refs/tags/v')
         shell: pwsh
         run: |
-          # 安装 WiX 工具集
-          dotnet tool install --global wix --version 5.0.0 2>$null | Out-Null
+          # 安装 WiX v4 CLI
+          dotnet tool install --global wix --version 4.0.5 2>$null | Out-Null
           if ($LASTEXITCODE -ne 0) {
             Write-Warning "WiX toolset install failed — skipping installer generation"
             return
           }
-          
+
           $version = "${{ steps.version.outputs.version }}"
           if ([string]::IsNullOrEmpty($version)) { $version = "0.0.0" }
-          
-          # 创建 WiX 项目文件
+
           $wixProjectPath = "./installer/Product.wxs"
-          $installerDir = "./installer"
-          if (-not (Test-Path $installerDir)) { New-Item -ItemType Directory -Path $installerDir | Out-Null }
-          
-          @"
-          <?xml version="1.0" encoding="UTF-8"?>
-          <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-            <Product Id="*" Name="YLproxy" Language="1033" Version="$($version)" Manufacturer="YLproxy-Team" UpgradeCode="d1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6">
-              <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
-              
-              <MajorUpgrade DowngradeErrorMessage="A newer version of YLproxy is already installed." />
-              
-              <MediaTemplate />
-              
-              <Feature Id="ProductFeature" Title="YLproxy" Level="1">
-                <ComponentGroupRef Id="ProductComponents" />
-              </Feature>
-            </Product>
-            
-            <Fragment>
-              <Directory Id="TARGETDIR" Name="SourceDir">
-                <Directory Id="ProgramFilesFolder">
-                  <Directory Id="INSTALLFOLDER" Name="YLproxy" />
-                </Directory>
-              </Directory>
-            </Fragment>
-            
-            <Fragment>
-              <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-                <Component Id="MainExecutable">
-                  <File Source="$(var.publish)\YLproxy.GUI.exe" />
-                </Component>
-                <Component Id="ConfigurationFiles">
-                  <File Source="$(var.publish)\AppSettings.example.json" />
-                  <File Source="$(var.publish)\global.json" />
-                </Component>
-                <Component Id="RuntimeFiles">
-                  <File Source="$(var.publish)\runtime\3proxy\bin64\3proxy.exe" />
-                  <File Source="$(var.publish)\runtime\3proxy\cfg\*.cfg" />
-                </Component>
-              </ComponentGroup>
-            </Fragment>
-          "@ | Out-File -FilePath $wixProjectPath -Encoding UTF8
-          
-          # 编译安装包
-          wix project build $wixProjectPath -c release -o ./installer
-          
-          Write-Host "Installer generated at ./installer/YLproxy.msi"
+          if (-not (Test-Path $wixProjectPath)) {
+            Write-Warning "WiX source $wixProjectPath not found — skipping installer"
+            return
+          }
+
+          # WiX v4 命令：wix build -d publish=... -d version=... -o ...
+          wix build $wixProjectPath `
+            -d publish="./build/publish" `
+            -d version="$version" `
+            -o "./installer/YLproxy-$version.msi"
+
+          if (Test-Path "./installer/YLproxy-$version.msi") {
+            Write-Host "Installer generated at ./installer/YLproxy-$version.msi"
+          } else {
+            Write-Warning "Installer build did not produce expected .msi output"
+          }
 
       - name: Upload release asset
         uses: softprops/action-gh-release@v2
@@ -200,4 +168,3 @@ jobs:
             coverage/**/*
           if-no-files-found: warn
           retention-days: 14
-

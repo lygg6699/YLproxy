@@ -156,8 +156,15 @@ if ($CreateZip) {
     Write-Host "[6/6] Creating ZIP archive..." -ForegroundColor Yellow
 
     if ([string]::IsNullOrWhiteSpace($ZipOutput)) {
-        $v = $threeProxyVer -replace '[^\d\.]', ''
-        $ZipOutput = Join-Path $ProjectRoot "build\YLproxy-v${v}-win-x64.zip"
+        # 从 Directory.Build.props 读取 YLproxy 版本号（而非 3proxy 版本号）
+        $propsPath = Join-Path $ProjectRoot "Directory.Build.props"
+        $ylproxyVer = "0.0.0"
+        if (Test-Path $propsPath) {
+            $propsXml = [xml](Get-Content $propsPath)
+            $versionNode = $propsXml.Project.PropertyGroup.Version
+            if ($versionNode) { $ylproxyVer = $versionNode.InnerText.Trim() }
+        }
+        $ZipOutput = Join-Path $ProjectRoot "build\YLproxy-v${ylproxyVer}-win-x64.zip"
     }
 
     if (Test-Path $ZipOutput) {

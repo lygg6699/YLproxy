@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  YLproxy WiX Installer Definition
+  - 合法 GUID（固定 UpgradeCode 用于 MajorUpgrade）
+  - 引用 publish 输出目录 $(var.publish)
+  - 通过 wix build -d publish=... 编译
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="YLproxy"
+           Manufacturer="YLproxy-Team"
+           Language="1033"
+           Version="$(var.version)"
+           UpgradeCode="7B5F2A3C-9D8E-4F1A-B6C2-1E3D5F7A9B0C">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of YLproxy is already installed." />
+
+    <Media Id="1" Cabinet="YLproxy.cab" EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="YLproxy" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+
+    <!-- 安装目录结构 -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="YLproxy">
+        <Directory Id="RuntimeDir" Name="runtime">
+          <Directory Id="ThreeProxyDir" Name="3proxy">
+            <Directory Id="Bin64Dir" Name="bin64" />
+            <Directory Id="CfgDir" Name="cfg" />
+            <Directory Id="LogsDir" Name="logs" />
+          </Directory>
+        </Directory>
+        <Directory Id="DataDir" Name="data" />
+      </Directory>
+    </StandardDirectory>
+
+    <!-- 开始菜单快捷方式 -->
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="ApplicationShortcut" Guid="A1C2E3F4-5B6A-7C8D-9E0F-1A2B3C4D5E6F">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="YLproxy"
+                  Description="YLproxy 本地代理转换管理程序"
+                  Target="[INSTALLFOLDER]YLproxy.GUI.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="ApplicationShortcut" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\YLproxy" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Package>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- 主可执行文件 -->
+      <Component Id="MainExecutable" Guid="B2D3E4F5-6C7B-8D9E-0F1A-2B3C4D5E6F7A">
+        <File Id="GuiExe" Source="$(var.publish)\YLproxy.GUI.exe" KeyPath="yes" />
+      </Component>
+
+      <!-- 配置模板 -->
+      <Component Id="ConfigTemplate" Guid="C3E4F5A6-7D8B-9E0F-1A2B-3C4D5E6F7A8B">
+        <File Id="AppSettingsExample" Source="$(var.publish)\AppSettings.example.json" />
+      </Component>
+
+      <!-- .NET 运行时配置 -->
+      <Component Id="GlobalJson" Guid="D4F5A6B7-8E9C-0F1A-2B3C-4D5E6F7A8B9C">
+        <File Id="GlobalJsonFile" Source="$(var.publish)\global.json" />
+      </Component>
+
+      <!-- 3proxy 运行时 -->
+      <Component Id="ThreeProxyExe" Directory="Bin64Dir" Guid="E5A6B7C8-9F0D-1A2B-3C4D-5E6F7A8B9C0D">
+        <File Id="ThreeProxyBinary" Source="$(var.publish)\runtime\3proxy\bin64\3proxy.exe" KeyPath="yes" />
+      </Component>
+
+      <Component Id="ThreeProxyDlls" Directory="Bin64Dir" Guid="F6B7C8D9-A0E1-2B3C-4D5E-6F7A8B9C0D1E">
+        <File Id="FilePluginDll" Source="$(var.publish)\runtime\3proxy\bin64\FilePlugin.dll" />
+        <File Id="StringsPluginDll" Source="$(var.publish)\runtime\3proxy\bin64\StringsPlugin.dll" />
+      </Component>
+
+      <!-- 数据目录占位 -->
+      <Component Id="DataDirComponent" Directory="DataDir" Guid="A7C8D9E0-B1F2-3C4D-5E6F-7A8B9C0D1E2F">
+        <CreateFolder />
+      </Component>
+
+      <!-- 3proxy cfg/logs 目录占位 -->
+      <Component Id="CfgDirComponent" Directory="CfgDir" Guid="B8D9E0F1-C2A3-4D5E-6F7A-8B9C0D1E2F3A">
+        <CreateFolder />
+      </Component>
+      <Component Id="LogsDirComponent" Directory="LogsDir" Guid="C9E0F1A2-D3B4-5E6F-7A8B-9C0D1E2F3A4B">
+        <CreateFolder />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

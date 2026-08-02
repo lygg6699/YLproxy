@@ -183,10 +183,41 @@ jobs:
             exit 1
           } || true
 
+  dependency-scan:
+    name: dependency-vulnerability-scan
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore dependencies
+        shell: pwsh
+        run: dotnet restore YLproxy.sln
+
+      - name: Scan for vulnerable packages
+        shell: pwsh
+        run: |
+          Write-Host "Scanning for vulnerable NuGet packages..."
+          $output = & dotnet list YLproxy.sln package --vulnerable 2>&1
+          $output | Out-String | Write-Host
+          # dotnet list package --vulnerable 返回非零退出码当发现漏洞时
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Vulnerable dependencies detected — see output above"
+            exit 1
+          }
+          Write-Host "✅ No vulnerable packages detected"
+
   e2e-tests:
     name: e2e-tests
     runs-on: windows-latest
-    if: ${{ secrets.REAL_PROXY_CREDENTIALS != '' }}
+    # E2E 测试需要真实代理凭据；通过环境变量在 step 中判断是否跳过
+    env:
+      REAL_PROXY_CREDENTIALS: ${{ secrets.REAL_PROXY_CREDENTIALS }}
 
     steps:
       - name: Checkout
@@ -217,9 +248,11 @@ jobs:
 
       - name: Run E2E tests
         shell: pwsh
-        env:
-          REAL_PROXY_CREDENTIALS: ${{ secrets.REAL_PROXY_CREDENTIALS }}
         run: |
+          if ([string]::IsNullOrEmpty($env:REAL_PROXY_CREDENTIALS)) {
+            Write-Warning "REAL_PROXY_CREDENTIALS secret not set — skipping E2E tests"
+            exit 0
+          }
           dotnet test tests/YLproxy.Tests.csproj `
             -c Debug --no-build --no-restore `
             --filter "TestCategory=E2E" `
