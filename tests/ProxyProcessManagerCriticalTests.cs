@@ -43,6 +43,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
         {
             // Ignore cleanup errors
         }
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -149,7 +150,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
     }
 
     [Fact]
-    public void ConcurrentStart_ShouldHandleRaceCondition()
+    public async Task ConcurrentStart_ShouldHandleRaceCondition()
     {
         // Arrange
         var manager = new ProxyProcessManager(_runtimeConfig, _logger);
@@ -181,14 +182,14 @@ public class ProxyProcessManagerCriticalTests : IDisposable
                 }
             });
         }
-        System.Threading.Tasks.Task.WaitAll(tasks);
+        await System.Threading.Tasks.Task.WhenAll(tasks);
 
         // Assert - Should not crash
         Assert.True(true);
     }
 
     [Fact]
-    public void ConcurrentStop_ShouldHandleRaceCondition()
+    public async Task ConcurrentStop_ShouldHandleRaceCondition()
     {
         // Arrange
         var manager = new ProxyProcessManager(_runtimeConfig, _logger);
@@ -220,7 +221,7 @@ public class ProxyProcessManagerCriticalTests : IDisposable
                 }
             });
         }
-        System.Threading.Tasks.Task.WaitAll(tasks);
+        await System.Threading.Tasks.Task.WhenAll(tasks);
 
         // Assert - Should not crash
         Assert.True(true);

@@ -24,6 +24,7 @@ public class ApiEndpointsTests : IDisposable
         {
             File.Delete(_testConfigPath);
         }
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
