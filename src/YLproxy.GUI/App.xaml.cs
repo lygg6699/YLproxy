@@ -118,6 +118,11 @@ public partial class App : Application
         // Traffic Monitor Service
         services.AddSingleton<ITrafficMonitorService, TrafficMonitorService>();
 
+        // Optional services: user management, local alert, backup/restore
+        services.AddSingleton<IUserService, UserService>();
+        services.AddSingleton<IAlertService, AlertService>();
+        services.AddSingleton<IBackupService, BackupService>();
+
         // Proxy Services
         services.AddSingleton<Proxy.ProxyRuntimeConfiguration>();
         services.AddSingleton<Proxy.ProxyProcessManager>(sp =>

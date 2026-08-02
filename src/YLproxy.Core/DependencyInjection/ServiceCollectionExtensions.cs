@@ -52,6 +52,11 @@ public static class ServiceCollectionExtensions
         // --- Traffic Monitor Service ---
         services.AddSingleton<ITrafficMonitorService, TrafficMonitorService>();
 
+        // --- Optional Feature Services ---
+        services.AddSingleton<IUserService, UserService>();
+        services.AddSingleton<IAlertService, AlertService>();
+        services.AddSingleton<IBackupService, BackupService>();
+
         // --- Proxy Services ---
         services.AddSingleton<ProxyRuntimeConfiguration>();
         services.AddSingleton<ProxyProcessManager>(sp =>

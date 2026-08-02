@@ -5,6 +5,7 @@
 param(
     [switch]$SkipTests,
     [switch]$SkipSmokeTest,
+    [switch]$SkipPerformanceTests,
     [switch]$Verbose
 )
 
@@ -141,7 +142,7 @@ if (-not $SkipTests) {
     Write-Host "第 3 步：运行单元测试..." -ForegroundColor Cyan
     Write-Log "开始单元测试" "INFO"
     
-    dotnet test --no-build --verbosity normal 2>&1 | Tee-Object -FilePath $logFile -Append
+    dotnet test --no-build --verbosity normal --filter "TestCategory!=E2E" 2>&1 | Tee-Object -FilePath $logFile -Append
     $testExitCode = $LASTEXITCODE
     
     if ($testExitCode -eq 0) {
@@ -154,6 +155,26 @@ if (-not $SkipTests) {
     }
 } else {
     Write-Log "跳过单元测试 (--SkipTests)" "WARNING"
+}
+
+if (-not $SkipTests -and -not $SkipPerformanceTests) {
+    Write-Host ""
+    Write-Host "第 3.1 步：运行性能测试..." -ForegroundColor Cyan
+    Write-Log "开始性能测试" "INFO"
+
+    dotnet test tests/YLproxy.Tests.csproj --no-build --verbosity normal --filter "TestCategory=Performance" 2>&1 | Tee-Object -FilePath $logFile -Append
+    $perfExitCode = $LASTEXITCODE
+
+    if ($perfExitCode -eq 0) {
+        Write-Log "性能测试通过" "SUCCESS"
+    } else {
+        Write-Log "性能测试失败 (Exit Code: $perfExitCode)" "ERROR"
+        Write-Host ""
+        Write-Host "❌ 性能测试失败，停止执行" -ForegroundColor Red
+        exit 1
+    }
+} elseif ($SkipPerformanceTests) {
+    Write-Log "跳过性能测试 (--SkipPerformanceTests)" "WARNING"
 }
 
 $smokeTestStatus = 'SKIPPED'
