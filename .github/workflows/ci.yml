@@ -124,6 +124,21 @@ jobs:
           }
           Write-Host "Coverage $([math]::Round($coverage, 2))% meets threshold $threshold%"
 
+      - name: Run performance tests
+        shell: pwsh
+        run: |
+          dotnet test tests/YLproxy.Tests.csproj `
+            -c Debug --no-build --no-restore `
+            --filter "TestCategory=Performance"
+
+      - name: Build publish package
+        shell: pwsh
+        run: ./build/publish.ps1 -Configuration Release -CreateZip
+
+      - name: Verify publish and installer artifacts
+        shell: pwsh
+        run: ./scripts/verify-installer.ps1 -SkipMsi
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

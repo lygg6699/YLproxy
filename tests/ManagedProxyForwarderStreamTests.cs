@@ -16,7 +16,7 @@ namespace YLproxy.Tests;
 /// and P3-1 SemaphoreSlim concurrency limit.
 /// </summary>
 [Trait("Category", "Integration")]
-[Trait("Category", "E2E")]
+[Trait("TestCategory", "E2E")]
 public sealed class ManagedProxyForwarderStreamTests
 {
     /// <summary>

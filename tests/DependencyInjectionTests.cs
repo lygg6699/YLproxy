@@ -4,6 +4,7 @@ using YLproxy.Core.Abstractions;
 using YLproxy.Core.DependencyInjection;
 using YLproxy.Infrastructure;
 using YLproxy.Infrastructure.Abstractions;
+using YLproxy.Infrastructure.Services;
 using YLproxy.Proxy;
 using YLproxy.Proxy.Abstractions;
 
@@ -141,6 +142,23 @@ public class DependencyInjectionTests
         var manager2 = sp.GetRequiredService<ConfigurationManager>();
 
         Assert.Same(manager1, manager2);
+    }
+
+    [Fact]
+    public void AddYLproxyServices_RegistersOptionalFeatureServices()
+    {
+        var services = new ServiceCollection();
+        services.AddYLproxyServices();
+
+        var sp = services.BuildServiceProvider();
+
+        var userService = sp.GetRequiredService<IUserService>();
+        var alertService = sp.GetRequiredService<IAlertService>();
+        var backupService = sp.GetRequiredService<IBackupService>();
+
+        Assert.IsType<UserService>(userService);
+        Assert.IsType<AlertService>(alertService);
+        Assert.IsType<BackupService>(backupService);
     }
 }
 
