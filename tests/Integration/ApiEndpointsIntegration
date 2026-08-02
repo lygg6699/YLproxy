@@ -1,0 +1,176 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Xunit;
+using YLproxy.Api;
+using YLproxy.Models;
+using YLproxy.Models.Config;
+
+namespace YLproxy.Tests.Integration;
+
+/// <summary>
+/// API 端点集成测试：通过真实 Kestrel 服务器验证完整 HTTP 请求-响应链路。
+/// </summary>
+[Trait("TestCategory", "ApiIntegration")]
+public class ApiEndpointsIntegrationTests : IAsyncDisposable
+{
+    private readonly string _tempDir;
+    private readonly string _configPath;
+    private readonly ApiServer _server;
+    private readonly HttpClient _client;
+    private const string TestToken = "test-token-12345";
+
+    public ApiEndpointsIntegrationTests()
+    {
+        _tempDir = Path.Combine(Path.GetTempPath(), $"ylproxy_api_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(_tempDir);
+        _configPath = Path.Combine(_tempDir, "config.json");
+        File.WriteAllText(_configPath, JsonSerializer.Serialize(new AppConfig { Version = "1.1", Proxies = new List<ProxyItem>() }));
+
+        var proxyConfig = new ProxyConfig { PortRangeStart = 9001, PortRangeEnd = 9100 };
+        var listener = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
+        listener.Start();
+        int port = ((System.Net.IPEndPoint)listener.LocalEndpoint).Port;
+        listener.Stop();
+
+        _server = new ApiServer(_configPath, proxyConfig, port: port, accessToken: TestToken, enableSwagger: false);
+        _server.StartAsync().GetAwaiter().GetResult();
+        _client = new HttpClient { BaseAddress = new Uri($"http://127.0.0.1:{port}") };
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _client?.Dispose();
+        await _server.StopAsync();
+        try { Directory.Delete(_tempDir, true); } catch { }
+        GC.SuppressFinalize(this);
+    }
+
+    private HttpRequestMessage CreateRequest(System.Net.Http.HttpMethod method, string path, object? body = null)
+    {
+        var req = new HttpRequestMessage(method, path);
+        req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TestToken);
+        if (body is not null) req.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+        return req;
+    }
+
+    [Fact]
+    public async Task HealthCheck_ReturnsOk_WithoutAuth()
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Get, "/api/health");
+        using var resp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProxies_NoAuth_Returns401()
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Get, "/api/proxies");
+        using var resp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.Unauthorized, resp.StatusCode);
+    }
+
+    [Fact]
+    public async Task AddProxy_ValidInput_Returns201()
+    {
+        var dto = new { name = "TestProxy", remoteHost = "1.2.3.4", remotePort = 8080, localPort = 0 };
+        using var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto);
+        using var resp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+    }
+
+    [Fact]
+    public async Task AddProxy_MissingName_Returns400()
+    {
+        var dto = new { remoteHost = "1.2.3.4", remotePort = 8080 };
+        using var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto);
+        using var resp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+    }
+
+    [Fact]
+    public async Task AddProxy_DuplicatePort_Returns409()
+    {
+        var dto1 = new { name = "First", remoteHost = "1.1.1.1", remotePort = 8080, localPort = 9001 };
+        using (var req1 = CreateRequest(HttpMethod.Post, "/api/proxies", dto1))
+        using (var resp1 = await _client.SendAsync(req1)) Assert.Equal(HttpStatusCode.Created, resp1.StatusCode);
+
+        var dto2 = new { name = "Second", remoteHost = "2.2.2.2", remotePort = 8080, localPort = 9001 };
+        using var req2 = CreateRequest(HttpMethod.Post, "/api/proxies", dto2);
+        using var resp2 = await _client.SendAsync(req2);
+        Assert.Equal(HttpStatusCode.Conflict, resp2.StatusCode);
+    }
+
+    [Fact]
+    public async Task AddProxy_AutoPortAssignment_IncrementsCorrectly()
+    {
+        for (int i = 1; i <= 3; i++)
+        {
+            var dto = new { name = $"Proxy{i}", remoteHost = $"10.0.0.{i}", remotePort = 8080, localPort = 0 };
+            using var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto);
+            using var resp = await _client.SendAsync(req);
+            Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+            var content = await resp.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal(9000 + i, content.GetProperty("data").GetProperty("localPort").GetInt32());
+        }
+    }
+
+    [Fact]
+    public async Task GetProxyById_Existing_Returns200()
+    {
+        var dto = new { name = "FindMe", remoteHost = "1.2.3.4", remotePort = 8080, localPort = 0 };
+        using (var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto))
+        using (var resp = await _client.SendAsync(req)) Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+
+        using var getReq = CreateRequest(HttpMethod.Get, "/api/proxies/1");
+        using var getResp = await _client.SendAsync(getReq);
+        Assert.Equal(HttpStatusCode.OK, getResp.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteProxy_Existing_Returns200()
+    {
+        var dto = new { name = "ToDelete", remoteHost = "1.2.3.4", remotePort = 8080, localPort = 0 };
+        using (var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto))
+        using (var resp = await _client.SendAsync(req)) Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+
+        using var delReq = CreateRequest(HttpMethod.Delete, "/api/proxies/1");
+        using var delResp = await _client.SendAsync(delReq);
+        Assert.Equal(HttpStatusCode.OK, delResp.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetStats_ReturnsCorrectCounts()
+    {
+        for (int i = 1; i <= 2; i++)
+        {
+            var dto = new { name = $"Proxy{i}", remoteHost = $"10.0.0.{i}", remotePort = 8080, localPort = 0 };
+            using var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto);
+            using var resp = await _client.SendAsync(req);
+            Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+        }
+
+        using var req = CreateRequest(HttpMethod.Get, "/api/stats");
+        using var resp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+        var content = await resp.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(2, content.GetProperty("data").GetProperty("total").GetInt32());
+    }
+
+    [Fact]
+    public async Task AddProxy_PasswordMaskedInResponse()
+    {
+        var dto = new { name = "SecretProxy", remoteHost = "1.2.3.4", remotePort = 8080, localPort = 0, username = "user", password = "secretpass" };
+        using var req = CreateRequest(HttpMethod.Post, "/api/proxies", dto);
+        using var resp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+        var content = await resp.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("****", content.GetProperty("data").GetProperty("password").GetString());
+    }
+}
